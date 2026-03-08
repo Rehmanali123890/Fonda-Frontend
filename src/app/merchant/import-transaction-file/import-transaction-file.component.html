@@ -1,0 +1,77 @@
+<div class="container-fluid">
+  <div class="mainDiv">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h4>Import Transaction CSV</h4>
+      </div>
+      <div class="card-body">
+        <div class="contant">
+
+          <div class="forMibile">
+            <ng-select [(ngModel)]="selectedPlatform" [clearable]="false" [searchable]="true"
+              class="bg ng-select-side-nav" placeholder="Select Platform">
+              <ng-option value="doordash">DoorDash</ng-option>
+              <ng-option value="ubereats">UberEats</ng-option>
+              <ng-option value="grubhub">Grubhub</ng-option>
+              <ng-option value="storefront">Storefront</ng-option>
+            </ng-select>
+          </div>
+          <div
+            class="form-group col-md-2"
+          >
+            <label>{{
+              "reuseableWords.From Date" | transloco
+            }}</label>
+
+            <div class="form-group">
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="startDate"
+            placeholder="Start Date"
+            />
+          </div>
+          </div>
+          <div
+            class="form-group col-md-2"
+          >
+            <label>{{
+              "reuseableWords.To Date" | transloco
+            }}</label>
+
+            <div class="form-group">
+          <input
+            type="date"
+            class="form-control"
+            [(ngModel)]="endDate"
+            placeholder="End Date"
+            />
+          </div>
+          </div>
+
+          <div class="forMibile">
+            <input type="file" (click)="clearFileInput()" (change)="onFileSelected($event)" accept=".csv" #fileInput
+              style="display: none" />
+            <button class="btn button-theme" (click)="fileInput.click()">
+              {{ uploadbtnname }}
+            </button>
+
+
+          </div>
+          <div class="forMibile">
+            <button class="btn button-theme" (click)="handleTransactionFileInput(selectedPlatform)"
+              [disabled]="filepath == '' || selectedPlatform == null || startDate == null || endDate == null || disabledbtn ">
+              Upload
+              <span *ngIf="disabledbtn" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <div class="forMibile" style="color: rgb(36, 143, 36);" *ngIf="checkfilepath">
+          <p><strong> Selected File: {{ filepath }}</strong></p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

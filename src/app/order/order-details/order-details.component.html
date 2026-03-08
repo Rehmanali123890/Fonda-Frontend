@@ -1,0 +1,517 @@
+<div *ngIf="!gettingOrderDetail && !orderDetailObj.orderSource">
+  <div class="alert alert-info w-100" role="alert">
+    {{ "reuseableWords.No order found" | transloco }}
+  </div>
+</div>
+<div *ngIf="gettingOrderDetail" class="d-flex justify-content-center text-center">
+  <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+</div>
+<div *ngIf="!gettingOrderDetail && orderDetailObj.orderSource">
+  <div class="">
+    <div class="scroll-height custom-scroll p-3 margn-top-mobile-view"
+      style="border-radius: 5px; background-color: #fff">
+      <div class="border-bottom pb-3">
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 style="font-weight: 600"></h5>
+          <span class="badge mb-0"></span>
+        </div>
+        <div class="d-flex align-items-center justify-content-between">
+          <h5 style="font-weight: 600">
+            {{ orderDetailObj.orderMerchant.merchantName }}
+          </h5>
+          <span (click)="
+              $event.stopPropagation();
+              openOrdeerchangeMOdal(orderDetailObj, changeOrderStatusModal)
+            " class="badge badge-primary mb-0">{{ getStatusTranslation(orderDetailObj.orderStatus) }}</span>
+        </div>
+        <div *ngIf="orderDetailObj.orderMerchant.address !== null"
+          class="d-flex align-items-center justify-content-between">
+          <h6 style="font-weight: 600">
+            {{ orderDetailObj.orderMerchant.address }}
+          </h6>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="text-primary" style="font-weight: 600">
+            {{ orderDetailObj.orderSource }}
+          </h6>
+          <p class="mb-0">{{ orderDetailObj.orderDateTimeFormatted }}</p>
+        </div>
+        <div *ngIf="orderDetailObj.virtualMerchantName" class="d-flex justify-content-between">
+          <h6 class="">{{ "reuseableWords.Virtual Merchant" | transloco }}</h6>
+          <p class="mb-0">{{ orderDetailObj.virtualMerchantName }}</p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.External Reference" | transloco }}</h6>
+          <p class="mb-0">{{ orderDetailObj.orderExternalReference }}</p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Order Type" | transloco }}</h6>
+          <p class="mb-0">{{ orderDetailObj.orderType | titlecase }}</p>
+        </div>
+        <div class="d-flex justify-content-between" *ngIf="orderDetailObj.scheduled == 1">
+          <h6 class="">{{ "Orders.Scheduled Time" | transloco }}</h6>
+          <p class="mb-0">{{ orderDetailObj.scheduledTime }}</p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">
+            {{ "reuseableWords.Customer" | transloco }}
+            {{ "reuseableWords.Name" | transloco }}
+          </h6>
+          <p class="mb-0">
+            {{ orderDetailObj.orderCustomer.firstName }}
+            {{ orderDetailObj.orderCustomer.lastName }}
+          </p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">
+            {{ "reuseableWords.Customer" | transloco }}
+            {{ "reuseableWords.Phone" | transloco }}
+          </h6>
+          <p class="mb-0">{{ orderDetailObj.orderCustomer.phone }}</p>
+        </div>
+        <div class="d-flex justify-content-between" *ngIf="orderDetailObj.orderCustomer.email">
+          <h6 class="">
+            {{ "reuseableWords.Customer" | transloco }}
+            {{ "reuseableWords.Email" | transloco }}
+          </h6>
+          <p class="mb-0">{{ orderDetailObj.orderCustomer.email }}</p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Total Items" | transloco }}</h6>
+          <p class="mb-0">
+            {{ calculateTotalItems(orderDetailObj.orderitems) }}
+          </p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Order Preparation Time" | transloco }}</h6>
+          <p class="mb-0">{{ orderDetailObj.orderPreparationTime }} mins</p>
+        </div>
+        <div class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Order placed in busy mode" | transloco }}</h6>
+          <p class="mb-0">
+            {{ orderDetailObj.orderInBusyMode === 1 ? "Yes" : "No" }}
+          </p>
+        </div>
+        <div *ngIf="
+            orderDetailObj.orderSource == 'online_order' &&
+            orderDetailObj.orderType == 'delivery'
+          " class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Doordash Delivery Id" | transloco }}</h6>
+          <p class="mb-0">
+            {{ orderDetailObj.trackingDetails.external_delivery_id }}
+          </p>
+        </div>
+        <div *ngIf="
+            orderDetailObj.orderSource == 'online_order' &&
+            orderDetailObj.orderType == 'delivery'
+          " class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Track Order" | transloco }}</h6>
+          <p class="mb-0">
+            <a href="{{ orderDetailObj.trackingDetails.tracking_url }}" target="_blank">Track</a>
+          </p>
+        </div>
+        <div *ngIf="
+            orderDetailObj.doorDashDeliveryStatus &&
+            orderDetailObj.orderSource == 'online_order' &&
+            orderDetailObj.orderType == 'delivery'
+          " class="d-flex justify-content-between">
+          <h6 class="">{{ "Orders.Doordash Delivery Status" | transloco }}</h6>
+          <p class="mb-0">
+            {{ orderDetailObj.doorDashDeliveryStatus }}
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-12">
+          <table style="width: 100%; margin: 2em 0em">
+            <thead style="border-bottom: 2px solid #000">
+              <th>{{ "Orders.Qty" | transloco }}.</th>
+              <th>{{ "reuseableWords.Item" | transloco }}</th>
+              <th>{{ "reuseableWords.Price" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Sub Total" | transloco }}</th>
+            </thead>
+            <tbody class="tableBody">
+              <tr *ngFor="let item of orderDetailObj.orderitems">
+                <td style="color: #00305a; vertical-align: top">
+                  {{ item.quantity }}x
+                </td>
+                <td>
+                  {{ item.item.itemName }}
+                  <div *ngFor="let addOnItem of item.addons">
+                    <div style="font-size: 13px; text-indent: 20px">
+                      {{ addOnItem.addon.addonName }}
+                    </div>
+                    <div class="text-primary" style="font-size: 13px; text-indent: 20px"
+                      *ngFor="let option of addOnItem?.addon.addonOptions">
+                      {{ option.addonOptionName || "not mentioned" }}
+
+                      <span *ngIf="showaddonprices">
+                        (${{ option.price }} &times;
+                        {{ option.quantity }})</span>
+                    </div>
+                  </div>
+                  <ng-container *ngIf="
+                      item.specialInstructions != null &&
+                      item.specialInstructions != ''
+                    ">
+                    <div style="font-size: 13px; text-indent: 20px; color: red">
+                      Special Instructions
+                    </div>
+                    <div style="font-size: 13px; text-indent: 20px">
+                      {{ item.specialInstructions }}
+                    </div>
+                  </ng-container>
+                </td>
+                <td style="vertical-align: top">
+                  ${{
+                  addItemsPriceArrayByMultiplyingWithTheirQuantity(
+                  item.addons,
+                  item.cost
+                  ) | number : "1.2-2"
+                  }}
+                </td>
+
+                <td style="vertical-align: top">
+                  ${{
+                  multiplyTwoValues(
+                  addItemsPriceArrayByMultiplyingWithTheirQuantity(
+                  item.addons,
+                  item.cost
+                  ),
+                  item.quantity
+                  ) | number : "1.2-2"
+                  }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- <div
+        class="border-bottom pt-2"
+        *ngFor="let item of orderDetailObj.orderitems"
+      >
+        <div class="d-flex justify-content-between">
+          <h5 class="mb-0">{{ item.item.itemName }}</h5>
+          <p class="mb-0">$ {{ item.cost }} x {{ item.quantity }}</p>
+        </div>
+        <div class="row justify-content-end">
+          <div class="col-10 mt-2" *ngFor="let addOnItem of item.addons">
+            <div class="d-flex justify-content-between">
+              <h5 class="mb-0">{{ addOnItem.addon.addonName }}</h5>
+            </div>
+            <div
+              class="d-flex justify-content-between"
+              *ngFor="let option of addOnItem.addon.addonOptions"
+            >
+              <div>
+                <small class="text-primary">{{
+                  option.addonOptionName || "not mentioned"
+                }}</small>
+              </div>
+              <div>
+                <p class="mb-0">
+                  ${{ option.price }} &times; {{ option.quantity }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          *ngIf="item.specialInstructions !== null"
+          class="d-flex justify-content-between"
+        >
+          <p class="mb-0">{{ item.specialInstructions }}</p>
+        </div>
+      </div> -->
+
+      <div class="row justify-content-end border-top-white">
+        <div class="col-10 col-md-7 py-2">
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Sub Total" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.orderSubTotal | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>
+              {{ "MerchantPayoutDetail.Promo Discount" | transloco }}
+              <span *ngIf="
+                  orderDetailObj.usePromo !== null &&
+                  orderDetailObj.usePromo != ''
+                ">( {{ orderDetailObj.usePromo }} )
+              </span>
+            </h5>
+            <h5>$ {{ orderDetailObj.promoDiscount | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>{{ "reuseableWords.Tax" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.orderTax | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Staff Tips" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.staffTips | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Commission" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.commission | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>Commision Tax</h5>
+            <h5>$ {{ orderDetailObj.commissionTax | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>Marketing Fee</h5>
+            <h5>$ {{ orderDetailObj.marketingFee | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Square Fee" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.squareFee | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>
+              {{
+              "MerchantPayoutDetail.Market Place Facilitator Tax" | transloco
+              }}
+              - Uber eats
+            </h5>
+            <h5>$ {{ orderDetailObj.marketplaceTax | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Processing Fee" | transloco }}</h5>
+            <h5>
+              $ <span *ngIf="orderDetailObj.processingFee > 0">-</span>{{ orderDetailObj.processingFee | number :
+              "1.2-2" }}
+            </h5>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Error Charges" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.errorcharges | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5>{{ "MerchantPayoutDetail.Order Adjustments" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.orderAdjustments | number : "1.2-2" }}</h5>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <h5>{{ "Orders.Refunded Amount" | transloco }}</h5>
+            <h5>$ {{ orderDetailObj.refundAmount | number : "1.2-2" }}</h5>
+          </div>
+          <div class="d-flex justify-content-between">
+            <h5><strong>Total</strong></h5>
+            <h5>
+              <strong>$ {{ orderDetailObj.orderTotal | number : "1.2-2" }}</strong>
+            </h5>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="orderDetailObj.specialInstructions !== null" class="mb-2">
+        <h6 class="mb-0">
+          <strong>{{ "Orders.Special Instructions" | transloco }}</strong>
+        </h6>
+        <p class="mb-0">{{ orderDetailObj.specialInstructions }}</p>
+      </div>
+      <div class="mb-2">
+        <h6 class="mb-0">
+          <strong>{{ "reuseableWords.Remarks" | transloco }}</strong>
+        </h6>
+        <p class="mb-0">{{ orderDetailObj.remarks }}</p>
+      </div>
+      <button class="btn button-theme" (click)="downloadOrderDetailPdf()">
+        {{ "Orders.Download PDF" | transloco }}
+        <span *ngIf="gettingPDF" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+      </button>
+      <button class="btn button-theme" *ngIf="
+          userRoleType === 1 && editOrder == false && orderDetailObj.locked == 0
+        " (click)="editOrder = true">
+        {{ "reuseableWords.EDIT" | transloco }}
+      </button>
+      <div *ngIf="
+          userRoleType === 1 && editOrder == false && orderDetailObj.locked == 1
+        " class="alert alert-info" role="alert">
+        {{ "Orders.Order is paid out and can not be modified." | transloco }}
+      </div>
+      <div class="row" *ngIf="userRoleType === 1 && editOrder == true">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>{{
+              "MerchantPayoutDetail.Error Charges" | transloco
+              }}</label>
+            <input type="number" min="0" [(ngModel)]="orderDetailObj.errorcharges" class="field"
+              placeholder="Error charges" />
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label>{{
+              "MerchantPayoutDetail.Order Adjustments" | transloco
+              }}</label>
+            <input type="number" min="0" [(ngModel)]="orderDetailObj.orderAdjustments" class="field"
+              placeholder="order adjustments" />
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label>{{ "reuseableWords.Remarks" | transloco }}</label>
+            <input type="text" [(ngModel)]="orderDetailObj.remarks" class="field"
+              [placeholder]="'reuseableWords.Remarks' | transloco" />
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <button class="btn button-theme" (click)="updateOrder()">
+            {{ "reuseableWords.SAVE" | transloco }}
+            <span *ngIf="updatingOrder" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+          </button>
+          <button class="btn button-theme" (click)="editOrder = false">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div mdbModal #changeOrderStatusModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade"
+  tabindex="-1" role="dialog" aria-labelledby="mychangeOrderStatusModalLabel" (open)="resetPopupValues()"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" aria-label="Close" (click)="changeOrderStatusModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel">
+          {{ "reuseableWords.Select" | transloco }}
+          {{ "reuseableWords.Status" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <ng-container *ngIf="selectedStatusStr === '8'">{{
+          "Orders.Status can not be changed" | transloco
+          }}</ng-container>
+        <div *ngIf="orderDetailObj.orderTotal <= 0">
+          {{
+          "Orders.The status for this order can not be changed." | transloco
+          }}
+        </div>
+        <!-- <div *ngIf="selectedStatusStr === '8'" class="chip"
+          [class.bg-default]="selectedOrderStatus===userStatusEnum['Pending acceptance']"
+          (click)="selectedOrderStatus=userStatusEnum['Pending acceptance']">
+          Pending Acceptance
+        </div> -->
+        <div *ngIf="orderDetailObj.orderTotal > 0">
+          <div *ngIf="selectedStatusStr === '5,7' || selectedStatusStr === '9'" class="chip"
+            [class.bg-default]="selectedOrderStatus === userStatusEnum.Pending"
+            (click)="selectedOrderStatus = userStatusEnum.Pending">
+            {{ "Orders.Pending" | transloco }}
+          </div>
+          <div *ngIf="
+              selectedStatusStr === '0,1,2,3,4,6' || selectedStatusStr === '9'
+            " class="chip" [class.bg-default]="
+              selectedOrderStatus === userStatusEnum.Completed
+            " (click)="selectedOrderStatus = userStatusEnum.Completed">
+            {{ "Orders.Completed" | transloco }}
+          </div>
+        </div>
+        <div *ngIf="selectedStatusStr === '10'" class="chip"
+          [class.bg-default]="selectedOrderStatus === userStatusEnum.Pending"
+          (click)="selectedOrderStatus = userStatusEnum.Pending">
+          {{ "Orders.Accept" | transloco }}
+        </div>
+
+        <div *ngIf="
+            orderDetailObj.orderStatus == userStatusEnum.Completed &&
+            orderDetailObj.orderSource == 'online_order' &&
+            orderDetailObj.refundAmount == 0
+          " class="chip" [class.bg-default]="selectedOrderStatus === userStatusEnum.Completed" (click)="
+            selectedOrderStatus = userStatusEnum.Refund; partialRefund = 1
+          ">
+          {{ "Orders.Partial Refund" | transloco }}
+        </div>
+        <div *ngIf="
+            selectedStatusStr === '0,1,2,3,4,6' || selectedStatusStr === '5,7'
+          " class="chip" [class.bg-default]="selectedOrderStatus === userStatusEnum.Cancelled" (click)="
+            selectedOrderStatus = userStatusEnum.Cancelled; partialRefund = 0
+          ">
+          {{ "Orders.Cancelled" | transloco }}
+        </div>
+        <div *ngIf="selectedStatusStr === '10'" class="chip"
+          [class.bg-default]="selectedOrderStatus === userStatusEnum.Rejected"
+          (click)="selectedOrderStatus = userStatusEnum.Rejected">
+          {{ "Orders.Deny" | transloco }}
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group" *ngIf="selectedOrderStatus === userStatusEnum.Rejected">
+              <label>{{ "Orders.Deny Reason" | transloco }}</label>
+              <select style="height: 40px" type="text" [(ngModel)]="reason" class="field" placeholder="Select reason">
+                <option *ngFor="let name of enumKeyOrderRejectionReasons" [value]="name">
+                  {{ orderRejectionReasons[name] }}
+                </option>
+              </select>
+            </div>
+            <div class="form-group" *ngIf="selectedOrderStatus === userStatusEnum.Cancelled">
+              <label>{{ "Orders.Cancellation Reason" | transloco }}</label>
+              <select style="height: 40px" type="text" [(ngModel)]="reason" class="field" placeholder="Select reason">
+                <option *ngFor="let name of enumKeyOrderCancellationReasons" [value]="name">
+                  {{ orderCancellationReasons[name] }}
+                </option>
+              </select>
+            </div>
+            <div class="row" *ngIf="selectedOrderStatus === userStatusEnum.Refund">
+              <div class="col-md-12">
+                <label>{{
+                  "Orders.Amount for partial refund" | transloco
+                  }}</label>
+                <input type="number" max="{{ orderDetailObj.orderTotal }}" [(ngModel)]="refundAmount" class="field" />
+              </div>
+              <div class="form-group">
+                <label>{{ "reuseableWords.Remarks" | transloco }}</label>
+                <input type="text" [(ngModel)]="orderDetailObj.remarks" class="field" placeholder="Remarks" />
+              </div>
+              <!-- <div class="col-md-3">
+								<mdb-checkbox class="mb-2" default="true" [(ngModel)]="partialRefund">
+									Partial Refund</mdb-checkbox>
+							</div> -->
+              <div class="alert alert-warning" role="alert">
+                {{
+                "Orders.Amount will be refunded via stripe. This action can not be
+                reverted back." | transloco
+                }}
+              </div>
+            </div>
+
+            <div class="form-group" *ngIf="
+                selectedOrderStatus === userStatusEnum.Cancelled ||
+                selectedOrderStatus === userStatusEnum.Rejected
+              ">
+              <label>{{ "Orders.Explaination" | transloco }}</label>
+              <input type="text" [(ngModel)]="explaination" class="field" placeholder="explaination (optional)" />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light btn-sm"
+            aria-label="Close" (click)="changeOrderStatusModal.hide()" mdbWavesEffect>
+            {{ "reuseableWords.Close" | transloco }}
+          </button>
+          <button [disabled]="
+              updatingStatus ||
+              (!selectedOrderStatus &&
+                selectedOrderStatus !== userStatusEnum.Pending) ||
+              (selectedOrderStatus === userStatusEnum.Cancelled && !reason) ||
+              (selectedOrderStatus === userStatusEnum.Rejected && !reason)
+            " type="button" mdbBtn color="primary" class="relative btn-sm waves-light"
+            (click)="updatestatus(changeOrderStatusModal)" mdbWavesEffect>
+            <span *ngIf="updatingStatus" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+            {{ "Orders.Save changes" | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

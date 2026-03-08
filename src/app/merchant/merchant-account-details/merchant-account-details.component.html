@@ -1,0 +1,487 @@
+<div class="row merchant-main">
+  <h4 class="mb-2 Pause-for-mobile">
+    {{ "AccountDetail.pauseResume" | transloco }}
+    <span *ngIf="merchantDto.marketStatus == false" class="message-alt">
+      <ng-template [ngIf]="gettingMerchantDetail_alert">
+        <span class="spinner-border spinner-border-sm ms-5" role="status" aria-hidden="true">
+        </span>
+      </ng-template>
+      <ng-template [ngIf]="
+          merchantDto.caller == 'dashboard' && !gettingMerchantDetail_alert
+        ">
+        <span style="font-size: medium" class="alert alert-danger message" role="alert">
+          {{ "reuseableWords.Paused From" | transloco }}
+          {{ "reuseableWords.Dashboard" | transloco }}
+          {{ "reuseableWords.at" | transloco }}
+          {{ merchantDto.pauseStarted_datetime }}.
+        </span>
+      </ng-template>
+
+
+      <ng-template [ngIf]="merchantDto.caller == 'android'">
+        <ng-template [ngIf]="
+            merchantDto.pause_reason == '' && !gettingMerchantDetail_alert
+          ">
+          <span style="font-size: medium" class="alert alert-danger message" role="alert">
+            {{ "reuseableWords.Paused From" | transloco }}
+            {{ "reuseableWords.Tablet" | transloco }}
+            {{ "reuseableWords.at" | transloco }}
+            {{ merchantDto.pauseStarted_datetime }}
+            {{ "reuseableWords.for" | transloco }}
+            {{ merchantDto.pauseTime_duration }} .
+          </span>
+        </ng-template>
+        <ng-template [ngIf]="
+            merchantDto.pause_reason != '' && !gettingMerchantDetail_alert
+          ">
+          <span style="font-size: medium" class="alert alert-danger message" role="alert">
+            {{ "reuseableWords.Paused From" | transloco }}
+            {{ "reuseableWords.Tablet" | transloco }}
+            {{ "reuseableWords.at" | transloco }}
+            {{ merchantDto.pauseStarted_datetime }}
+            {{ "reuseableWords.for" | transloco }}
+            {{ merchantDto.pauseTime_duration }}.<span *ngIf="merchantDto.pause_reason != ''">
+              {{ "reuseableWords.Reason" | transloco }}:
+              {{ merchantDto.pause_reason }}.</span>
+          </span>
+        </ng-template>
+      </ng-template>
+    </span>
+  </h4>
+
+  <h5 *ngIf="merchantDto.marketStatus == false" class="mb-2 for-mobile">
+    ( {{ "AccountDetail.orderPaused" | transloco }})
+  </h5>
+  <h5 *ngIf="merchantDto.marketStatus == true" class="mb-2 for-mobile">
+    ( {{ "AccountDetail.acceptingOrdernow" | transloco }})
+  </h5>
+
+  <div class="col-md-6">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="form-group">
+          <label class="toggle">
+            <input [(ngModel)]="merchantDto.marketStatus" (change)="merchantStatusToogle()" class="toggle-checkbox"
+              type="checkbox" />
+            <div class="toggle-switch"></div>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 mb-4 setting-div">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{ "AccountDetail.MerchantSettings" | transloco }}</h4>
+      </div>
+      <div class="card-body">
+        <div class="row input-fields-mobile">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label> {{ "reuseableWords.id" | transloco }}</label>
+              <input [(ngModel)]="merchantDto.id" readonly type="text" class="field"
+                [placeholder]="'reuseableWords.id' | transloco" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>
+                {{ "AccountDetail.MerchantRestaurantName" | transloco }}
+                <span style="color: red"> *</span></label>
+              <input [(ngModel)]="merchantDto.merchantName" type="text" class="field" [placeholder]="
+                  'AccountDetail.MerchantRestaurantName' | transloco
+                " />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>
+                {{
+                "AccountDetail.Point of contact first Name" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.firstName" type="text" class="field" [placeholder]="
+                  'AccountDetail.Point of contact first Name' | transloco
+                " />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>
+                {{
+                "AccountDetail.Point of contact last Name" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.lastName" type="text" class="field" [placeholder]="
+                  'AccountDetail.Point of contact last Name' | transloco
+                " />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.businessAddressDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label>
+                {{ "AccountDetail.Business Address" | transloco }}
+              </label>
+              <input [(ngModel)]="merchantDto.address" type="text" class="field"
+                [placeholder]="'AccountDetail.Business Address' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.timezoneDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label> {{ "reuseableWords.timezone" | transloco }} </label>
+
+              <input [(ngModel)]="merchantDto.timezone" type="text" class="field" readonly
+                [placeholder]="'reuseableWords.timezone' | transloco" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.emailDescription" | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label> {{ "reuseableWords.Email" | transloco }} </label>
+
+              <input [(ngModel)]="merchantDto.email" readonly type="text" class="field"
+                [placeholder]="'reuseableWords.Email' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.dobDescription" | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>
+                {{ "AccountDetail.Point Of Contact DOB" | transloco }}
+              </label>
+
+              <input [(ngModel)]="merchantDto.pocdob" type="date" class="field"
+                [placeholder]="'AccountDetail.Point Of Contact DOB' | transloco" />
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.phoneDescription" | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label> {{ "reuseableWords.Phone" | transloco }} </label>
+
+              <input [(ngModel)]="merchantDto.phone" type="text" class="field"
+                [placeholder]="'reuseableWords.Phone' | transloco" />
+              <p>{{ "AccountDetail.phonedescrip" | transloco }}</p>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>{{ "MerchantSettingTab.Language" | transloco }}</label>
+              <select [(ngModel)]="merchantDto.language" style="height: 36px; width: -webkit-fill-available"
+                [disabled]="true">
+                <option value="en" [selected]="merchantDto.language === 'en'">
+                  {{ "MerchantSettingTab.English" | transloco }}
+                </option>
+                <option value="es" [selected]="merchantDto.language === 'es'">
+                  {{ "MerchantSettingTab.Spanish" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.onboardingCompletedDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>
+                {{ "AccountDetail.Onboarding Completed" | transloco }}
+              </label>
+
+              <select disabled [(ngModel)]="merchantDto.onBoardingCompleted"
+                style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.onBoardingCompleted === true">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.onBoardingCompleted === false">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3" *ngIf="merchantDto.onBoardingCompleted == false">
+            <div class="form-group reminderm-btn-div">
+              <span style="visibility: hidden; display: block">Send Reminder</span>
+              <button class="btn button-theme reminderm-btn" (click)="sendReminderEmail()">
+                {{ "AccountDetail.Send Reminder" | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex w-100 justify-content-end">
+          <!-- <button class="btn button-theme m-0 px-4">Edit</button>
+          <button class="btn button-theme m-0 ml-2 px-4">Save</button> -->
+          <!--          <button [disabled]="savingMerchant" *ngIf="userRoleType===1" class="btn button-theme m-0 ml-2 px-4"-->
+          <!--            (click)="SaveMerchantData()">-->
+          <!--            <span *ngIf="savingMerchant" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">-->
+          <!--            </span>-->
+          <!--            Save</button>-->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 mb-4 Business-info-mobile">
+    <div class="card">
+      <div class="card-header">
+        <h4>{{ "AccountDetail.Business Info" | transloco }}</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.legalBusinessNameDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "AccountDetail.Legal Business Name" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.legalBusinessName" type="text" class="field"
+                [placeholder]="'AccountDetail.Legal Business Name' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.einNumberDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "AccountDetail.EIN Number" | transloco }}</label>
+              <input [(ngModel)]="merchantDto.businessTaxId" type="text" class="field"
+                [placeholder]="'AccountDetail.EIN Number' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.businessWebsiteDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "AccountDetail.Business Website" | transloco }}</label>
+              <input [(ngModel)]="merchantDto.businessWebsite" type="url" class="field"
+                placeholder="https://www.abc.com" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.businessAddressLineDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "AccountDetail.Business Address Line" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.businessAddressLine" type="text" class="field" [placeholder]="
+                  'AccountDetail.Business Address Line' | transloco
+                " />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.cityDescription" | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "AccountDetail.City" | transloco }}</label>
+              <input [(ngModel)]="merchantDto.businessAddressCity" type="text" class="field"
+                [placeholder]="'AccountDetail.City' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.stateDescription" | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "AccountDetail.State/Province" | transloco }}</label>
+              <input [(ngModel)]="merchantDto.businessAddressState" type="text" class="field"
+                [placeholder]="'AccountDetail.State/Province' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.zipCodeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label class="required">{{
+                "reuseableWords.zipcode" | transloco
+                }}</label>
+              <input type="text" [(ngModel)]="merchantDto.zip" class="field"
+                [placeholder]="'reuseableWords.zipcode' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.businessNumberDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "AccountDetail.Business Number" | transloco }}</label>
+              <input [(ngModel)]="merchantDto.businessNumber" type="text" class="field"
+                [placeholder]="'AccountDetail.Business Number' | transloco" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.bankAccountNumberDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "AccountDetail.Bank Account Number" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.bankAccountNumber" type="text" class="field"
+                [placeholder]="'AccountDetail.Bank Account Number' | transloco" [disabled]="!userHasBankEditAccess" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.AccountDetailTooltips.bankAccountRoutingNumberDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "AccountDetail.Bank Account Routing Number" | transloco
+                }}</label>
+              <input [(ngModel)]="this.merchantDto.bankAccountRoutingNumber" type="text" class="field" [placeholder]="
+                  'AccountDetail.Bank Account Routing Number' | transloco
+                " [disabled]="!userHasBankEditAccess" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 mt-3 d-flex justify-content-between align-items-center setting-btn-mobile">
+    <!-- <button class="btn button-theme m-0 px-4">Edit</button> -->
+    <button [disabled]="connectAccount" *ngIf="userRoleType == 1 && !merchantDto.stripeAccountId"
+      class="btn button-theme" (click)="openConnectAccount()">
+      <span *ngIf="connectAccount" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+      {{ "AccountDetail.Create Connect Account" | transloco }}
+    </button>
+    <button [disabled]="savingMerchant || merchantDto.merchantName == ''" *ngIf="userRoleType == 1"
+      class="btn button-theme save-btn" (click)="processSaveMerchantData()">
+      <span *ngIf="savingMerchant" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+      {{ "AccountDetail.SAVE ACCOUNT SETTING" | transloco }}
+    </button>
+  </div>
+  <div style="visibility: hidden">hidden</div>
+</div>

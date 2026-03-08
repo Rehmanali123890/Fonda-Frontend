@@ -1,0 +1,295 @@
+.row {
+  align-items: baseline;
+}
+
+table > tbody {
+  background-color: #fff;
+}
+
+#price-table {
+  width: max-content;
+}
+
+.payout-icons {
+  font-size: 25px;
+  color: #4285f4;
+  cursor: pointer;
+}
+
+.payout-icons2 {
+  font-size: 25px;
+  color: #00305a;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.adjustments-input {
+  width: 170px;
+}
+
+.status-hint {
+  font-style: italic;
+  position: absolute;
+  top: -30px;
+  /* Adjust this value as per your preference */
+  left: 0;
+  background-color: #f1f1f1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  /* To ensure the hint is displayed above other elements */
+}
+
+.status-hint1 {
+  width: 500px;
+  font-style: italic;
+  /* Adjust this value as per your preference */
+  left: 0;
+  background-color: #f1f1f1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: -5px;
+  margin-left: 3.2em;
+
+  /* To ensure the hint is displayed above other elements */
+}
+
+.adjustment-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #dee2e6;
+}
+
+.button-div {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+::selection {
+  color: #fff;
+  background: #5372f0;
+}
+
+.tagChipWrapper {
+  width: 100%;
+}
+
+.wrapper :where(.title, li, li i, .details) {
+  display: flex;
+  align-items: center;
+}
+
+.title img {
+  max-width: 21px;
+}
+
+.title h2 {
+  font-size: 21px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.tagChipContent > p {
+  font-size: 15px;
+}
+
+.tagChipUL {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 3px;
+  border: 1px solid #000;
+}
+
+.tagChipLI {
+  color: #333;
+  margin: 4px 3px;
+  list-style: none;
+  border-radius: 30px;
+  background: #f2f2f2;
+  padding: 4px 10px;
+  border: 1px solid #e3e1e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tagChipI {
+  height: 20px;
+  width: 20px;
+  color: #808080;
+  margin-left: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.tagChipUL > input {
+  flex: 1;
+  padding: 5px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.tagChipDetails {
+  justify-content: space-between;
+}
+
+.tagChipDetails > button {
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 9px 15px;
+  border-radius: 5px;
+  background: #5372f0;
+  transition: background 0.3s ease;
+}
+
+.tagChipDetails > button:hover {
+  background: #2c52ed;
+}
+
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: block;
+}
+
+.button-theme {
+  width: 100%;
+  font-size: 12.2px;
+}
+
+.wrap-column {
+  max-width: 750px;
+  /* Adjust the max-width as needed */
+  word-wrap: break-word;
+  white-space: normal;
+  /* Ensure text can wrap to the next line */
+}
+
+// media query
+@media screen and (max-width: 575px) {
+  .adjust-wt-for-mobile {
+    width: 120px;
+    display: block;
+  }
+
+  .button-div {
+    flex-direction: column;
+  }
+
+  .adjustment-div {
+    justify-content: flex-start;
+    width: 100px;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .desktop-view {
+    display: none;
+  }
+
+  .date-input-div {
+    flex-wrap: nowrap !important;
+  }
+
+  .date-input-div .date-input-start {
+    flex-basis: 50%;
+  }
+
+  .date-input-div .date-input-end {
+    flex-basis: 50%;
+    margin-left: -1em;
+  }
+
+  .button-for-mobile {
+    width: 100%;
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  .table-details {
+    margin-top: 0.7em !important;
+  }
+
+  .table-details h2 {
+    font-size: 1.3em;
+  }
+
+  .adjustments-input {
+    width: 100%;
+  }
+
+  .update-btn {
+    box-shadow: none;
+    font-size: 11px;
+    width: 100% !important;
+  }
+
+  .history-table {
+    margin-top: 0em !important;
+  }
+
+  .modal-heading {
+    font-size: 1.2em;
+  }
+
+  .modal-footer button {
+    font-size: 11px;
+  }
+
+  table tr {
+    border-style: solid;
+    border-width: unset !important;
+    border-color: #eeeeee !important;
+  }
+
+  table tr td {
+    border: 2px solid #eeeeee;
+  }
+
+  table thead th {
+    border: 2px solid #eeeeee;
+  }
+
+  .mobile-table-bg {
+    background-color: #00305a;
+    color: #fff;
+  }
+
+  table tbody {
+    background-color: #fff;
+    font-size: 15px;
+  }
+
+  .action-for-mobile {
+    width: 77%;
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  table thead {
+    font-size: 15px;
+  }
+}
+
+.btn_font {
+  font-size: 12px;
+}
+
+.modal-dialog-width {
+  max-width: 800px;
+  /* Adjust the width as per your requirement */
+}

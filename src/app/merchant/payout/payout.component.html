@@ -1,0 +1,87 @@
+<h2 class="transfer-heading">{{ 'MerchantPayoutDetail.Transfer History' | transloco }}</h2>
+<!-- table for desktop view -->
+<div class="table-responsive mt-4 history-table desktop-view">
+  <div *ngIf="PayoutCalculationsListObj.length == 0">
+    <div class="alert alert-info" role="alert">
+      <th>{{ 'MerchantPayoutDetail.No transfer history available.' | transloco }}</th>
+    </div>
+  </div>
+  <table *ngIf="PayoutCalculationsListObj.length > 0" class="table table-bordered table-hover" id="price-table">
+    <thead class="bg-theme white-text sorting">
+      <tr>
+        <th>{{ 'reuseableWords.From Date' | transloco }}</th>
+        <th>{{ 'reuseableWords.To Date' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Payout Created Date & Time' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Payout Done By' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Number of Orders' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Sub Total' | transloco }}</th>
+        <th>{{ 'reuseableWords.Tax' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Commission' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Commission Adjustments' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Square Fee' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Processing Fee' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Error Charges' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Staff Tips' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Order Adjustments' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Market Price Facilitator Tax' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Revenue Processing Fee' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Promo Discount' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Payout Type' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Payout Adjustments' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Marketing Fee' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Payout Remarks' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Subscription Adjustments' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Subscription Date(s)' | transloco }}</th>
+        <th>{{ 'MerchantPayoutDetail.Net Payout' | transloco }}</th>
+
+        <th>{{ 'reuseableWords.Actions' | transloco }}</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of PayoutCalculationsListObj">
+        <ng-container *ngIf="item.status == 3">
+          <td>{{ item.startDate | date : "MM-dd-yyyy" }}</td>
+          <td>{{ item.endDate | date : "MM-dd-yyyy" }}</td>
+          <td>{{ item.created_datetime }}</td>
+          <td>{{ item.doneByUser }}</td>
+          <td>
+            {{ item.numberOfOrders }}
+          </td>
+          <td>$ {{ item.subTotal | number : "1.2-2" }}</td>
+          <td>$ {{ item.tax | number : "1.2-2" }}</td>
+          <td>$ {{ item.commission | number : "1.2-2" }}</td>
+          <td>$ {{ item.commisionAdjustment | number : "1.2-2" }}</td>
+          <td>$ {{ item.squarefee | number : "1.2-2" }}</td>
+          <td>$ {{ item.processingFee | number : "1.2-2" }}</td>
+          <td>$ {{ item.errorCharges | number : "1.2-2" }}</td>
+          <td>$ {{ item.staffTips | number : "1.2-2" }}</td>
+          <td>$ {{ item.orderAdjustments | number : "1.2-2" }}</td>
+          <td>$ {{ item.marketplaceTax | number : "1.2-2" }}</td>
+          <td>$ {{ item.RevenueProcessingFee | number : "1.2-2" }}</td>
+          <td>$ {{ item.promoDiscount | number : "1.2-2" }}</td>
+          <td>{{ PayoutTypeDescription[item.payoutType] }}</td>
+          <td>$ {{ item.payoutAdjustments }}</td>
+          <td>$ {{ item.marketingFee | number : "1.2-2" }}</td>
+          <td>{{ item.remarks }}</td>
+          <td>$ {{ item.subscriptionAdjustments }}</td>
+
+          <td>
+            <ul>
+              <li *ngFor="let p of item.subscriptions">
+                {{ p.date }} ($ {{ p.amount | number : "1.2-2" }})
+              </li>
+            </ul>
+          </td>
+          <td>$ {{ item.netPayout }}</td>
+
+          <td>
+            <a routerLink="/home/merchants/transfer-details/{{ item.id }}" [queryParams]="{ referrer: 'payout' }">
+              <button class="btn button-theme">View Details</button>
+            </a>
+          </td>
+        </ng-container>
+      </tr>
+    </tbody>
+  </table>
+</div>

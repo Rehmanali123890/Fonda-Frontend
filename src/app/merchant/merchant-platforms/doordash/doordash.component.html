@@ -1,0 +1,64 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card">
+      <h5 class="card-header">Doordash</h5>
+      <div class="card-body">
+        <div *ngIf="isUberConnected">
+          Connected store name: {{ getStoreinfo(3)[0] }}<br />
+          Connected store Address: {{ getStoreinfo(3)[1] }}
+        </div>
+        <!-- Store Name: {{ConnectedPlatforms.filter(x => x.platformtype == 3)[0].metadata}} -->
+        <span *ngIf="isProcessing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <div class="row">
+          <div class="col-md-3" *ngIf="!isProcessing">
+            <button *ngIf="isUberConnected" type="button" class="btn button-theme platforms-btn">
+              Connected with Doordash
+            </button>
+
+            <button type="button" *ngIf="!isUberConnected" class="connect-btn btn platforms-btn button-theme"
+              (click)="doAuthorizationUbereats()">
+              Connect with Doordash
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button *ngIf="isUberConnected" (click)="disconnectPlatform(3)" type="button"
+              class="disco-btn btn button-theme platforms-btn">
+              Disconnect Doordash
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button *ngIf="isUberConnected" [disabled]="syncingUberDish" (click)="triggerManualSync(3)" type="button"
+              class="disco-btn btn button-theme platforms-btn">
+              Upload Fonda menu to Doordash
+            </button>
+          </div>
+          <div class="col-md-3 auto-sync-div">
+            <div *ngIf="isUberConnected" class="checkbox-div">
+              <div class="form-checkbox-div">
+                <div class="form-check">
+                  <input class="form-check-input" value="1" [(ngModel)]="uberAutoSync" type="radio"
+                    name="flexRadioDefault" id="flexRadioDefault1" />
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Auto Sync on
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" value="0" [(ngModel)]="uberAutoSync" type="radio"
+                    name="flexRadioDefault" id="flexRadioDefault2" />
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Auto Sync Off
+                  </label>
+                </div>
+              </div>
+              <div>
+                <button type="button" (click)="saveAutoSyncSettings(3)" class="btn button-theme save-btn">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

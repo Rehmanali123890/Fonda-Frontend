@@ -1,0 +1,862 @@
+<div class="main_content_div">
+  <h4 class="head">
+    <span>{{ menuobj.name }}</span>
+    <div class="details-buttons-div">
+      <button
+        type="button"
+        class="outline-button"
+        (click)="toggleAllAccordions()"
+        *ngIf="selectedTab == 1"
+      >
+        {{
+          areAllAccordionsOpen
+            ? ("Menus.Collapse All Categories" | transloco)
+            : ("Menus.Expand All Categories" | transloco)
+        }}
+      </button>
+      <button
+        type="button"
+        class="outline-button"
+        *ngIf="selectedTab == 1 && userRoleType !== 4"
+        (click)="selectedCategoryIds = []; openModalForSuggestCategory()"
+      >
+        {{ "Menus.Add Category" | transloco }}
+      </button>
+
+      <button
+        class="outline-button"
+        *ngIf="disabled && selectedTab == 0"
+        (click)="disabled = false; editmenu()"
+      >
+        {{ "reuseableWords.Edit" | transloco }}
+      </button>
+      <button
+        class="outline-button"
+        *ngIf="!disabled && selectedTab == 0"
+        (click)="updatemenu()"
+        [disabled]="
+          !menuobj.name ||
+          this.SelectedCuisnieList.length === 0 ||
+          !isAnyDaySelectedAcrossSlots()
+        "
+      >
+        {{ "reuseableWords.SAVE" | transloco }}
+        <span
+          *ngIf="addingMenu"
+          class="spinner-border spinner-border-sm"
+          style="color: black; width: 1.5rem; height: 1.5rem; margin-left: 5px"
+          role="status"
+          aria-hidden="true"
+        >
+        </span>
+      </button>
+      <button
+        class="outline-button"
+        *ngIf="!disabled && selectedTab == 0"
+        (click)="canceleditmenu()"
+      >
+        {{ "reuseableWords.Cancel" | transloco }}
+      </button>
+    </div>
+  </h4>
+
+  <span
+    *ngIf="catupdationloader"
+    class="spinner-border spinner-border-sm"
+    style="color: black; width: 1.5rem; height: 1.5rem; margin-left: 5px"
+    role="status"
+    aria-hidden="true"
+  >
+  </span>
+
+  <div class="tabs">
+    <div class="tab" [class.active]="selectedTab === 0" (click)="selectTab(0)">
+      {{ "MerchantPayoutDetail.Details" | transloco }}
+    </div>
+    <div class="tab" [class.active]="selectedTab === 1" (click)="selectTab(1)">
+      {{ "Menus.Menu Builder" | transloco }}
+    </div>
+
+    <div class="underline" [style.transform]="underlineStyle"></div>
+  </div>
+  <div *ngIf="gettingMenu" class="loader-main mt-5">
+    <span
+      class="spinner-border spinner-border-md loader-main"
+      role="status"
+      aria-hidden="true"
+    >
+    </span>
+  </div>
+  <div class="tab-content mt-4" *ngIf="!gettingMenu">
+    <div *ngIf="selectedTab === 0">
+      <p>
+        {{
+          "Menus.Name the menu, select the location and the time for this menu"
+            | transloco
+        }}
+      </p>
+      <label class="answer-label mb-4">
+        <input
+          type="checkbox"
+          [checked]="menuobj.status"
+          [disabled]="disabled || userRoleType === 4"
+          [(ngModel)]="menuobj.status"
+        />
+        {{ "reuseableWords.Active" | transloco }}
+      </label>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="did-floating-label-content">
+            <input
+              type="text"
+              [(ngModel)]="merchantDto.merchantName"
+              class="did-floating-input did-floating-select-for-detail"
+              placeholder="Restaurant Name"
+              disabled
+            />
+            <label class="did-floating-label did-floating-label-for-detail">{{
+              "Menus.Restaurant Name" | transloco
+            }}</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="did-floating-label-content">
+            <input
+              type="text"
+              [(ngModel)]="menuobj.name"
+              class="did-floating-input did-floating-select-for-detail"
+              placeholder="Menu Name"
+              [disabled]="disabled || userRoleType === 4"
+            />
+            <label class="did-floating-label did-floating-label-for-detail">{{
+              "Menus.Menu Name" | transloco
+            }}</label>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="did-floating-label-content">
+            <div class="for-detail-bg"></div>
+
+            <ng-multiselect-dropdown
+              #multiSelectDropdown
+              [placeholder]="
+                ('reuseableWords.Select' | transloco) +
+                ' ' +
+                ('Menus.Cuisine Type' | transloco)
+              "
+              [settings]="dropdownSettings"
+              [data]="cuisineList"
+              [disabled]="disabled || userRoleType === 4"
+              (onSelect)="addCuisine($event)"
+              (onDeSelect)="removeCuisine($event)"
+              [(ngModel)]="SelectedCuisnieList"
+              [ngClass]="{
+                'dropdown-disabled': disabled || userRoleType === 4
+              }"
+            >
+            </ng-multiselect-dropdown>
+
+            <label class="did-floating-label did-floating-label-for-detail">{{
+              "Menus.Cuisine Type" | transloco
+            }} *</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="did-floating-label-content">
+            <div class="for-detail-bg"></div>
+            <ng-multiselect-dropdown
+              [placeholder]="
+                ('reuseableWords.Select' | transloco) +
+                ' ' +
+                ('reuseableWords.Platform' | transloco)
+              "
+              [settings]="dropdownSettings"
+              [data]="dropdownList"
+              [(ngModel)]="selectedItems"
+              (onSelect)="onItemSelect($event)"
+              (onDeSelect)="onItemDeSelect($event)"
+              [disabled]="disabled || userRoleType === 4"
+              class="custom-dropdown"
+              [ngClass]="{
+                'dropdown-disabled': disabled || userRoleType === 4
+              }"
+            >
+            </ng-multiselect-dropdown>
+            <label class="did-floating-label did-floating-label-for-detail">{{
+              "reuseableWords.Platform" | transloco
+            }}</label>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="did-floating-label-content">
+            <select
+              class="did-floating-select did-floating-select-for-detail"
+              [(ngModel)]="menuobj.vmerchantId"
+              [disabled]="disabled || userRoleType === 4"
+            >
+              <option
+                *ngFor="let vmerchant of virtualMerchants"
+                [value]="vmerchant.id"
+              >
+                {{ vmerchant.virtualName }}
+              </option>
+            </select>
+            <label class="did-floating-label did-floating-label-for-detail">
+              {{ "reuseableWords.Virtual Restaurant" | transloco }}</label
+            >
+          </div>
+        </div>
+      </div>
+      <ng-container *ngIf="checkUbereatsConnected()">
+        <div
+          class="select-options-div mt-1"
+          *ngFor="let slot of timeSlots; let i = index"
+        >
+          <div class="menu-time-container mb-2">
+            <p class="mb-0">{{ "Menus.Menu Time and Days" | transloco }}</p>
+
+            <p
+              class="remove-menu-hours"
+              (click)="removeSlot(i)"
+              [ngClass]="{
+                'disabled-button': disabled
+              }"
+            >
+              Remove
+            </p>
+          </div>
+          <div class="row">
+            <!-- Start Time and End Time -->
+            <div class="col-md-7">
+              <div class="start-end-time-div">
+                <div class="did-floating-label-content">
+                  <select
+                    class="did-floating-select did-floating-select-for-detail"
+                    [(ngModel)]="slot.startTime"
+                    [ngModelOptions]="{ standalone: true }"
+                    [disabled]="disabled"
+                  >
+                    <option value="">
+                      {{ "reuseableWords.Select" | transloco }}
+                    </option>
+                    <option *ngFor="let time of availableTimes" [value]="time">
+                      {{ time }}
+                    </option>
+                  </select>
+                  <label
+                    class="did-floating-label did-floating-label-for-detail"
+                    >{{ "Menus.Start Time" | transloco }}</label
+                  >
+                </div>
+                <span>to</span>
+                <div class="did-floating-label-content">
+                  <select
+                    class="did-floating-select did-floating-select-for-detail"
+                    [(ngModel)]="slot.endTime"
+                    [ngModelOptions]="{ standalone: true }"
+                    [disabled]="disabled"
+                  >
+                    <option value="">
+                      {{ "reuseableWords.Select" | transloco }}
+                    </option>
+                    <option *ngFor="let time2 of getEndTimeOptions(slot)" [value]="time2">
+                      {{ getEndTimeDisplayText(time2, slot) }}
+                    </option>
+                  </select>
+                  <label
+                    class="did-floating-label did-floating-label-for-detail"
+                    >{{ "Menus.End Time" | transloco }}</label
+                  >
+                </div>
+              </div>
+            </div>
+
+            <!-- Timezone -->
+            <div class="col-md-5">
+              <div class="did-floating-label-content">
+                <input
+                  type="text"
+                  [(ngModel)]="merchantDto.timezone"
+                  class="did-floating-input did-floating-select-for-detail"
+                  placeholder="Menu Name"
+                  disabled
+                />
+                <label
+                  class="did-floating-label did-floating-label-for-detail"
+                  >{{ "reuseableWords.timezone" | transloco }}</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Days Selection -->
+          <p>{{ "reuseableWords.Days" | transloco }}</p>
+          <div class="select-days-div">
+            <label class="answer-label" *ngFor="let day of availableDays">
+              <input
+                type="checkbox"
+                [checked]="slot.selectedDays.includes(day)"
+                (change)="onDayToggle(i, day)"
+                [disabled]="disabled"
+              />
+              {{ "reuseableWords.days." + day | transloco }}
+            </label>
+          </div>
+        </div>
+        <!-- Button to Add New Time Slot -->
+        <button
+          type="button"
+          class="outline-button main-add-button mb-3"
+          (click)="addNewTimeSlot()"
+          *ngIf="!disabled"
+        >
+          {{ "reuseableWords.Add" | transloco }}
+          {{ "Menus.Menu Time and Dayss" | transloco }}
+        </button>
+      </ng-container>
+    </div>
+    <div *ngIf="selectedTab === 1">
+      <div *ngIf="CategoriesList.length == 0 && userRoleType !== 4">
+        <div *ngIf="forNoCategory">
+          <p class="mb-0">
+            {{
+              "Menus.Your restaurant hasn't added any categories" | transloco
+            }}.
+          </p>
+          <p>{{ "Menus.These are required to build the menu" | transloco }}.</p>
+
+          <button
+            class="outline-button main-add-button mt-2 mb-4"
+            routerLink="/home/menus/categories"
+            [queryParams]="{ add: true }"
+          >
+            {{ "Menus.Start With categories" | transloco }}
+          </button>
+        </div>
+        <div *ngIf="!forNoCategory">
+          <p>{{ "Menus.Add a category to begin building" | transloco }}.</p>
+          <button
+            class="outline-button main-add-button mt-2 mb-4"
+            (click)="selectedCategoryIds = []; openModalForSuggestCategory()"
+          >
+            {{ "Menus.Add Categories" | transloco }}
+          </button>
+        </div>
+      </div>
+      <hr *ngIf="!addedCategories" />
+      <div
+        class="accordion"
+        id="accordionPanelsStayOpenExample"
+        *ngIf="addedCategorieslist"
+        cdkDropList
+        class="example-list"
+        (cdkDropListDropped)="dropcategory($event)"
+      >
+        <div
+          class="accordion-item cdk-drag"
+          *ngFor="let cat of CategoriesList; let i = index"
+          cdkDrag
+          (cdkDragStarted)="disableScrolling()"
+          (cdkDragEnded)="enableScrolling()"
+        >
+          <h2 class="accordion-header" [id]="'heading' + i">
+            <button
+              class="accordion-button"
+              type="button"
+              data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapse' + i"
+              aria-expanded="false"
+              [attr.aria-controls]="'collapse' + i"
+            >
+              <a
+                class="move-path"
+                [routerLink]="['/home/menus/category-details', cat.id]"
+                [queryParams]="{ merchantid: selectedMerchantId }"
+                >{{ cat.categoryName }}</a
+              >
+            </button>
+
+            <a
+              class="nav-link dropdown-toggle sort-main-div-for-mobile"
+              href="#"
+              id="navbarDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <img
+                *ngIf="isMobileView"
+                src="../../../assets/icons/harmburder.svg"
+                class="three-dots sort-icon-for-mobile"
+                alt=""
+                cdkDragHandle
+                [class.mobile-drag]="isMobileView"
+              />
+              <img
+                *ngIf="workingwithremovecategory !== cat.id"
+                src="../../../assets/icons/three-dots.svg"
+                class="three-dots mr-3"
+                alt=""
+              />
+
+              <span
+                *ngIf="workingwithremovecategory === cat.id"
+                class="spinner-border spinner-border-sm"
+                style="width: 1.5rem; height: 1.5rem; margin-left: 5px"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </a>
+            <div
+              *ngIf="userRoleType !== 4"
+              class="dropdown-menu user_dropdown"
+              aria-labelledby="navbarDropdown"
+            >
+              <a
+                class="dropdown-item user-dropdown"
+                (click)="unAssignCategory(cat.id)"
+                >{{ "Menus.Remove from menu" | transloco }}</a
+              >
+            </div>
+          </h2>
+
+          <div
+            id="{{ 'collapse' + i }}"
+            class="accordion-collapse collapse show"
+            aria-labelledby="panelsStayOpen-headingOne"
+          >
+            <div class="accordion-body">
+              <div class="table-responsive">
+                <table class="table text-end menu-builder-table">
+                  <tbody
+                    cdkDropList
+                    class="example-list"
+                    (cdkDropListDropped)="drop($event)"
+                  >
+                    <tr class="example-box" *ngFor="let item of cat.items">
+                      <td cdkDrag (cdkDragStarted)="onDragStarted(cat)">
+                        <img
+                          src="../../../assets/icons/harmburder.svg"
+                          class="three-dots"
+                          alt=""
+                        />
+                      </td>
+                      <td>
+                        <select
+                          [disabled]="userRoleType === 4"
+                          class="form-select"
+                          aria-label="Default select example"
+                          [(ngModel)]="item.itemStatus"
+                          (change)="onItemStatusChange(item, cat)"
+                        >
+                          <option value="1">
+                            {{ "reuseableWords.Active" | transloco }}
+                          </option>
+                          <option value="0">
+                            {{ "reuseableWords.Inactive" | transloco }}
+                          </option>
+                          <option value="3">
+                            {{ "Menus.Remove from category" | transloco }}
+                          </option>
+                        </select>
+                      </td>
+                      <td>
+                        <a
+                          [routerLink]="['/home/menus/item-details', item.id]"
+                          [queryParams]="{ merchantid: selectedMerchantId }"
+                          >{{ item.itemName }}</a
+                        >
+                      </td>
+                      <td class="description-cd">
+                        {{ item.itemDescription | charTruncate : 30 }}
+                      </td>
+                      <td>{{ formatCurrency(item.itemPrice) }}</td>
+                      <td>
+                        <img [src]="item.imageUrl" *ngIf="item.imageUrl" width="35" height="35" />
+                        <img src="./../../assets/images/default_item.webp" *ngIf="!item.imageUrl" width="35" height="35" />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <button
+                class="outline-button main-add-button"
+                *ngIf="userRoleType !== 4"
+                (click)="
+                  selectedCategoryId = cat.id;
+                  selectedItemIds = [];
+                  openModalForAddItems()
+                "
+              >
+                {{ "Menus.Add Items" | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add category -->
+<div
+  mdbModal
+  #suggestCategoryModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "Menus.Add Category to Menu" | transloco }}
+          </h5>
+          <button
+            type="button"
+            class="close"
+            (click)="closeModalForSuggestCategory()"
+          >
+            <img
+              src="../../../assets/icons/black-cross.svg"
+              class="cross-icon"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="searchBar mb-0 mt-0">
+            <input
+              id="searchQueryInput"
+              type="text"
+              [(ngModel)]="searchTerm"
+              (ngModelChange)="filterCategories()"
+              name="searchQueryInput"
+              [placeholder]="'Menus.Search All Categories' | transloco"
+              value=""
+              class="w-100"
+            />
+            <button
+              id="searchQuerySubmit"
+              type="submit"
+              name="searchQuerySubmit"
+            >
+              <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+                <path
+                  fill="#000"
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="select-ans mt-4">
+            <label class="answer-label mb-0 font-weight-bold">
+              <input
+                type="checkbox"
+                [checked]="areAllCatsSelected()"
+                (change)="toggleAllCategories($event)"
+              />{{ "Menus.Select All" | transloco }}</label
+            >
+            <hr />
+            <span *ngIf="AllCategoriesList.length == 0">
+              <div>
+                <p class="mb-0">
+                  {{
+                    "Menus.There are no categories available to be added to this menu"
+                      | transloco
+                  }}.
+                </p>
+                <button
+                  class="outline-button main-add-button mt-2 mb-4"
+                  routerLink="/home/menus/categories"
+                >
+                  {{ "Menus.Add Categories" | transloco }}
+                </button>
+              </div>
+            </span>
+            <span *ngFor="let cat of AllCategoriesList">
+              <label class="answer-label mb-0">
+                <input
+                  type="checkbox"
+                  [checked]="selectedCategoryIds.includes(cat.id)"
+                  (change)="onCategoryChange($event, cat.id)"
+                />
+                {{ cat.categoryName }}
+              </label>
+              <hr />
+            </span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="outline-button main-add-button"
+            (click)="closeModalForSuggestCategory()"
+          >
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button
+            type="button"
+            class="button main-add-button"
+            (click)="UpdateMenuCategories()"
+            [disabled]="selectedCategoryIds.length == 0"
+            [ngClass]="{
+              'disabled-button': selectedCategoryIds.length == 0
+            }"
+          >
+            {{ "Menus.Add Category" | transloco }}
+            <span
+              *ngIf="savingAssignCategoriesToMenu"
+              class="spinner-border spinner-border-sm"
+              style="
+                color: white;
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-left: 5px;
+              "
+              role="status"
+              aria-hidden="true"
+            >
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Items Modal -->
+<div
+  mdbModal
+  #addItemsModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "Menus.Add Items to Categories" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModalForAddItems()">
+            <img
+              src="../../../assets/icons/black-cross.svg"
+              class="cross-icon"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{
+              "Menus.This list shows items related your items. Search to find more items"
+                | transloco
+            }}.
+          </p>
+          <div class="searchBar mb-0 mt-0">
+            <input
+              id="searchQueryInput"
+              [(ngModel)]="searchTermProduct"
+              (ngModelChange)="filterProducts()"
+              type="text"
+              name="searchQueryInput"
+              placeholder="Search all items"
+              value=""
+              class="w-100"
+            />
+            <button
+              id="searchQuerySubmit"
+              type="submit"
+              name="searchQuerySubmit"
+            >
+              <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+                <path
+                  fill="#000"
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"
+                />
+              </svg>
+            </button>
+          </div>
+          <div class="select-ans mt-4">
+            <label
+              class="answer-label mb-0 font-weight-bold d-flex justify-content-between"
+            >
+              <input
+                type="checkbox"
+                [checked]="areAllItemsSelected()"
+                (change)="toggleAllItems($event)"
+              />
+              <span class="item-name">{{
+                "Menus.Select All" | transloco
+              }}</span>
+              <span class="price-div">{{
+                "reuseableWords.Price" | transloco
+              }}</span>
+            </label>
+
+            <hr />
+            <div *ngIf="ProductsListformodal.length == 0">
+              <p class="mb-0">
+                {{
+                  "Menus.There are no items available to be added to this category"
+                    | transloco
+                }}.
+              </p>
+              <button
+                class="outline-button main-add-button mt-2 mb-4"
+                routerLink="/home/menus/items"
+              >
+                {{ "Menus.Add Items" | transloco }}
+              </button>
+            </div>
+            <div *ngFor="let item of ProductsListformodal">
+              <label
+                class="answer-label mb-0 d-flex justify-content-between align-items-center"
+              >
+                <span class="d-flex align-items-center">
+                  <input
+                    type="checkbox"
+                    class="mr-2"
+                    [checked]="selectedItemIds.includes(item.id)"
+                    (change)="onItemChange($event, item.id)"
+                  />
+                  <span class="item-name">{{ item.itemName }}</span>
+                </span>
+                <span class="price-div">{{
+                  formatCurrency(item.itemUnitPrice)
+                }}</span>
+              </label>
+              <hr />
+            </div>
+          </div>
+          <!-- <div class="details-buttons-div mt-3 ml-4">
+            <button class="outline-button main-add-button rounded pagi-height">
+              Previous
+            </button>
+            <button class="outline-button main-add-button rounded pagi-height">
+              Next
+
+            </button>
+          </div> -->
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="outline-button main-add-button"
+            (click)="closeModalForAddItems()"
+          >
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button
+            type="button"
+            class="button main-add-button"
+            [disabled]="selectedItemIds.length == 0"
+            (click)="UpdateitemsForCategoriesAndAddonOptions()"
+            [ngClass]="{
+              'disabled-button': selectedItemIds.length == 0
+            }"
+          >
+            {{ "Menus.Add Items" | transloco }}
+            <span
+              *ngIf="UpdatingitemsForCategories"
+              class="spinner-border spinner-border-sm"
+              style="
+                color: white;
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-left: 5px;
+              "
+              role="status"
+              aria-hidden="true"
+            >
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  mdbModal
+  #cuisineOtherOption="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  (close)="resetObj()"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="cuisineOtherOption.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">
+          <img
+            src="https://devorder.mifonda.io/assets/images/percentage-discount-svgrepo-com.svg"
+            alt=""
+            height="32px"
+          />
+          Add Option
+        </h4>
+      </div>
+
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label class="form-label" for="percentage">Option *</label>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="cuisineOther"
+            placeholder="Enter new option"
+          />
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="cuisineOtherOption.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          type="button"
+          class="btn orange-bt text-white"
+          (click)="addCuisineOther()"
+          [disabled]="cuisineOther.trim() == ''"
+        >
+          {{ "reuseableWords.SAVE" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

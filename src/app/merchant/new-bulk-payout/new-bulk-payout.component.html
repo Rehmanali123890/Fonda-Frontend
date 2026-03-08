@@ -1,0 +1,521 @@
+<div class="container-fluid">
+  <div class="row mt-5">
+    <div class="col-md-8 tabs-desktop-view">
+      <div class="btn-group">
+        <button
+          [class.active]="selecetedTab === 1"
+          class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 1"
+          style="text-transform: capitalize"
+        >
+          {{ "Reports.New Bulk Invoice" | transloco }}
+        </button>
+        <button
+          [class.active]="selecetedTab === 2"
+          class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 2"
+          style="text-transform: capitalize"
+        >
+        {{ "Reports.Problematic Transaction Report" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div class="container-fluid" *ngIf="selecetedTab === 1">
+  <div class="card">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>From Date</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="startDate"
+              placeholder="Start Date"
+            />
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group">
+            <label>To Date</label>
+            <input
+              type="date"
+              class="form-control"
+              [(ngModel)]="endDate"
+              placeholder="End Date"
+            />
+          </div>
+        </div>
+        <!-- <div class="col-md-3">
+          <div class="form-group">
+            <label>Subscriptions</label>
+            <select
+              style="height: 40px"
+              type="text"
+              class="field"
+              placeholder="Select type"
+            >
+              <option value="1">Include all the unpaid subscriptions</option>
+              <option value="2">
+                Include subscriptions within the specified date range
+              </option>
+              <option value="3">Do not include subscription in payout</option>
+            </select>
+          </div>
+        </div> -->
+        <div class="col-md-3">
+          <label style="visibility: hidden; display: block; margin-bottom: 0px"
+            >Date</label
+          >
+          <button
+            style="width: 100%"
+            (click)="calculateNewPayout(0)"
+            [disabled]="gettingCalculations"
+            class="btn button-theme"
+          >
+            Calculate Payouts
+            <span
+              *ngIf="gettingCalculations"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            >
+            </span>
+          </button>
+          <!-- <div class="col-md-6">
+              <button [disabled]="disableTransferBtn" (click)="calculatePayout(1)" *ngIf="showTransferBtn"
+            class="btn button-theme transfer-btn">Transfer all
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+          </button>
+            </div> -->
+        </div>
+        
+        <div class="col-md-3">
+          <label style="visibility: hidden; display: block; margin-bottom: 0px"
+            >Date</label
+          >
+          <button
+            style="width: 100%"
+            (click)="generateCsv()"
+            class="btn button-theme"
+          >
+          <img src="../../../assets/icons/export.svg" alt="" /> Export CSV
+            <span
+              *ngIf="gettingCSV"
+              [disabled]="gettingCSV"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            >
+            </span>
+          </button>
+        </div>
+        <!--<div class="col-md-3">-->
+          <!-- <button
+            style="width: 100%"
+            class="btn button-theme button-for-mobile"
+            (click)="financeReportSummaryNewFormat()"
+            *ngIf="total_selected > 0"
+          >
+            EMAIL INVOICES <span>({{ total_selected }})</span>
+            <span
+              *ngIf="gettingSummaryReportNew"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            >
+            </span>
+          </button> -->
+        <!--</div>-->
+      </div>
+    </div>
+  </div>
+  <div *ngIf="showcalculateAllMessages">
+    <div class="alert alert-info" role="alert">
+      {{ calculateAllMessages }}
+    </div>
+  </div>
+  <div *ngIf="showDetails" class="card mt-3">
+    
+    <div  style="height: 65vh !important;" class="table-responsive desktop-view">
+      <!-- <div *ngIf="showCalculateMessage">
+        <div class="alert alert-info" role="alert">
+          {{ calculateMessage }}
+        </div>
+      </div> -->
+      
+      <table *ngIf="showDetails" class="table table-bordered table-hover" id="price-table">
+        <thead class="bg-theme white-text sorting">
+          <tr>
+            <th>Restaurant Name</th>
+            <th>Restaurant Status</th>
+            <th>Transaction Start Date</th>
+            <th>Transaction end Date</th>
+            <th>Doordash Payment</th>
+            <th>Grubhub Payment</th>
+            <th>Ubereats Payment</th>
+            <th>Storefront Orders/VR Orders</th>
+            <th>Total Payables</th>
+            <th>DD Net Earnings (Earnings - Deductions)</th>
+            <th>GH Net Earnings (Earnings - Deductions)</th>
+            <th>UE Net Earnings (Earnings - Deductions)</th>
+            <th>SF Net Earnings (Earnings - Deductions)</th>
+            <th>Total Payout (Before Deductions)</th>
+            <th>Sub Fees</th>
+            <th>Fonda Share</th>
+            <th>Net Payout</th>
+            <th>Fonda Share (Difference)</th>
+            <th>Actual Fonda Share (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of NewBulkPayoutsObj.payouts">
+            <td>{{ item.resturantName }}</td>
+            <td>{{ item.status === 1 ? 'Active' : 'Inactive' }}</td>
+            <td>{{ item.startDate | date:'MM-dd-yyyy'  }}</td>
+            <td>{{ item.endDate | date:'MM-dd-yyyy'  }}</td>
+            <td>$ {{ item.DD_CSV_Earning }}</td>
+            <td>$ {{ item.GH_CSV_Earning }}</td>
+            <td>$ {{ item.UE_CSV_Earning }}</td>
+            <td>$ {{ item.SF_Earning }}</td>
+            <td>$ {{ item.Total_CSV_Earning }}</td>
+            <td>$ {{ item.DD_Dashboard_Earning }}</td>
+            <td>$ {{ item.GH_Dashboard_Earning }}</td>
+            <td>$ {{ item.UE_Dashboard_Earning }}</td>
+            <td>$ {{ item.SF_Dashboard_Earning }}</td>
+            <td>$ {{ item.dashboard_payout_before_deduction }}</td>
+            <td>$ {{ item.subscription_fee }}</td>
+            <td>$ {{ item.fonda_share }}</td>
+            <td>$ {{ item.dashboard_net_payout }}</td>
+            <td>$ {{ item.CSV_dashboard_net_payout_difference }}</td>
+            <td>$ {{ item.payout_difference_percentage }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--Table for Mobile view -->
+    <!-- <div class="mt-2 mobile-view">
+      <div class="table-responsive">
+        <div >
+          <div class="alert alert-info" role="alert">
+            {{ calculateMessage }}
+          </div>
+        </div>
+        <div >
+          <div class="alert alert-info" role="alert">
+            {{ calculateAllMessages }}
+          </div>
+        </div>
+        <table class="table">
+          <thead class="sorting">
+            <tr class="mobile-table-bg">
+              <th scope="col"></th>
+              <th scope="col">
+                <mdb-checkbox></mdb-checkbox>
+              </th>
+
+              <th role="col">Merchant Name</th>
+            </tr>
+          </thead>
+
+          <tbody *ngFor="let item of expandtable">
+            <tr class="" (click)="onChangeExpandtable(item.idx)">
+              <td>
+                <div *ngIf="!item.expandtable">
+                  <i class="fas fa-caret-down"></i>
+                </div>
+                <div *ngIf="item.expandtable">
+                  <i class="fas fa-sort-up"></i>
+                </div>
+              </td>
+              <td>
+                <mdb-checkbox
+                  [(ngModel)]="item.checked"
+                  (change)="ischeckAllCheckBox($event)"
+                  [default]="true"
+                ></mdb-checkbox>
+              </td>
+              <td>
+                {{ BulkPayoutsObj.payouts[item.idx].merchantName }}
+              </td>
+            </tr>
+
+            <tr
+              class="hide-table-padding"
+              *ngIf="item.expandtable"
+              style="background-color: #eee"
+            >
+              <td></td>
+              <td colspan="3">
+                <div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      From Date
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ BulkPayoutsObj.payouts[item.idx].startDate }}
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      To Date
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ BulkPayoutsObj.payouts[item.idx].endDate }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Number Of Orders
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ BulkPayoutsObj.payouts[item.idx].numberOfOrders }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Sub Total
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ BulkPayoutsObj.payouts[item.idx].subTotal }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Tax
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].tax }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Commission
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].commission }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Square Fee
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].squarefee }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Processing Fee
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].processingFee }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Error Charges
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].errorCharges }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Staff Tips
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].staffTips }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Order Adjustments
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].orderAdjustments }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Market Price Facilitator Tax
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $ {{ BulkPayoutsObj.payouts[item.idx].marketplaceTax }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Subscription Adjustments
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $
+                      {{
+                        BulkPayoutsObj.payouts[item.idx].subscriptionAdjustments
+                      }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Revenue Processing Fee
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $
+                      {{
+                        BulkPayoutsObj.payouts[item.idx].RevenueProcessingFee
+                          | number : "1.2-2"
+                      }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Net Payout
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      $
+                      {{ BulkPayoutsObj.payouts[item.idx].netPayout }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Status
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      <ng-container
+                        *ngIf="
+                          BulkPayoutsObj.payouts[item.idx].netPayout == 0.0
+                        "
+                        >Nothing to Transfer</ng-container
+                      >
+                      <ng-container
+                        *ngIf="
+                          BulkPayoutsObj.payouts[item.idx].netPayout != 0.0
+                        "
+                        >{{
+                          SubscriptionDescription[
+                            BulkPayoutsObj.payouts[item.idx].status
+                          ]
+                        }}</ng-container
+                      >
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<div class="container-fluid">
+<div class="col-md-12 mt-5">
+  <div *ngIf="selecetedTab == 2">
+    <app-problematic-transaction-report> </app-problematic-transaction-report>
+  </div>
+</div>
+</div>

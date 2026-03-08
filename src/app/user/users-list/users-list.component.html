@@ -1,0 +1,446 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h4>{{ "MerchantUsers.Users" | transloco }}</h4>
+        <div class="d-flex">
+          <button class="btn button-theme m-0" (click)="basicModal.show()">
+            {{ "reuseableWords.Add" | transloco }}
+            {{ "MerchantUsers.User" | transloco }}
+          </button>
+          <!-- <button class="btn orange-bt text-white m-0 ml-2" appDebounceClick (debounceClick)="test.toggle()" [debounceTime]="350">Filter</button> -->
+        </div>
+      </div>
+    </div>
+    <div class="" mdbCollapse #test="bs-collapse">
+      <div class="card p-3 mb-3">
+        <div class="d-flex mb-3 justify-content-between align-items-center">
+          <h4 class="mb-0">{{ "merchantslist.filter" | transloco }}</h4>
+          <span class="cursor-pointer" appDebounceClick (debounceClick)="test.toggle()"
+            [debounceTime]="350">&times;</span>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label>{{
+                "merchantslist.merchantslistfilters.MerchantName" | transloco
+                }}</label>
+              <select type="text" [(ngModel)]="selectedMerchantId" (change)="GetUsersList()" class="field"
+                placeholder="Merchant">
+                <option [value]="item.id" *ngFor="let item of MerchantsList">
+                  {{ item.merchantName }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="field" placeholder="First Name" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="field" placeholder="Status" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <input type="text" class="field" placeholder="Email" />
+            </div>
+          </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center">
+          <button type="button" class="btn btn-secondary btn-md">
+            {{ "reuseableWords.Apply" | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div *ngIf="gettingUsers" class="d-flex justify-content-center text-center">
+        <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+      </div>
+      <div class="table-responsive desktop-view">
+        <table mdbTable class="z-depth-0 table-bordered" infinite-scroll infinite-scroll-disabled="busyLoadingData"
+          [infiniteScrollDistance]="2" [infiniteScrollThrottle]="0" (scrolled)="onScroll()">
+          <thead class="bg-theme white-text">
+            <tr>
+              <th>
+                {{ "reuseableWords.Name" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+              <th>
+                {{ "reuseableWords.Status" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+              <th>
+                {{ "reuseableWords.Role" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+              <th>
+                {{ "reuseableWords.Phone" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+              <th>
+                {{ "reuseableWords.Email" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+              <th>
+                {{ "reuseableWords.Username" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+              <th>
+                {{ "reuseableWords.Address" | transloco }}
+                <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="(!usersList || !usersList.length) && !gettingUsers">
+              {{
+              "reuseableWords.No record found" | transloco
+              }}
+            </tr>
+            <ng-container *ngFor="let item of usersList">
+              <tr *ngIf="isallowed || 
+             (item.role === 3 || item.role === 4)">
+                <td>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>{{ item.firstName }} {{ item.lastName }}</div>
+                    <div>
+                      <span (click)="openEditUserModal(basicModal, item)" class="fa top-icon fa-pencil-alt ml-2"
+                        style="color: lightseagreen; cursor: pointer"></span>
+                      <span (click)="ConfirmDelete(item)" class="fa top-icon fa-trash ml-2"
+                        style="color: lightseagreen; cursor: pointer"></span>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ userStatusEnum[item.userStatus] }}</td>
+                <td>{{ userRoleEnum[item.role] }}</td>
+                <td>{{ item.phone }}</td>
+                <td>{{ item.email }}</td>
+                <td>{{ item.username }}</td>
+                <td>{{ item.address }}</td>
+              </tr>
+            </ng-container>
+          </tbody>
+          <!-- <tfoot class="grey lighten-5 w-100">
+                  <tr>
+                    <td colspan="6">
+                      <mdb-table-pagination [tableEl]="2" [searchDataSource]="1"></mdb-table-pagination>
+                    </td>
+                  </tr>
+              </tfoot> -->
+        </table>
+      </div>
+      <!--Table for Mobile view -->
+      <div class="mobile-view">
+        <div class="table-responsive">
+          <table class="table" *ngIf="expandtable.length > 0" infinite-scroll infinite-scroll-disabled="busyLoadingData"
+            [infiniteScrollDistance]="2" [infiniteScrollThrottle]="0" (scrolled)="onScroll()">
+            <thead class="sorting">
+              <tr class="mobile-table-bg">
+                <th scope="col"></th>
+                <th scope="col">
+                  Name <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody *ngFor="let item of expandtable">
+              <tr class="" (click)="onChangeExpandtable(item.idx)">
+                <td>
+                  <!-- Add Icon -->
+                  <div *ngIf="!item.expandtable">
+                    <i class="fas fa-caret-down"></i>
+                  </div>
+                  <!-- Minus Icon -->
+                  <div *ngIf="item.expandtable">
+                    <i class="fas fa-sort-up"></i>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      {{ usersList[item.idx].firstName }}
+                      {{ usersList[item.idx].lastName }}
+                    </div>
+                    <div>
+                      <span (click)="
+                          openEditUserModal(basicModal, usersList[item.idx])
+
+                        " class="fa top-icon fa-pencil-alt ml-2" style="color: lightseagreen; cursor: pointer"></span>
+                      <!-- <span
+                        (click)="ConfirmDelete(usersList[item.idx])"
+                        class="fa top-icon fa-trash ml-2"
+                        style="color: lightseagreen; cursor: pointer"
+                      ></span> -->
+                    </div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Expandable Area -->
+              <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+                <td></td>
+                <td colspan="3">
+                  <div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Status
+                        <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ userStatusEnum[usersList[item.idx].userStatus] }}
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Role <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ userRoleEnum[usersList[item.idx].role] }}
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Phone
+                        <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ usersList[item.idx].phone }}
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Email
+                        <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                <td>
+                  {{ usersList[item.idx].email }}
+                </td>
+        </div>
+      </div>
+      <div class="d-flex justify-content-between mt-3">
+        <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+          Address
+          <mdb-icon class="ml-3 cursor-pointer"></mdb-icon>
+        </div>
+        <div style="font-size: 15px; width: unset; text-align: right">
+          {{ usersList[item.idx].address }}
+        </div>
+      </div>
+      <!-- <div class="d-flex justify-content-between mt-3">
+                        <div
+                          style="
+                            font-weight: 600;
+                            margin-left: -1.8em;
+                            font-size: 15px;
+                            text-align: left;
+                          "
+                        >
+                          Order external reference
+                        </div>
+                        <div
+                          style="
+                            font-size: 15px;
+                            width: unset;
+                            text-align: right;
+                          "
+                        >
+                          {{ errorLogsList[item.idx].orderExternalReference }}
+                        </div>
+                      </div> -->
+    </div>
+    </td>
+    </tr>
+    </tbody>
+    </table>
+  </div>
+</div>
+</div>
+</div>
+<!-- Add USer Modal -->
+<div mdbModal #basicModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" (close)="resetObj()"
+  tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="basicModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 *ngIf="!UserDtoObj.id" class="modal-title w-100 text-white" id="myModalLabel">
+          {{ "reuseableWords.Add" | transloco }}
+          {{ "MerchantUsers.User" | transloco }}
+        </h4>
+        <h4 *ngIf="UserDtoObj.id" class="modal-title w-100 text-white" id="myModalLabel">
+          {{ "reuseableWords.EDIT" | transloco }}
+          {{ "MerchantUsers.User" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>{{ "reuseableWords.First Name" | transloco }}</label>
+              <input type="text" [(ngModel)]="UserDtoObj.firstName" class="field"
+                [placeholder]="'reuseableWords.First Name' | transloco" />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>{{ "reuseableWords.Last Name" | transloco }}</label>
+              <input type="text" [(ngModel)]="UserDtoObj.lastName" class="field"
+                [placeholder]="'reuseableWords.Last Name' | transloco" />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>{{ "reuseableWords.Email" | transloco }}</label>
+          <input [readOnly]="UserDtoObj.id" type="text" [(ngModel)]="UserDtoObj.email" class="field"
+            [placeholder]="'reuseableWords.Email' | transloco" />
+        </div>
+        <div class="form-group">
+          <label> {{ "reuseableWords.Username" | transloco }}</label>
+          <input type="text" [readOnly]="UserDtoObj.id" [(ngModel)]="UserDtoObj.username" class="field"
+            [placeholder]="'reuseableWords.Username' | transloco" />
+        </div>
+        <!-- <div class="form-group">
+            <label>Password</label>
+            <div id="password-field">
+              <input [type]="fieldTextType ? 'text' : 'password'" [readOnly]="UserDtoObj.password"
+                [(ngModel)]="UserDtoObj.password" class="field" placeholder="Password " />
+              <div class="input-group-append">
+                <span class="input-group-text">
+                  <i class="fa " [ngClass]="{
+                      'fa-eye-slash': !fieldTextType,
+                      'fa-eye': fieldTextType
+                    }" (click)="toggleFieldTextType()"></i>
+                </span>
+              </div>
+            </div>
+          </div> -->
+        <div class="form-group">
+          <label> {{ "reuseableWords.Address" | transloco }}</label>
+          <input type="text" [(ngModel)]="UserDtoObj.address" class="field"
+            [placeholder]="'reuseableWords.Address' | transloco" />
+        </div>
+        <div class="form-group">
+          <label>{{ "reuseableWords.Phone" | transloco }}</label>
+          <input type="text" [(ngModel)]="UserDtoObj.phone" class="field"
+            [placeholder]="'reuseableWords.Phone' | transloco" />
+        </div>
+        <div class="form-group">
+          <label>{{ "reuseableWords.Role" | transloco }}</label>
+          <select type="text" [(ngModel)]="UserDtoObj.role" class="field" placeholder="Role ">
+            <option [value]="item.value" *ngFor="let item of filteredUserRoleEnumArr">
+              {{ getStatusTranslation(item.name) }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>User Status</label>
+          <select type="number" [(ngModel)]="UserDtoObj.userStatus" class="field" placeholder="Role">
+            <option [value]="1"> Active </option>
+            <option [value]="0"> In Active </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>SSO User</label>
+          <select type="number
+          " [(ngModel)]="UserDtoObj.withSSO" class="field" placeholder="Role">
+            <option [value]="1"> Yes </option>
+            <option [value]="0"> No </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Enable JWT Authentication</label>
+          <select type="number
+          " [(ngModel)]="UserDtoObj.is_jwt_token" class="field" placeholder="Role">
+            <option [value]="1"> Yes </option>
+            <option [value]="0"> No </option>
+          </select>
+        </div>
+        <!-- <div class="form-group" *ngIf="UserDtoObj.id && isallowed">
+          <mdb-checkbox class="mb-2" [disabled]="userRoleType == 4 && currentUserId != UserDtoObj.id"
+            [(ngModel)]="changePassword" default="true">
+            {{ "reuseableWords.Show or Change password" | transloco }}
+          </mdb-checkbox>
+        </div> -->
+        <span>
+          <div class="form-group" *ngIf="!UserDtoObj.id || (UserDtoObj.id && changePassword)">
+            <label>{{ "reuseableWords.Password" | transloco }}</label>
+            <div id="password-field">
+              <input [type]="fieldTextType ? 'text' : 'password'" [(ngModel)]="UserDtoObj['password']" class="field"
+                [placeholder]="'reuseableWords.Password' | transloco" />
+              <div class="input-group-append">
+                <span class="input-group-text">
+                  <i class="fa" [ngClass]="{
+                        'fa-eye-slash': !fieldTextType,
+                        'fa-eye': fieldTextType
+                      }" (click)="toggleFieldTextType()"></i>
+                </span>
+              </div>
+            </div>
+          </div>
+        </span>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="basicModal.hide(); fieldTextType = false" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button *ngIf="!UserDtoObj.id" type="button" [disabled]="
+              savingUser ||
+              !UserDtoObj.firstName ||
+              !UserDtoObj.lastName ||
+              !UserDtoObj.username ||
+              !UserDtoObj.email ||
+              !UserDtoObj['password']
+            " class="btn orange-bt text-white" (click)="SaveUserData(basicModal)">
+          <span *ngIf="savingUser" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          {{ "reuseableWords.Add" | transloco }}
+        </button>
+        <button *ngIf="UserDtoObj.id" type="button" [disabled]="
+              savingUser ||
+              !UserDtoObj.firstName ||
+              !UserDtoObj.lastName ||
+              !UserDtoObj.email ||
+              (changePassword && !UserDtoObj.password)
+            " class="btn orange-bt text-white" (click)="UpdateUserData(basicModal)">
+          <span *ngIf="savingUser" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          {{ "reuseableWords.Update" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

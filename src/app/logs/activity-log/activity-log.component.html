@@ -1,0 +1,352 @@
+<div class="container-fluid">
+  <!-- <mdb-tabset
+    [buttonClass]="' pills-custom mb-4'"
+    [contentClass]="'custom-tabs'"
+  >
+    <mdb-tab heading="Activity Log" (select)="selecetedTab = 1"> -->
+  <!-- <app-merchant-account-details>
+      </app-merchant-account-details> -->
+  <!-- </mdb-tab>
+    <mdb-tab heading="Finance Logs " (select)="selecetedTab = 2">
+      <app-audit-logs> </app-audit-logs>
+    </mdb-tab>
+    <mdb-tab heading="Order Logs  " (select)="selecetedTab = 3">
+      <app-order-logs> </app-order-logs>
+    </mdb-tab>
+    <mdb-tab heading="Error Log   " (select)="selecetedTab = 4">
+      <app-error-log> </app-error-log>
+    </mdb-tab>
+  </mdb-tabset> -->
+  <div class="row mt-5">
+    <div class="tabs-desktop-view">
+      <div class="btn-group buttons-tab">
+        <button [class.active]="selecetedTab === 1" class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 1">
+          Activity Log
+        </button>
+        <button [class.active]="selecetedTab === 2" class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 2">
+          Finance Logs
+        </button>
+        <!-- <button
+          [class.active]="selecetedTab === 3"
+          class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 3"
+        >
+          Order Logs
+        </button> -->
+        <button [class.active]="selecetedTab === 4" class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 4">
+          Error Log
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="card mt-4" *ngIf="selecetedTab == 1">
+    <div class="card-body">
+      <div class="search-filters">
+        <div class="row">
+          <div class="main-search-div">
+            <div class="mt-3 search_filters_form">
+              <div class="field_form_group">
+                <div class="form-group form-div">
+                  <label>User Name</label>
+                  <input type="text" [(ngModel)]="userName" class="form-control" />
+                </div>
+                <div class="form-group form-div">
+                  <label>Event Name</label>
+                  <ng-select [(ngModel)]="eventName" placeholder="Event">
+                    <ng-option [value]="'merchant.create'">Merchant Create</ng-option>
+                    <ng-option [value]="'merchant.update'">Merchant Update</ng-option>
+
+                    <ng-option [value]="'merchant.accountdetails_update'">Merchant Account Details Update</ng-option>
+                    <ng-option [value]="'merchant.settings_update'">Merchant Setting Update</ng-option>
+                    <ng-option [value]="'stripe.connect'">Connect Stripe</ng-option>
+                    <ng-option [value]="'merchant.update_hours'">Merchant Update Hours</ng-option>
+                    <ng-option [value]="'merchant.finance_update'">Merchant Finance Setting Update</ng-option>
+
+                    <ng-option [value]="'merchant.assign_user'">Merchant Assign</ng-option>
+                    <ng-option [value]="'merchant.unassign_user'">Merchant Unassign</ng-option>
+                    <ng-option [value]="'platform.connect'">Platform Connect</ng-option>
+                    <ng-option [value]="'platform.disconnect'">Platform Disconnect</ng-option>
+                    <ng-option [value]="'platform.sync_type_change'">Plateform Sync</ng-option>
+                    <ng-option [value]="'platform.manual_sync'">Plateform Manual Sync</ng-option>
+                    <ng-option [value]="'item.status_change'">Item Status</ng-option>
+                    <ng-option [value]="'merchant.status_change'">Merchant Status</ng-option>
+                    <ng-option [value]="'merchant.update_hours'">Merchant Hours</ng-option>
+                    <ng-option [value]="'item.price_upload_csv'">Item Price Upload csv</ng-option>
+                    <ng-option [value]="'platform_credentials.update'">Platform Credentials</ng-option>
+                    <ng-option [value]="'busymode.update'">Busy Mode</ng-option>
+                    <ng-option [value]="'woflow.job_initiated'">Woflow Job</ng-option>
+                    <ng-option [value]="'woflow.status_updated'">Woflow Status</ng-option>
+                    <ng-option [value]="'loyalty.points'">Loyalty Points</ng-option>
+                    <ng-option [value]="'GMB.Connect'">GMB Connect</ng-option>
+                    <ng-option [value]="'GMB.link_location'">GMB Link Location</ng-option>
+                    <ng-option [value]="'GMB.Disconnect'">GMB Disconnect</ng-option>
+                    <ng-option [value]="'Serviceprovider.update'">Service Provider Update</ng-option>
+                    <ng-option [value]="'GMB.Profile_Update'">GMB Profile Update</ng-option>
+                    <ng-option [value]="'GMB.Menu_Sync'">GMB Menu Sync</ng-option>
+                    <ng-option [value]="'GMB.Hours_Sync'">GMB Hours Sync</ng-option>
+                    <ng-option [value]="'GMB.Media_Update'">GMB Media Update</ng-option>
+                    <ng-option [value]="'promo.add'">Promo Add</ng-option>
+                    <ng-option [value]="'promo.edit'">Promo Edit</ng-option>
+
+                    <ng-option [value]="'TermsAndCondition.deleted'">Terms & Conditions Deleted</ng-option>
+                    <ng-option [value]="'TermsAndCondition.uploaded'">Terms & Conditions Uploaded</ng-option>
+
+                    <ng-option [value]="'virtualmerchant.status_change'">Virtual Merchant Status Change</ng-option>
+                    <ng-option [value]="'virtual_merchant.update'">Virtual Merchant Update</ng-option>
+                    <ng-option [value]="'menu.update_hours'">Menu Hours Update</ng-option>
+                    <ng-option [value]="'esperdevice.connectivity_status'">Esper Device Connectivity</ng-option>
+                    <ng-option [value]="'storefront.slug_url'">Storefront Change Slug</ng-option>
+                    <ng-option [value]="'storefront.enabled'">Storefront Enabled</ng-option>
+
+                    <ng-option [value]="'addon.delete'">Addon Delete</ng-option>
+                    <ng-option [value]="'addon.update'">Addon Update</ng-option>
+                    <ng-option [value]="'addon.create'">Addon Create</ng-option>
+                    <ng-option [value]="'addon.assign_option'">Assign addon option to addon</ng-option>
+                    <ng-option [value]="'addon.unassign_option'">Unassign addon option from addon</ng-option>
+
+
+                    <ng-option [value]="'menu.create'">Menu Create</ng-option>
+                    <ng-option [value]="'menu.update'">Menu Update</ng-option>
+                    <ng-option [value]="'menu.status'">Menu Status</ng-option>
+                    <ng-option [value]="'menu.assign_category'">Assign category to menu</ng-option>
+                    <ng-option [value]="'menu.unassign_category'">Unassign category from menu</ng-option>
+                    <ng-option [value]="'menu.delete'">Menu Delete</ng-option>
+
+                    <ng-option [value]="'category.assign_item'">Assign Items to category</ng-option>
+                    <ng-option [value]="'category.unassign_item'">Unassign Items to category</ng-option>
+                    <ng-option [value]="'category.create'">Category Create</ng-option>
+                    <ng-option [value]="'category.delete'">Category Delete</ng-option>
+                    <ng-option [value]="'category.update'">Category Update</ng-option>
+
+                    <ng-option [value]="'item.image_delete'">Item Image Delete</ng-option>
+                    <ng-option [value]="'item.image_update'">Item Image Update</ng-option>
+                    <ng-option [value]="'item.delete'">Item Delete</ng-option>
+                    <ng-option [value]="'item.update'">Item Update</ng-option>
+                    <ng-option [value]="'item.create'">Item Create</ng-option>
+                    <ng-option [value]="'merchant.stream_platform_status_change'">Stream Status Change</ng-option>
+                    <ng-option [value]="'merchant.stream_manual_menu_sync'">Stream Menu Sync</ng-option>
+
+
+                  </ng-select>
+                </div>
+                <div class="form-group form-div">
+                  <label>Restaurant Name</label>
+                  <ng-select [(ngModel)]="merchantId" (ngModelChange)="MerchantChanged()" [clearable]="false"
+                    [loading]="gettingMerchants" [searchable]="true" type="text" class="bg ng-select-side-nav"
+                    placeholder="Select Merchant">
+                    <ng-option value="">All</ng-option>
+                    <ng-option [value]="item.id" *ngFor="let item of MerchantsList">
+                      {{ item.merchantName }}
+                    </ng-option>
+                  </ng-select>
+                </div>
+                <div class="form-group form-div">
+                  <label>Order External Reference</label>
+                  <input type="text" [(ngModel)]="orderExternalRefrence" class="form-control" />
+                </div>
+              </div>
+              <div class="field_form_group">
+                <div class="form-group form-div">
+                  <label>Days</label>
+                  <select [(ngModel)]="filterType" (change)="changeDateAccordinglySearch()" class="form-select"
+                    id="order-date-form" aria-label="Default select example">
+                    <option [value]="1">Today</option>
+                    <option [value]="2">Last 7 days</option>
+                    <option [value]="3">Custom</option>
+                  </select>
+                  <div></div>
+                </div>
+
+                <div class="form-group form-div">
+                  <label>From Date</label>
+                  <input type="date" [readonly]="filterType != 3" [(ngModel)]="startDate" class="form-control"
+                    placeholder="Start Date" />
+                </div>
+                <div class="form-group form-div">
+                  <label>To Date</label>
+                  <input type="date" [readonly]="filterType != 3" [(ngModel)]="endDate" class="form-control"
+                    placeholder="End Date" />
+                </div>
+                <div class="form-group form-div">
+                  <button style="width: 100%" type="submit" class="btn button-theme"
+                    (click)="changeDateAccordinglySearch()">
+                    Search
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selecetedTab == 2">
+    <app-audit-logs> </app-audit-logs>
+  </div>
+  <!-- <div *ngIf="selecetedTab == 3">
+    <app-order-logs> </app-order-logs>
+  </div> -->
+  <div *ngIf="selecetedTab == 4">
+    <app-error-log> </app-error-log>
+  </div>
+  <div class="">
+    <div class="card mt-3">
+      <div *ngIf="selecetedTab == 1" class="table-responsive desktop-view" infinite-scroll [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="0" (scrolled)="onScroll()">
+        <div *ngIf="gettingActivityList" class="d-flex justify-content-center text-center">
+          <mdb-progress-bar class="progress primary-color-dark bg-theme mb-0" mode="indeterminate"></mdb-progress-bar>
+        </div>
+        <table class="table table-bordered table-hover">
+          <thead class="bg-theme white-text sorting">
+            <tr>
+              <th>Event Date Time</th>
+              <th>Event Name</th>
+              <th>Order External Reference</th>
+              <th>Event Details</th>
+              <th>User Name</th>
+              <th>Item Name</th>
+              <th>Merchant Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of activityLogsList">
+              <td>{{ item.eventdatetime }}</td>
+              <td>{{ item.eventname }}</td>
+              <td>{{ item.orderExternalReference }}</td>
+              <td>{{ item.eventdetails }}</td>
+              <td>{{ item.username }}</td>
+              <td>{{ item.itemname }}</td>
+              <td>{{ item.merchantname }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div *ngIf="!activityLogsList?.length" class="alert alert-info w-100" role="alert">
+          No record found
+        </div>
+      </div>
+      <!--Table for Mobile view -->
+      <div class="mobile-view">
+        <div *ngIf="selecetedTab == 1" class="table-responsive" infinite-scroll
+          [infiniteScrollDistance]="scrollDistance" [infiniteScrollUpDistance]="scrollUpDistance"
+          [infiniteScrollThrottle]="scrollThrottle" [infiniteScrollDisabled]="busyLoadingData" (scrolled)="onScroll()">
+          <div *ngIf="gettingActivityList" class="d-flex justify-content-center text-center">
+            <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+          </div>
+          <table class="table" *ngIf="expandtable.length > 0">
+            <thead class="sorting">
+              <tr class="mobile-table-bg">
+                <th scope="col"></th>
+                <th scope="col">User Name</th>
+
+                <th role="col">Event Name</th>
+              </tr>
+            </thead>
+
+            <tbody *ngFor="let item of expandtable">
+              <tr class="" (click)="onChangeExpandtable(item.idx)">
+                <td>
+                  <!-- Add Icon -->
+                  <div *ngIf="!item.expandtable">
+                    <i class="fas fa-caret-down"></i>
+                  </div>
+                  <!-- Minus Icon -->
+                  <div *ngIf="item.expandtable">
+                    <i class="fas fa-sort-up"></i>
+                  </div>
+                </td>
+
+                <td>
+                  {{ activityLogsList[item.idx].username }}
+                </td>
+                <td>
+                  {{ activityLogsList[item.idx].eventname }}
+                </td>
+              </tr>
+
+              <!-- Expandable Area -->
+              <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+                <td></td>
+                <td colspan="3">
+                  <div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Order External Reference
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ activityLogsList[item.idx].orderExternalReference }}
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Event Details
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ activityLogsList[item.idx].eventdetails }}
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Event Date Time
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ activityLogsList[item.idx].eventdatetime }}
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Item Name
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ activityLogsList[item.idx].itemname }}
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          text-align: left;
+                        ">
+                        Merchant Name
+                      </div>
+                      <div style="font-size: 15px; width: unset; text-align: right">
+                        {{ activityLogsList[item.idx].merchantname }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="!activityLogsList?.length" class="alert alert-info w-100" role="alert">
+            No record found
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

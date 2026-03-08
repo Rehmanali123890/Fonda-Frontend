@@ -1,0 +1,103 @@
+.verified-img {
+  height: 28px;
+}
+.status-heading {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.status-heading #verified {
+  font-weight: bold;
+  color: #417c51;
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+.status-heading #unverified {
+  font-weight: bold;
+  color: red;
+  display: flex;
+  align-items: center;
+  font-size: 0.9em;
+}
+.unverified-img {
+  height: 28px;
+}
+.button-theme {
+  width: 100%;
+}
+.edit-img {
+  height: 30px;
+  cursor: pointer;
+}
+.location-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.update-button {
+  display: flex;
+  justify-content: flex-end;
+}
+.update-button button {
+  width: auto;
+  margin-top: 1em;
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.days {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.days li {
+  margin-bottom: 10px;
+}
+
+.time {
+  display: flex;
+  justify-content: space-between;
+}
+
+.time .day,
+.time .time-slot {
+  font-size: 1.1em;
+}
+.map-img {
+  height: 100%;
+  object-fit: cover;
+}
+.modal-width-for-business {
+  max-width: 820px;
+}
+#map1 {
+  width: 100% !important;
+  height: 300px !important;
+}
+.edit-map {
+  width: 100%;
+  height: 100%;
+}
+#opening-hour-sec {
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  padding: 0.7em;
+}
+
+@media screen and (max-width: 768px) {
+  .modal-width-for-business {
+    max-width: unset !important;
+  }
+  .edit-map {
+    width: 100%;
+    height: 300px;
+  }
+  .status-heading {
+    font-size: 1.3em;
+  }
+  #map1 {
+    margin-bottom: 1em;
+  }
+}

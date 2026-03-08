@@ -1,0 +1,137 @@
+.tabs {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid #ddd;
+  margin-top: 2em;
+}
+
+.tab {
+  padding: 10px 30px;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+
+.tab.active {
+  border-bottom: 2px solid #3d5f90;
+  color: inherit;
+  font-weight: 500;
+}
+.tab:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.underline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: #3d5f90;
+  transition: transform 0.3s ease;
+}
+.did-floating-label-content {
+  margin-bottom: 30px !important;
+}
+
+.tab-content {
+  margin-top: 20px;
+}
+
+.did-floating-select {
+  color: #43474e;
+  border-bottom: 2px solid #97999f !important;
+  border-radius: 0px !important;
+  height: 55px;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.04);
+  padding-top: 1em;
+}
+.did-floating-label {
+  left: 15px;
+  top: 6px !important;
+  padding: 0 5px;
+  background: none;
+}
+.did-floating-label {
+  font-size: 12px !important;
+}
+.select-days-div {
+  justify-content: flex-start !important;
+  gap: 1.5em;
+}
+a {
+  text-decoration: underline;
+}
+.table {
+  margin-top: -16px;
+}
+tr {
+  border-bottom: 2px solid #ccc !important;
+}
+tbody,
+td,
+tfoot,
+th,
+thead,
+tr {
+  border-top: none !important;
+}
+.accordion-button {
+  flex-direction: row-reverse !important;
+  width: fit-content !important;
+  background: none;
+  border: none;
+  gap: 1em;
+  color: #000;
+}
+/* .accordion-button:not(.collapsed)::after {
+  background-image: none;
+  transform: rotate(180deg);
+} */
+.accordion-button:not(.collapsed) {
+  box-shadow: unset !important;
+}
+.accordion-button:focus {
+  box-shadow: unset !important;
+}
+.accordion-button::after {
+  margin-right: auto !important;
+}
+.accordion-header {
+  background-color: rgba(0, 0, 0, 0.03);
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+table.table td {
+  padding: 12px 8px !important;
+  width: 30px;
+  max-width: 150px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px;
+}
+/* media query */
+@media screen and (max-width: 768px) {
+  .head {
+    font-weight: 500;
+    padding-top: 1em;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 1em;
+  }
+  .select-days-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1em !important;
+  }
+}

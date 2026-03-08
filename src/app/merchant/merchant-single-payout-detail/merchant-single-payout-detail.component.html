@@ -1,0 +1,289 @@
+<div class="container-fluid pb-4">
+  <div *ngIf="showmainloader" class="loader-main">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true" style="width: 3rem; height: 3rem">
+    </span>
+  </div>
+</div>
+<div class="container-fluid margn-top-mobile-view">
+  <div class="row">
+    <div class="table-responsive">
+      <h2>Payout Details</h2>
+      <div *ngIf="!showDetails && !showmainloader" class="alert alert-info" role="alert">
+        No payout details available.
+      </div>
+      <table class="table table-bordered table-hover" *ngIf="showDetails">
+        <tbody>
+          <tr>
+            <td class="col-md-6">Merchant Name</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.merchantName }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Status</td>
+
+            <td class="col-md-6 text-center">
+              {{ SubscriptionDescriptionEnum[PayoutCalculationsObj.status] }}
+            </td>
+          </tr>
+          <tr *ngIf="PayoutCalculationsObj.status == 2">
+            <td class="col-md-6">Reverted By</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.revertedByName }}
+            </td>
+          </tr>
+          <tr *ngIf="PayoutCalculationsObj.status == 2">
+            <td class="col-md-6">Reverted Date Time</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.revertedDateTime }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Start Date</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.startDate | date : "MM-dd-yyyy" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">End Date</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.endDate | date : "MM-dd-yyyy" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Payout Created Date & Time</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.created_datetime }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Payout Done by</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.doneByUser }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Number of Orders</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.numberOfOrders }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Sub Total</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.subTotal | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Tax</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.tax | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Commission</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.commission | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Commission Adjustments</td>
+            <td class="col-md-6 text-center">
+              $
+              {{ PayoutCalculationsObj.commisionAdjustment | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Processing Fee</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.processingFee | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Revenue Processing Fee</td>
+            <td class="col-md-6 text-center">
+              $
+              {{
+                PayoutCalculationsObj.RevenueProcessingFee | number : "1.2-2"
+              }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Staff Tips</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.staffTips | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Error Charges</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.errorCharges | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Order Adjustments</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.orderAdjustments | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Market Place Facilitator Tax - Uber eats</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.marketplaceTax | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Promo Discount</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.promoDiscount | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Payout Type</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutTypeDescription[PayoutCalculationsObj.payoutType] }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Payout Adjustments</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.payoutAdjustments | number : "1.2-2" }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Payout Remarks</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.remarks }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Marketing Fee</td>
+            <td class="col-md-6 text-center">
+              {{ PayoutCalculationsObj.marketingFee }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Subscription Adjustments</td>
+            <td class="col-md-6 text-center">
+              $
+              {{
+                PayoutCalculationsObj.subscriptionAdjustments | number : "1.2-2"
+              }}
+            </td>
+          </tr>
+          <tr>
+            <td class="col-md-6">Subscription Date(s)</td>
+            <td class="col-md-6 text-center">
+              <ul>
+                <li *ngFor="let p of PayoutCalculationsObj.subscriptions">
+                  {{ p.date }} ($ {{ p.amount | number : "1.2-2" }})
+                </li>
+              </ul>
+            </td>
+          </tr>
+          <tr
+            *ngIf="
+              querryparam &&
+              (PayoutCalculationsObj.remarks ||
+                PayoutCalculationsObj.transferredToBankBy)
+            "
+          >
+            <td class="col-md-6">Paid out to Bank Account</td>
+            <td class="col-md-6 text-center">
+              <ng-container
+                *ngIf="
+                  PayoutCalculationsObj.transferType == 2 ||
+                  PayoutCalculationsObj.transferType == 1
+                "
+              >
+                Paid out to bank
+                {{ getBankInfoText() }}
+                by
+                {{ PayoutCalculationsObj.transferredToBankBy }} on
+                {{ PayoutCalculationsObj.transferredToBankTime }}</ng-container
+              >
+              <ng-container *ngIf="PayoutCalculationsObj.transferType == 3">
+                Paid out to bank
+
+                {{ getBankInfoText() }}
+                by {{ PayoutCalculationsObj.remarks }} on
+                {{ PayoutCalculationsObj.created_datetime }}</ng-container
+              >
+            </td>
+          </tr>
+
+          <ng-container *ngIf="userRoleType == 1">
+            <tr>
+              <td class="col-md-6">Doordash Revenue</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.doordash | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Ubereats Revenue</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.ubereats | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Grubhub Revenue</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.grubhub | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Storefront Revenue</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.storefront | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Others Revenue</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.others | number : "1.2-2" }}
+              </td>
+            </tr>
+          </ng-container>
+          <tr>
+            <td class="col-md-6">Net Payout</td>
+            <td class="col-md-6 text-center">
+              $ {{ PayoutCalculationsObj.netPayout | number : "1.2-2" }}
+            </td>
+          </tr>
+          <ng-container *ngIf="userRoleType == 1">
+            <tr>
+              <td class="col-md-6">Total GMV</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.TotalRevenue | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Sub Payout</td>
+              <td class="col-md-6 text-center">
+                $
+                {{ PayoutCalculationsObj.TotalFondaPayout | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Difference</td>
+              <td class="col-md-6 text-center">
+                $ {{ PayoutCalculationsObj.FondaRevenue | number : "1.2-2" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="col-md-6">Revenue %</td>
+              <td class="col-md-6 text-center">
+                {{
+                  PayoutCalculationsObj.FondaRevenuePercentage
+                    | number : "1.2-2"
+                }}
+                %
+              </td>
+            </tr>
+          </ng-container>
+        </tbody>
+      </table>
+      <button (click)="redirectBack()" class="btn button-theme">Back</button>
+    </div>
+  </div>
+</div>

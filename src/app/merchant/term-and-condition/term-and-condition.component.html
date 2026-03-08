@@ -1,0 +1,141 @@
+<div class="container-fluid margn-top-mobile-view">
+  <h2>Terms & Conditions</h2>
+  <div *ngIf="showloader" [ngClass]="{ 'loader-main': showmainloader }">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+    </span>
+  </div>
+
+  <div class="terms-cards-main" style="justify-content: flex-start !important; gap: 1.5em;">
+    <div class="term-card">
+      <div class="term-head-main">
+        <div class="term-head">Fonda Merchant Agreement</div>
+      </div>
+
+      <div class="document-main">
+        <div class="document">
+          <span>
+            <div class="pdf-container">
+              <pdf-viewer [src]="environment.fondaagreementsUrl" [render-text]="true" [original-size]="false"
+                [show-all]="false" style="width: 200px; height: 300px"></pdf-viewer>
+            </div>
+            <div class="document-name"
+              (click)="openModalforCreatePoints(environment.fondaagreementsUrl, 'Fonda Master Agreement.pdf')">
+              <span><u>Fonda Master Agreement.pdf</u></span>
+            </div>
+          </span>
+        </div>
+        <div class="document">
+          <span>
+            <div class="pdf-container">
+              <pdf-viewer [src]="environment.fondaagreementsUrl" [render-text]="true" [original-size]="false"
+                [show-all]="false" style="width: 200px; height: 300px"></pdf-viewer>
+            </div>
+            <!-- <img class="document-img" [src]="url.docurl" alt="" /> -->
+            <div class="document-name"
+              (click)="openModalforCreatePoints(environment.fondaagreementsUrlSpanish, 'Fonda Master Agreement.pdf')">
+              <span><u>Fonda Master Agreement Spanish.pdf</u></span>
+            </div>
+          </span>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngFor="let doc of sortedDocuments">
+      <div class="term-card" *ngIf="
+          userRole == 1 ||
+          (doc.urls.length > 0 && (userRole == 4 || userRole == 3))
+        ">
+        <div class="term-head-main">
+          <div class="term-head" *ngIf="doc.key === 'Fonda'">Fonda Signed Contracts</div>
+          <div class="term-head" *ngIf="doc.key !== 'Fonda'  ">{{ doc.key }}'s Agreement</div>
+          <div class="upload-icon-div" *ngIf="doc.urls.length > 0 && userRole == 1">
+            <div class="upload-btn-wrapper">
+              <img src="../../../assets/icons/upload-svgrepo-com 1.svg" class="dock-upload" alt="" />
+              <input type="file" name="myfile" accept=".pdf" (change)="
+                  handleFileInput($event.target.files, TCDocsTypes[doc.key])
+                " />
+            </div>
+          </div>
+        </div>
+        <div class="upload-btn-wrapper" *ngIf="doc.urls.length == 0 && userRole == 1">
+          <img src="../../../assets/icons/upload-svgrepo-com 1.svg" alt="" />
+          <input type="file" name="myfile" accept=".pdf" (change)="
+              handleFileInput($event.target.files, TCDocsTypes[doc.key])
+            " />
+        </div>
+
+        <!-- only show when file uploaded -->
+
+        <div class="document-main">
+          <div class="document" *ngFor="let url of doc.urls">
+            <div class="cross-icon-main" (click)="openModalforConfirmation(url)" *ngIf="userRole == 1">
+              <img src="../../../assets/icons/cross.svg" class="cross-icon" alt="" />
+            </div>
+            <span>
+              <div class="pdf-container">
+                <pdf-viewer [src]="url.docurl" [render-text]="true" [original-size]="false" [show-all]="false"
+                  style="width: 200px; height: 300px"></pdf-viewer>
+              </div>
+              <!-- <img class="document-img" [src]="url.docurl" alt="" /> -->
+              <div class="document-name" (click)="openModalforCreatePoints(url.docurl, url.docfilename)">
+                <span><u>{{ url.docfilename }}</u></span>
+              </div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+
+  </div>
+</div>
+
+<!-- modal -->
+<div mdbModal #createOurPoints="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content openmodal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="downloadDoc()">
+          <img src="../../../assets/icons/Downloading Updates.svg" alt="" />
+        </button>
+        <h4 class="modal-heading">
+          <img (click)="closeModal()" style="cursor: pointer" src="../../../assets/icons/Left Arrow.svg" alt="" />
+          {{ merchantName }}-Fonda
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="document-preview">
+          <pdf-viewer [src]="openDocUrl" [render-text]="true" [original-size]="false"
+            style="width: 900px; height: 900px"></pdf-viewer>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- confermation modal -->
+
+<div mdbModal #confirmationmodal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="confirmationmodal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">Sure you want to delete this document ?</h4>
+      </div>
+      <div class="modal-body px-3">
+        <p>Document Name : {{ openDocName }}</p>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeConfirmModal()" mdbWavesEffect>
+          Close
+        </button>
+        <button type="button" class="btn orange-bt text-white" (click)="closeConfirmModal(); deldocs()">
+          Yes Confirm
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

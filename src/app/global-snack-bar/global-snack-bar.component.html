@@ -1,0 +1,16 @@
+<div id="snackbar" *ngIf="isSnackbarVisible">
+  <div class="alert alert-primary" role="alert">
+    New order placed
+    <a (click)="NavigateToOrders()" class="alert-link">Review</a>
+    <button
+      style="padding-left: 1em"
+      (click)="closeSnackBar()"
+      type="button"
+      class="close"
+      data-dismiss="alert"
+      aria-label="Close"
+    >
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+</div>

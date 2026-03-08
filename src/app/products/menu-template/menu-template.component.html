@@ -1,0 +1,113 @@
+<div id="download-div">
+  <button
+    type="button"
+    class="btn button-theme download-btn"
+    (click)="downloadTemplate()"
+  >
+  {{'Menus.Download template' | transloco }}
+  </button>
+  <div *ngIf="loading == true" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">{{'reuseableWords.Loading...' | transloco }}</span>
+    </div>
+  </div>
+  <div class="fill-input">
+    <!-- <label>Choose the file to upload the item prices</label> -->
+    <button
+      class="btn button-theme download-btn"
+      onclick="document.getElementById('takeInput').click()"
+    >
+    {{'Menus.Upload item price' | transloco }}
+    </button>
+    <input
+      type="file"
+      #takeInput
+      id="takeInput"
+      style="display: none"
+      accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+      (change)="handleFileInput($event)"
+    />
+  </div>
+</div>
+<div
+  mdbModal
+  #AssignPlatformModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+  (open)="fillPlatformSelection()"
+  (close)="clearSelection()"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="AssignPlatformModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">Select Platform</h4>
+      </div>
+      <div class="modal-body px-3" style="min-height: 300px">
+        <div class="p-3 chaeckboxes-modal">
+          <div class="form-group">
+            <label>Select Platform</label>
+            <ng-select
+              [(ngModel)]="selectedPlatformWhileAdding"
+              [multiple]="true"
+              [clearable]="false"
+              [searchable]="true"
+              type="text"
+              class="bg ng-select-side-nav"
+              placeholder="Select Platform"
+            >
+              <ng-option [value]="1">Standard Price</ng-option>
+              <ng-option
+                [value]="platform.id"
+                *ngFor="let platform of PlatformsListOriginal"
+              >
+                {{ platform.name }}
+              </ng-option>
+            </ng-select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="AssignPlatformModal.hide()"
+          mdbWavesEffect
+        >
+          Cancel
+        </button>
+        <button
+          [disabled]="selectedPlatformWhileAdding.length == 0"
+          type="button"
+          class="btn orange-bt text-white"
+          (click)="updateFileToServer(AssignPlatformModal)"
+        >
+          <span
+            *ngIf="loading"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Upload
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

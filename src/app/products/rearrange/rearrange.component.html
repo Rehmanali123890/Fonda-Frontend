@@ -1,0 +1,90 @@
+<span
+  (click)="showModal()"
+  class="choice-icon fa fa-sort cursor-pointer"
+></span>
+<div
+  mdbModal
+  #reArrangeModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="reArrangeModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">Sort {{ type }}</h4>
+      </div>
+      <div class="modal-body px-3">
+        <div
+          cdkDropList
+          class="example-list"
+          (cdkDropListDropped)="drop($event)"
+        >
+          <ng-container *ngIf="menuId != null">
+            <div
+              class="example-box"
+              *ngFor="let category of dataToSort"
+              cdkDrag
+            >
+              {{ category.categoryName }}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="categoryId != null">
+            <div class="example-box" *ngFor="let item of dataToSort" cdkDrag>
+              {{ item.itemName }}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="itemId != null">
+            <div class="example-box" *ngFor="let addon of dataToSort" cdkDrag>
+              {{ addon.addonName }}
+            </div>
+          </ng-container>
+          <ng-container *ngIf="addonId != null">
+            <div class="example-box" *ngFor="let item of dataToSort" cdkDrag>
+              {{ item.addonOptionName }}
+            </div>
+          </ng-container>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="reArrangeModal.hide()"
+          mdbWavesEffect
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn orange-bt text-white"
+          (click)="saveSorting()"
+        >
+          Save<span
+            *ngIf="savingSorting"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

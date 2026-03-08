@@ -1,0 +1,45 @@
+
+  
+  .header-div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Space between header and content below */
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-field {
+    margin-right: 10px; /* Space between search field and button */
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+  }
+  
+  .button-theme {
+    /* Button styling */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .button-theme:hover {
+    background-color: #0056b3;
+  }
+  
+  .table-container {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.table-class {
+    width: max-content;
+}
+  

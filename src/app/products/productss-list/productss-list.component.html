@@ -1,0 +1,3439 @@
+<div class="container-fluid">
+  <div class="mb-3 d-flex justify-content-between align-items-center">
+    <div class="btn-group buttons-tabs">
+      <button
+        [class.active]="selectedViewType === 1"
+        class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+        (click)="selectedViewType = 1"
+      >
+        {{ "Menus.Menus" | transloco }}
+      </button>
+      <button
+        [class.active]="selectedViewType === 4"
+        class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+        (click)="selectedViewType = 4; this.GetCategoriesList(true)"
+      >
+        {{ "Menus.Categories" | transloco }}
+      </button>
+      <button
+        [class.active]="selectedViewType === 2"
+        class="btn orange-outline-bt btn-orange-tab btn-md"
+        (click)="selectedViewType = 2; GetProductsList()"
+      >
+        {{ "Menus.Items" | transloco }}
+      </button>
+      <button
+        [class.active]="selectedViewType === 3"
+        class="btn orange-outline-bt btn-orange-tab btn-md"
+        (click)="selectedViewType = 3; GetAddOnsByMerchantId()"
+      >
+        {{ "Menus.Addons" | transloco }}
+      </button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12" mdbCollapse #test="bs-collapse">
+      <div class="card p-3 mb-3">
+        <div class="d-flex mb-3 justify-content-between align-items-center">
+          <h4 class="mb-0">{{ "merchantslist.filter" | transloco }}</h4>
+          <span
+            class="cursor-pointer"
+            appDebounceClick
+            (debounceClick)="test.toggle()"
+            [debounceTime]="350"
+            >&times;</span
+          >
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label>{{
+                "merchantslist.merchantslistfilters.MerchantName" | transloco
+              }}</label>
+              <select
+                type="text"
+                [(ngModel)]="selectedMerchantId"
+                (change)="
+                  MerchantChanged();
+                  GetCategoriesList(true);
+                  GetProductsList();
+                  GetAddOnsByMerchantId()
+                "
+                class="form-control"
+                placeholder="Merchant"
+              >
+                <option [value]="item.id" *ngFor="let item of MerchantsList">
+                  {{ item.merchantName }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12" *ngIf="selectedViewType === 1">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="search-field input-field-div mb-4">
+            <div class="form-group has-search">
+              <span
+                class="fa fa-search form-control-feedback search-icon-mobile"
+              ></span>
+              <input
+                type="text"
+                [(ngModel)]="searchMenuRef"
+                class="form-control search-mobile"
+                [placeholder]="'reuseableWords.Search' | transloco"
+              />
+            </div>
+            <button
+              type="button"
+              class="btn button-theme clear-search-btn clear-desktop"
+              (disabled)="searchMenuRef = ''"
+              (click)="clearSearchFields()"
+            >
+              {{ "reuseableWords.Clear" | transloco }}
+              {{ "reuseableWords.Search" | transloco }}
+            </button>
+            <!-- Clear search for mobile -->
+            <img
+              src="https://img.icons8.com/ios/38/ee4423/broom.png"
+              class="clear-mobile"
+              (disabled)="searchMenuRef = ''"
+              (click)="clearSearchFields()"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h4 class="m-0 menu-heading">
+                {{ "Menus.Menus" | transloco }}
+                <span
+                  *ngIf="allMenusList && allMenusList.length && !gettingMenu"
+                  ><small>({{ allMenusList.length }})</small></span
+                >
+              </h4>
+              <h5 *ngIf="userRoleType != 4" class="m-0">
+                <span
+                  (click)="addMenuModal.show()"
+                  class="fa fa-plus cursor-pointer"
+                ></span>
+              </h5>
+            </div>
+            <div style="height: calc(100vh - 285px); padding: 1em 0.5em">
+              <div
+                class="height-card custom-scroll"
+                style="height: 100%; overflow-y: auto"
+              >
+                <ul class="cat-list">
+                  <li
+                    *ngIf="
+                      !gettingMenu && (!allMenusList || !allMenusList.length)
+                    "
+                  >
+                    <div class="alert alert-info w-100" role="alert">
+                      {{ "reuseableWords.No record found" | transloco }}
+                    </div>
+                  </li>
+                  <li *ngIf="gettingMenu">
+                    <div class="text-center">
+                      <div class="spinner-border" role="status">
+                        <span class="sr-only">{{
+                          "Menus.Loading..." | transloco
+                        }}</span>
+                      </div>
+                    </div>
+                  </li>
+                  <span
+                    *ngIf="gettingPdf"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  <span
+                    *ngIf="gettingCsv == true"
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  <!-- show menu details for desktop -->
+                  <li
+                    *ngFor="
+                      let item of allMenusList
+                        | filterByprop : 'name' : searchMenuRef
+                    "
+                    style="cursor: pointer"
+                    [class.active]="selectedMenu.id === item.id"
+                    (click)="MenuChanged(item)"
+                    class="showModal-desktop"
+                  >
+                    <span
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <span style="word-break: break-word">{{
+                        item.name
+                      }}</span>
+                      <div
+                        *ngIf="userRoleType != 4"
+                        class="btn-group mx-1 d-flex justify-content-between align-items-center"
+                        mdbDropdown
+                        (click)="$event.stopPropagation()"
+                      >
+                        <img
+                          class="csv-icon"
+                          (click)="DownloadCsv()"
+                          src="https://img.icons8.com/ios-glyphs/30/00305a/export-csv.png"
+                        />
+                        <img
+                          class="csv-icon"
+                          (click)="DownloadPdf()"
+                          src="https://img.icons8.com/ios-glyphs/30/00305a/export-pdf-2.png"
+                        />
+                        <!-- <i
+                          class="product-icon fa fa-trash"
+                          (click)="
+                            $event.stopPropagation(); ConfirmMenuDelete(item)
+                          "
+                          aria-hidden="true"
+                        ></i> -->
+                        <i
+                          class="product-icon fa fa-edit"
+                          (click)="
+                            $event.stopPropagation();
+                            EditMenu(item, addMenuModal)
+                          "
+                        ></i>
+                      </div>
+                    </span>
+                  </li>
+                  <!-- show menu details for mobile -->
+                  <li
+                    *ngFor="
+                      let item of allMenusList
+                        | filterByprop : 'name' : searchMenuRef
+                    "
+                    style="cursor: pointer"
+                    [class.active]="selectedMenu.id === item.id"
+                    (click)="MenuChanged(item); openModalforCreatePoints()"
+                    class="showModal-mobile"
+                  >
+                    <span
+                      class="d-flex justify-content-between align-items-center"
+                    >
+                      <span style="word-break: break-word">{{
+                        item.name
+                      }}</span>
+                      <div
+                        *ngIf="userRoleType != 4"
+                        class="btn-group mx-1 d-flex justify-content-between align-items-center"
+                        mdbDropdown
+                        (click)="$event.stopPropagation()"
+                      >
+                        <!-- <img class="csv-icon" (click)="DownloadCsv()"
+                      src="https://img.icons8.com/ios-glyphs/30/d85a3d/export-csv.png" /> -->
+                        <!-- <img class="csv-icon" (click)="DownloadPdf()"
+                      src="https://img.icons8.com/ios-glyphs/30/d85a3d/export-pdf-2.png" /> -->
+                        <!-- <i
+                          class="product-icon fa fa-trash"
+                          (click)="
+                            $event.stopPropagation(); ConfirmMenuDelete(item)
+                          "
+                          aria-hidden="true"
+                        ></i> -->
+                        <i
+                          class="product-icon fa fa-edit"
+                          (click)="
+                            $event.stopPropagation();
+                            EditMenu(item, addMenuModal)
+                          "
+                        ></i>
+                      </div>
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <!-- menu details for desktop -->
+          <div class="card menu-details-desktop">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h4 class="m-0">{{ "Menus.Menu Details" | transloco }}</h4>
+              <h5 class="m-0"></h5>
+            </div>
+            <div class="card-body" style="height: calc(100vh - 285px)">
+              <div
+                class="height-card custom-scroll"
+                style="height: 100%; overflow-y: auto; overflow-x: hidden"
+              >
+                <div class="product-details">
+                  <div
+                    class="product-text"
+                    *ngIf="selectedMenu && selectedMenu.name"
+                  >
+                    <p class="mb-1 title">{{ selectedMenu.name }}</p>
+                  </div>
+                  <div
+                    class="product-text"
+                    *ngIf="!selectedMenu || !selectedMenu.name"
+                  >
+                    <span class="text-danger">{{
+                      "Menus.No Menu" | transloco
+                    }}</span>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="description">
+                      <h4 class="heading">
+                        {{ "Menus.Description" | transloco }}
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <textarea
+                      readonly
+                      [(ngModel)]="selectedMenu.description"
+                      class="desc-text-area"
+                      [placeholder]="'Menus.Add Description' | transloco"
+                      name=""
+                      id=""
+                      cols="28"
+                      rows="5"
+                    ></textarea>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="description">
+                      <h4 class="heading">
+                        {{ "Menus.Menu cuisines" | transloco }}
+                      </h4>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    {{ selectedMenu.cusines }}
+                  </div>
+                </div>
+
+                <hr style="margin-bottom: 3px !important; margin-top: 0px" />
+                <div class="categories">
+                  <div
+                    class="modification d-flex justify-content-between align-items-center"
+                  >
+                    <h4 class="heading">
+                      {{ "Menus.Categories" | transloco }}
+                    </h4>
+
+                    <h5
+                      *ngIf="userRoleType != 4"
+                      class="m-0 d-flex align-items-center"
+                    >
+                      <app-rearrange
+                        [type]="'Categories'"
+                        [merchantId]="selectedMerchantId"
+                        class="pr-1"
+                        [menuId]="selectedMenu.id"
+                        [dataToSort]="selectedMenu.categories"
+                        *ngIf="!gettingCategories"
+                      >
+                      </app-rearrange>
+
+                      <span
+                        *ngIf="!gettingCategories"
+                        (click)="AssignCategoryModal.show()"
+                        class="fa fa-plus cursor-pointer"
+                      ></span>
+                    </h5>
+                  </div>
+                  <hr style="margin-top: 0px !important" />
+
+                  <strong
+                    class="text-danger"
+                    *ngIf="
+                      !selectedMenu.categories ||
+                      !selectedMenu.categories.length
+                    "
+                  >
+                    {{ "Menus.No categories assigned" | transloco }}
+                  </strong>
+                  <div class="burrito-div">
+                    <div
+                      class="burrito"
+                      *ngFor="let item of selectedMenu.categories"
+                    >
+                      <h6
+                        class="burrito-text"
+                        (click)="
+                          searchCatRef = item.categoryName; selectedViewType = 4
+                        "
+                      >
+                        {{ item.categoryName }}
+                      </h6>
+                      <i
+                        *ngIf="userRoleType != 4"
+                        (click)="
+                          OpenConfirmUnAssignCategoryToMenu(item, item.id)
+                        "
+                        class="cross-icon fa fa-times-circle"
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <hr style="margin-bottom: 3px !important" />
+                <div
+                  class="modification d-flex justify-content-between align-items-center"
+                >
+                  <h4 class="heading">{{ "Sidenav.Platforms" | transloco }}</h4>
+                  <h5 *ngIf="userRoleType != 4" class="m-0">
+                    <span
+                      (click)="AssignPlatformModal.show()"
+                      class="fa fa-plus cursor-pointer"
+                    ></span>
+                  </h5>
+                </div>
+                <hr style="margin-top: 0px !important" />
+                <strong
+                  class="text-danger"
+                  *ngIf="
+                    !selectedMenu.menuPlatforms ||
+                    !selectedMenu.menuPlatforms.length
+                  "
+                >
+                  No Platforms Found
+                </strong>
+                <div class="burrito-div">
+                  <div
+                    class="burrito"
+                    *ngFor="let item of selectedMenu.menuPlatforms"
+                  >
+                    <ng-container
+                      *ngIf="
+                        item.platformType !== '5' && item.platformType !== '6'
+                      "
+                    >
+                      <h6 class="burrito-text">
+                        {{ MerchantPlatformsEnum[item.platformType] }}
+                      </h6>
+
+                      <i
+                        *ngIf="userRoleType != 4"
+                        (click)="
+                          OpenConfirmUnAssignPlatformFromMenu(
+                            item,
+                            item.platformType
+                          )
+                        "
+                        class="cross-icon fa fa-times-circle"
+                        aria-hidden="true"
+                      ></i>
+                    </ng-container>
+                  </div>
+                </div>
+                <hr style="margin-bottom: 3px !important" />
+
+                <div
+                  class="modification d-flex justify-content-between align-items-center"
+                >
+                  <h4 class="heading">
+                    {{ "reuseableWords.Virtual Restaurant" | transloco }}
+                  </h4>
+                  <h5 *ngIf="userRoleType != 4" class="m-0">
+                    <span
+                      (click)="AssignVirtualModal.show()"
+                      class="fa fa-plus cursor-pointer"
+                    ></span>
+                  </h5>
+                </div>
+                <hr style="margin-top: 0px !important" />
+
+                <div class="burrito-div">
+                  <div
+                    class="burrito"
+                    *ngFor="let item of selectedMenu.virtualMerchants"
+                  >
+                    <h6 class="burrito-text">{{ item.virtaulName }}</h6>
+                    <i
+                      *ngIf="userRoleType != 4"
+                      (click)="OpenConfirmUnAssignVirtualMenu(item.id)"
+                      class="cross-icon fa fa-times-circle"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </div>
+                <hr style="margin-bottom: 3px !important" />
+                <div
+                  class="modification d-flex justify-content-between align-items-center"
+                >
+                  <h4
+                    *ngIf="
+                      selectedMerchantId &&
+                      selectedMenu.id &&
+                      checkUbereatsConnected()
+                    "
+                    class="heading"
+                  >
+                    {{ "Menus.MENU HOURS" | transloco }}
+                  </h4>
+                </div>
+                <app-menu-hours
+                  *ngIf="
+                    selectedMerchantId &&
+                    selectedMenu.id &&
+                    checkUbereatsConnected()
+                  "
+                  [merchantId]="selectedMerchantId"
+                  [menuId]="selectedMenu.id"
+                ></app-menu-hours>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-12" *ngIf="selectedViewType === 4">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="search-field input-field-div mb-4">
+            <div class="form-group has-search">
+              <span
+                class="fa fa-search form-control-feedback search-icon-mobile"
+              ></span>
+              <input
+                type="text"
+                [(ngModel)]="searchCatRef"
+                class="form-control search-mobile"
+                [placeholder]="'reuseableWords.Search' | transloco"
+              />
+            </div>
+            <button
+              type="button"
+              class="btn button-theme clear-search-btn clear-desktop"
+              (disabled)="searchCatRef = ''"
+              (click)="clearSearchFields()"
+            >
+              {{ "reuseableWords.Clear" | transloco }}
+              {{ "reuseableWords.Search" | transloco }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h4 class="m-0">
+            {{ "Menus.Categories" | transloco }}
+            <span
+              *ngIf="
+                CategoriesList && CategoriesList.length && !gettingCategories
+              "
+              ><small>({{ CategoriesList.length }})</small></span
+            >
+          </h4>
+          <h5 *ngIf="userRoleType != 4" class="m-0">
+            <span
+              [class.disabled]="!selectedMerchantId"
+              (click)="
+                editCategoryObj.categoryStatus = 0; addCategoryModal.show()
+              "
+              class="fa fa-plus cursor-pointer"
+            ></span>
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="text-center" *ngIf="gettingCategories">
+            <div class="spinner-border" role="status">
+              <span class="sr-only">{{ "Menus.Loading..." | transloco }}</span>
+            </div>
+          </div>
+          <ng-container
+            *ngIf="
+              CategoriesList && CategoriesList.length && !gettingCategories
+            "
+          >
+            <div
+              class="choice mb-4"
+              *ngFor="
+                let item of CategoriesList
+                  | filterByprop : 'categoryName' : searchCatRef
+              "
+            >
+              <div
+                class="choice-heading"
+                [ngClass]="{ my_class: userRoleType === 4 }"
+              >
+                <h6
+                  class="heading-for-mobile"
+                  [ngClass]="{ my_heading: userRoleType === 4 }"
+                >
+                  &nbsp;{{ item.categoryName }}
+                </h6>
+                <i
+                  *ngIf="userRoleType != 4"
+                  class="choice-icon fa fa-plus"
+                  (click)="
+                    assignOptionOritemsModalSwitch = 'item';
+                    CategoryChanged(item);
+                    AssignItemsToAddonModal.show()
+                  "
+                ></i>
+                <i
+                  *ngIf="userRoleType != 4"
+                  class="choice-icon fa fa-edit"
+                  (click)="
+                    $event.stopPropagation();
+                    EditCategory(item, addCategoryModal)
+                  "
+                ></i>
+                <!-- <i
+                  *ngIf="userRoleType != 4"
+                  class="choice-icon fa fa-trash"
+                  (click)="
+                    $event.stopPropagation(); ConfirmCategoryDelete(item)
+                  "
+                  aria-hidden="true"
+                ></i> -->
+                <i
+                  *ngIf="item.categoryStatus == 0"
+                  class="choice-icon fa fa-times-circle"
+                  aria-hidden="true"
+                ></i>
+                <i
+                  *ngIf="item.categoryStatus == 1"
+                  class="choice-icon fa fa-check-circle"
+                  aria-hidden="true"
+                ></i>
+                <app-rearrange
+                  style="color: #d85a3d"
+                  class="heading-for-desktop"
+                  [type]="'items'"
+                  [merchantId]="selectedMerchantId"
+                  [categoryId]="item.id"
+                  [dataToSort]="item.items"
+                ></app-rearrange>
+                <h6 class="heading-for-desktop">
+                  &nbsp;{{ item.categoryName }}
+                </h6>
+              </div>
+              <div class="container choice-content">
+                <p *ngIf="item.items && item.items.length" class="d-flex">
+                  {{ item.items.length }} items
+                  <app-rearrange
+                    style="color: #d85a3d"
+                    class="heading-for-mobile"
+                    [type]="'items'"
+                    [merchantId]="selectedMerchantId"
+                    [categoryId]="item.id"
+                    [dataToSort]="item.items"
+                  ></app-rearrange>
+                </p>
+                <p *ngIf="!item.items || !item.items.length">
+                  {{ "reuseableWords.No items found" | transloco }}
+                </p>
+                <div
+                  [ngStyle]="{
+                    'background-color':
+                      catItem.itemStatus == true ? '#71BE7B' : '#e75b50'
+                  }"
+                  class="pastor"
+                  *ngFor="let catItem of item.items"
+                >
+                  <span
+                    (click)="
+                      searchProdRef = catItem.itemname || catItem.itemName;
+                      selectedViewType = 2;
+                      ProductChangedSearch(catItem);
+                      AddOnOptionsListInline = []
+                    "
+                    >{{ catItem.itemname || catItem.itemName }}
+                    <span class="text-info"
+                      >${{ catItem.itemprice || catItem.itemPrice }}</span
+                    >
+                  </span>
+                  <i
+                    *ngIf="userRoleType != 4"
+                    class="pastor-icon fa fa-times-circle"
+                    (click)="
+                      assignOptionOritemsModalSwitch = 'item';
+                      CategoryChanged(item);
+                      AssignItemsToAddonModal.show()
+                    "
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <ng-container *ngIf="selectedViewType === 2">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="search-text-field input-field-div">
+            <div class="has-search">
+              <span
+                class="fa fa-search form-control-feedback search-icon-mobile"
+              ></span>
+              <input
+                type="text"
+                #searchProductRef
+                [(ngModel)]="searchProdRef"
+                class="form-control search-mobile"
+                [placeholder]="'reuseableWords.Search' | transloco"
+              />
+            </div>
+            <div class="button-div">
+              <button
+                type="button"
+                class="btn button-theme clear-search-btn clear-desktop"
+                (click)="clearSearchFields()"
+                (disabled)="searchProdRef = ''"
+              >
+                {{ "reuseableWords.Clear" | transloco }}
+                {{ "reuseableWords.Search" | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6 downloads" id="download-div">
+          <app-menu-template
+            [PlatformsListOriginal]="PlatformsListOriginal"
+            (triggerChangeParent)="this.GetProductsList()"
+            *ngIf="selectedMerchantId"
+            [merchantId]="selectedMerchantId"
+          >
+          </app-menu-template>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <h4 class="m-0">
+              {{ "Menus.Items" | transloco }}
+              <span
+                *ngIf="ProductsList && ProductsList.length && !gettingProducts"
+                ><small>({{ ProductsList.length }})</small></span
+              >
+            </h4>
+            <h5 *ngIf="userRoleType != 4" class="m-0">
+              <span
+                (click)="addProductModal.show()"
+                class="fa fa-plus cursor-pointer"
+              ></span>
+            </h5>
+          </div>
+          <div class="card-body-mobile" style="height: calc(100vh - 285px)">
+            <div
+              class="height-card custom-scroll"
+              style="height: 100%; overflow-y: auto"
+            >
+              <ul class="cat-list">
+                <li
+                  *ngIf="
+                    !gettingProducts && (!ProductsList || !ProductsList.length)
+                  "
+                >
+                  <div class="alert alert-info w-100" role="alert">
+                    No record found
+                  </div>
+                </li>
+                <li *ngIf="gettingProducts">
+                  <div class="text-center">
+                    <div class="spinner-border" role="status">
+                      <span class="sr-only">{{
+                        "Menus.Loading..." | transloco
+                      }}</span>
+                    </div>
+                  </div>
+                </li>
+                <!-- items for desktop -->
+                <li
+                  *ngFor="
+                    let item of ProductsList
+                      | filterByprop : 'itemName' : searchProdRef
+                  "
+                  style="cursor: pointer"
+                  [class.active]="selectedProduct.id === item.id"
+                  (click)="ProductChanged(item)"
+                  class="items-div-desktop"
+                >
+                  <span style="word-break: break-word; padding-right: 30px">
+                    <i
+                      *ngIf="item.itemStatus == 0"
+                      class="fa fa-times-circle"
+                      aria-hidden="true"
+                    ></i>
+                    <i
+                      *ngIf="item.itemStatus == 1"
+                      class="fa fa-check-circle"
+                      aria-hidden="true"
+                    ></i>
+                    {{ item.itemName }}
+                  </span>
+                  <div
+                    class="btn-group mx-1"
+                    mdbDropdown
+                    (click)="$event.stopPropagation()"
+                  >
+                    <div *ngIf="item.itemType == 1">
+                      {{ "reuseableWords.Item" | transloco }}
+                    </div>
+                    <div *ngIf="item.itemType == 2">
+                      {{ "reuseableWords.Addon" | transloco }}
+                      {{ "reuseableWords.Item" | transloco }}
+                    </div>
+                    <div *ngIf="item.itemType == 0">
+                      {{ "reuseableWords.Not applicable" | transloco }}
+                    </div>
+
+                    <!-- <i
+                      *ngIf="userRoleType != 4"
+                      class="product-icon fa fa-trash"
+                      (click)="
+                        $event.stopPropagation(); ConfirmProductDelete(item)
+                      "
+                      aria-hidden="true"
+                    ></i> -->
+                    <i
+                      *ngIf="userRoleType != 4"
+                      class="product-icon fa fa-edit"
+                      (click)="
+                        $event.stopPropagation();
+                        EditProduct(item, addProductModal)
+                      "
+                    ></i>
+
+                    <div class="dropdown-menu dropdown-primary">
+                      <a
+                        class="dropdown-item"
+                        (click)="
+                          $event.stopPropagation();
+                          EditProduct(item, addProductModal)
+                        "
+                        >{{ "reuseableWords.Edit" | transloco }}</a
+                      >
+                      <a
+                        class="dropdown-item"
+                        (click)="
+                          $event.stopPropagation(); ConfirmProductDelete(item)
+                        "
+                        >{{ "reuseableWords.Delete" | transloco }}</a
+                      >
+                    </div>
+                  </div>
+                </li>
+                <!-- items for mobile -->
+                <span class="items-div-mobile">
+                  <li
+                    *ngFor="
+                      let item of ProductsList
+                        | filterByprop : 'itemName' : searchProdRef
+                    "
+                    style="cursor: pointer"
+                    [class.active]="selectedProduct.id === item.id"
+                    (click)="ProductChanged(item); openModalforItemsDetail()"
+                  >
+                    <span style="word-break: break-word; padding-right: 30px">
+                      <i
+                        *ngIf="item.itemStatus == 0"
+                        class="fa fa-times-circle"
+                        aria-hidden="true"
+                      ></i>
+                      <i
+                        *ngIf="item.itemStatus == 1"
+                        class="fa fa-check-circle"
+                        aria-hidden="true"
+                      ></i>
+                      {{ item.itemName }}
+                    </span>
+                    <div
+                      class="btn-group mx-1"
+                      mdbDropdown
+                      (click)="$event.stopPropagation()"
+                    >
+                      <div *ngIf="item.itemType == 1">Item</div>
+                      <div *ngIf="item.itemType == 2">Addon Item</div>
+                      <div *ngIf="item.itemType == 0">Not applicable</div>
+
+                      <!-- <i
+                        *ngIf="userRoleType != 4"
+                        class="product-icon fa fa-trash"
+                        (click)="
+                          $event.stopPropagation(); ConfirmProductDelete(item)
+                        "
+                        aria-hidden="true"
+                      ></i> -->
+                      <i
+                        *ngIf="userRoleType != 4"
+                        class="product-icon fa fa-edit"
+                        (click)="
+                          $event.stopPropagation();
+                          EditProduct(item, addProductModal)
+                        "
+                      ></i>
+
+                      <div class="dropdown-menu dropdown-primary">
+                        <a
+                          class="dropdown-item"
+                          (click)="
+                            $event.stopPropagation();
+                            EditProduct(item, addProductModal)
+                          "
+                          >Edit</a
+                        >
+                        <a
+                          class="dropdown-item"
+                          (click)="
+                            $event.stopPropagation(); ConfirmProductDelete(item)
+                          "
+                          >Delete</a
+                        >
+                      </div>
+                    </div>
+                  </li>
+                </span>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Items details for desktop -->
+      <div class="col-md-6 items-details-dektop">
+        <div class="card">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <h4 class="m-0">{{ "Menus.Item Details" | transloco }}</h4>
+            <h5 class="m-0"></h5>
+          </div>
+          <div class="card-body" style="height: calc(100vh - 285px)">
+            <div
+              class="height-card custom-scroll"
+              style="height: 100%; overflow-y: auto; overflow-x: hidden"
+            >
+              <div class="product-details">
+                <div class="product-img">
+                  <img src="assets/images/place.jpg" width="45" class="m-0" />
+                </div>
+                <div
+                  class="product-text"
+                  *ngIf="selectedProduct && selectedProduct.itemName"
+                >
+                  <p class="mb-1 title" style="word-break: break-word">
+                    {{ "Menus.Item Name" | transloco }}:
+                    {{ selectedProduct.itemName }}
+                  </p>
+                  <p class="mb-1 title" style="word-break: break-word">
+                    {{ "Menus.Short Name" | transloco }}:
+                    {{ selectedProduct.shortName }}
+                  </p>
+                  <p class="mb-1 title" style="word-break: break-word">
+                    {{ "Menus.POS Name" | transloco }}:
+                    {{ selectedProduct.posName }}
+                  </p>
+                  <p class="mb-1 price">
+                    {{ "Menus.Standard Price" | transloco }}: ${{
+                      selectedProduct.itemUnitPrice
+                    }}
+                  </p>
+                  <p
+                    class="mb-1 price"
+                    *ngFor="let price of itemsDetailObj.itemPriceMappings"
+                  >
+                    {{ MerchantPlatformsEnum[price.platformType] }} Price: ${{
+                      price.platformItemPrice
+                    }}
+                  </p>
+                </div>
+                <div
+                  class="product-text"
+                  *ngIf="!selectedProduct || !selectedProduct.itemName"
+                >
+                  <span class="text-danger">{{
+                    "Menus.No Product" | transloco
+                  }}</span>
+                </div>
+              </div>
+              <div class="inventory" hidden>
+                <h4 class="mb-0">{{ "Menus.Inventory" | transloco }}</h4>
+                <div class="custom-control custom-switch">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="customSwitches"
+                  />
+                  <label
+                    class="custom-control-label"
+                    for="customSwitches"
+                  ></label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="description">
+                    <h4 class="heading">
+                      {{ "Menus.Description" | transloco }}
+                    </h4>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <textarea
+                    readonly
+                    [(ngModel)]="itemsDetailObj.itemDescription"
+                    class="desc-text-area"
+                    [placeholder]="'Menus.Add Description' | transloco"
+                    name=""
+                    id=""
+                    cols="28"
+                    rows="5"
+                  ></textarea>
+                </div>
+              </div>
+
+              <hr style="margin-bottom: 3px !important; margin-top: 0px" />
+
+              <div
+                class="modification d-flex justify-content-between align-items-center"
+              >
+                <h4 class="heading">
+                  {{ "Menus.Modification/Add-ons" | transloco }}
+                </h4>
+                <h5 *ngIf="userRoleType != 4" class="m-0">
+                  <span
+                    (click)="addOnSelectionModal.show()"
+                    class="fa fa-plus cursor-pointer"
+                  ></span>
+                  <app-rearrange
+                    [type]="'item addons'"
+                    [merchantId]="selectedMerchantId"
+                    [itemId]="itemsDetailObj.id"
+                    [dataToSort]="itemsDetailObj.addons"
+                  >
+                  </app-rearrange>
+                </h5>
+              </div>
+              <hr style="margin-top: 0px !important" />
+
+              <strong
+                class="text-danger"
+                *ngIf="!itemsDetailObj.addons || !itemsDetailObj.addons.length"
+              >
+                {{ "Menus.No addons found" | transloco }}
+              </strong>
+              <div class="burrito-div">
+                <div class="burrito" *ngFor="let item of itemsDetailObj.addons">
+                  <h6
+                    class="burrito-text"
+                    (click)="
+                      searchAddonRef = item.addonName;
+                      AddOnOptionsListInline = item.addonOptions
+                    "
+                  >
+                    {{ item.addonName }}
+                  </h6>
+                  <i
+                    *ngIf="userRoleType != 4"
+                    (click)="
+                      OpenConfirmUnAssignAddonFromItem(item, itemsDetailObj.id)
+                    "
+                    class="cross-icon fa fa-times-circle"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+              <hr style="margin-top: 0px !important" />
+              <div *ngIf="AddOnOptionsListInline.length">
+                {{ "Menus.Selected Addon Option Details" | transloco }}
+                <div class="burrito-div">
+                  <div
+                    class="burrito"
+                    style="cursor: default"
+                    *ngFor="let item of AddOnOptionsListInline"
+                  >
+                    <h6 class="burrito-text" style="cursor: default">
+                      {{ item.addonOptionName }} ${{ item.addonOptionPrice }}
+                    </h6>
+                  </div>
+                </div>
+
+                <hr style="margin-top: 0px !important" />
+              </div>
+              <strong
+                class="text-danger"
+                *ngIf="!itemsDetailObj.imageUrl || !itemsDetailObj.imageUrl"
+              >
+                {{ "Menus.No image found" | transloco }}
+              </strong>
+              <div class="burrito-div">
+                <img src="{{ itemsDetailObj.imageUrl }}" height="150px" />
+                <button
+                  *ngIf="itemsDetailObj.imageUrl"
+                  type="button"
+                  (click)="RemoveProductImage()"
+                  class="brn button-theme"
+                >
+                  {{ "Menus.Remove Item Image" | transloco }}
+                </button>
+              </div>
+              <div class="burrito-div" *ngIf="!itemsDetailObj.imageUrl">
+                <div class="form-group">
+                  <input
+                    type="file"
+                    id="file"
+                    (change)="handleFileInputForProduct($event)"
+                    accept=".jpg,.png,.jpeg"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <div class="col-md-12" *ngIf="selectedViewType === 3">
+      <!-- ---Modifers---- -->
+      <ng-container>
+        <div class="">
+          <div class="modifier">
+            <h3 class="modi-heading">{{ "Menus.Modifiers" | transloco }}</h3>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="search-field">
+                  <div class="form-group has-search">
+                    <span
+                      class="fa fa-search form-control-feedback search-icon-mobile"
+                    ></span>
+                    <input
+                      type="text"
+                      #searchAddOnRef
+                      [(ngModel)]="searchAddonRef"
+                      class="form-control search-mobile"
+                      [placeholder]="'reuseableWords.Search' | transloco"
+                    />
+                  </div>
+                  <button
+                    class="btn button-theme clear-desktop"
+                    id="clear-btn"
+                    type="button"
+                    (disabled)="searchAddonRef = ''"
+                    (click)="clearSearchFields()"
+                  >
+                    {{ "reuseableWords.Clear" | transloco }}
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              *ngIf="userRoleType != 4"
+              class="add-modifier"
+              (click)="addOnsModal.show()"
+            >
+              <span
+                >{{ "reuseableWords.Add" | transloco }}
+                {{ "Menus.Modifiers" | transloco }}</span
+              >
+              <i class="modifier-icon fa fa-plus-circle" aria-hidden="true"></i>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"></div>
+            <div class="card-body mt-4 mb-4">
+              <div *ngIf="gettingMerchantAddOns">
+                <div class="text-center">
+                  <div class="spinner-border" role="status">
+                    <span class="sr-only">{{
+                      "Menus.Loading..." | transloco
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+              <ng-container
+                *ngIf="
+                  MerchantaddOnsList &&
+                  MerchantaddOnsList.length &&
+                  !gettingCategories
+                "
+              >
+                <div
+                  class="choice mb-4"
+                  *ngFor="
+                    let item of MerchantaddOnsList
+                      | filterByprop : 'addonName' : searchAddonRef;
+                    index as idx
+                  "
+                >
+                  <div class="choice-heading">
+                    <h6 class="heading-for-mobile">{{ item.addonName }}</h6>
+                    <i
+                      *ngIf="userRoleType != 4"
+                      class="choice-icon fa fa-plus"
+                      (click)="
+                        assignOptionOritemsModalSwitch = 'option';
+                        selectedAddonWithOption = item;
+                        AssignItemsToAddonModal.show()
+                      "
+                    ></i>
+                    <i
+                      *ngIf="userRoleType != 4"
+                      class="choice-icon fa fa-edit"
+                      (click)="
+                        selectedAddonWithOption = item;
+                        EditAddOn(item, addOnsModal, idx)
+                      "
+                    ></i>
+                    <!-- <i
+                      *ngIf="userRoleType != 4"
+                      class="choice-icon fa fa-trash"
+                      (click)="
+                        selectedAddonWithOption = item; ConfirmAddOnDelete(item)
+                      "
+                      aria-hidden="true"
+                    ></i> -->
+                    <app-rearrange
+                      style="color: #d85a3d"
+                      *ngIf="userRoleType != 4"
+                      [type]="'addon options'"
+                      [merchantId]="selectedMerchantId"
+                      [addonId]="item.id"
+                      [dataToSort]="item.addonOptions"
+                    >
+                    </app-rearrange>
+                    <h6 class="heading-for-desktop">{{ item.addonName }}</h6>
+                  </div>
+                  <div class="container choice-content">
+                    <p *ngIf="item.addonOptions && item.addonOptions.length">
+                      {{ item.addonOptions.length }} option(s)
+                    </p>
+                    <p *ngIf="!item.addonOptions || !item.addonOptions.length">
+                      {{ "reuseableWords.No option" | transloco }}
+                    </p>
+                    <div
+                      class="pastor"
+                      [ngStyle]="{
+                        'background-color':
+                          option.addonOptionStatus == true
+                            ? '#71BE7B'
+                            : '#e75b50'
+                      }"
+                      *ngFor="let option of item.addonOptions"
+                    >
+                      <span
+                        (click)="
+                          searchProdRef = option.addonOptionName;
+                          selectedViewType = 2;
+                          ProductChangedSearch(option);
+                          AddOnOptionsListInline = []
+                        "
+                        >{{ option.addonOptionName }}
+                        <span class="text-info"
+                          >${{ option.addonOptionPrice }}</span
+                        ></span
+                      >
+                      <i
+                        *ngIf="userRoleType != 4"
+                        class="pastor-icon fa fa-times-circle"
+                        (click)="
+                          OpenConfirmUnAssignItemFromAddon(option, item.id)
+                        "
+                        aria-hidden="true"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+
+      <div class="card" style="display: none">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h4 class="m-0">
+            {{ "Menus.Addons" | transloco }}
+            <span
+              *ngIf="
+                MerchantaddOnsList &&
+                MerchantaddOnsList.length &&
+                !gettingCategories
+              "
+              ><small>({{ MerchantaddOnsList.length }})</small></span
+            >
+          </h4>
+          <h5 *ngIf="userRoleType != 4" class="m-0">
+            <span
+              [class.disabled]="!selectedMerchantId"
+              (click)="addOnsModal.show()"
+              class="fa fa-plus cursor-pointer"
+            ></span>
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="height-card">
+            <ul class="cat-list">
+              <li
+                *ngIf="
+                  !gettingCategories &&
+                  (!MerchantaddOnsList || !MerchantaddOnsList.length)
+                "
+              >
+                <div class="alert alert-info w-100" role="alert">
+                  {{ "reuseableWords.No record found" | transloco }}
+                </div>
+              </li>
+              <li *ngIf="gettingCategories">
+                <div class="text-center">
+                  <div class="spinner-border" role="status">
+                    <span class="sr-only">{{
+                      "Menus.Loading..." | transloco
+                    }}</span>
+                  </div>
+                </div>
+              </li>
+              <li
+                *ngFor="let item of MerchantaddOnsList"
+                style="cursor: pointer"
+                [class.active]="selectedCategoryId === item.id"
+              >
+                <span>{{ item.addonName }}</span>
+                <div class="btn-group mx-1" mdbDropdown>
+                  <span
+                    class="fa fa-ellipsis-v"
+                    (click)="$event.stopPropagation()"
+                    mdbDropdownToggle
+                  ></span>
+
+                  <div class="dropdown-menu dropdown-primary">
+                    <a
+                      class="dropdown-item"
+                      (click)="
+                        $event.stopPropagation();
+                        EditAddOn(item, addOnOptionModal)
+                      "
+                      >{{ "reuseableWords.Edit" | transloco }}</a
+                    >
+                    <a
+                      class="dropdown-item"
+                      (click)="
+                        $event.stopPropagation(); ConfirmAddOnDelete(item)
+                      "
+                      >{{ "reuseableWords.Delete" | transloco }}</a
+                    >
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #addCategoryModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  (open)="openCategoryModal()"
+  (close)="resetObj()"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="addCategoryModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4
+          *ngIf="!editCategoryObj.id"
+          class="modal-title w-100 text-white"
+          id="myModalLabel"
+        >
+          {{ "Menus.New Category" | transloco }}
+        </h4>
+        <h4
+          *ngIf="editCategoryObj.id"
+          class="modal-title w-100 text-white"
+          id="myModalLabel"
+        >
+          {{ "Menus.Edit Category" | transloco }}
+        </h4>
+      </div>
+
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label>{{ "Menus.Category Name" | transloco }}</label>
+          <input
+            type="text"
+            [(ngModel)]="editCategoryObj.categoryName"
+            class="form-control"
+            [placeholder]="'Menus.Category Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.POS Name" | transloco }}</label>
+          <input
+            type="text"
+            [(ngModel)]="editCategoryObj.posName"
+            class="form-control"
+            [placeholder]="'Menus.POS Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Description" | transloco }}</label>
+          <textarea
+            type="text"
+            [(ngModel)]="editCategoryObj.categoryDescription"
+            rows="5"
+            class="form-control"
+            [placeholder]="'Menus.Category Description' | transloco"
+          >
+          </textarea>
+          <div class="update-btn">
+            <button
+              *ngIf="editCategoryObj.id"
+              type="button"
+              [disabled]="!editCategoryObj.categoryName || addingCategories"
+              class="btn orange-bt text-white"
+              (click)="EditCategoryForMerchant(addCategoryModal)"
+            >
+              <span
+                *ngIf="addingCategories"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              {{ "reuseableWords.Update" | transloco }}
+            </button>
+          </div>
+        </div>
+        <hr />
+        <div>
+          <div class="toggle-div">
+            <div class="toggle-text">
+              <span
+                *ngIf="editCategoryObj.categoryStatus == 1"
+                id="enabled-category"
+              >
+                {{ "Menus.Category Enabled" | transloco }}</span
+              >
+              <span
+                *ngIf="editCategoryObj.categoryStatus == 0"
+                id="disabled-category"
+              >
+                {{ "Menus.Category Disabled" | transloco }}</span
+              >
+            </div>
+            <div class="toggle-btn">
+              <label class="toggle">
+                <input
+                  class="toggle-checkbox"
+                  [(ngModel)]="editCategoryObj.categoryStatus"
+                  (change)="categoryStatusToogle()"
+                  type="checkbox"
+                />
+                <div class="toggle-switch"></div>
+              </label>
+            </div>
+          </div>
+          <div class="p-3 chaeckboxes-modal">
+            <div
+              class="d-flex justify-content-between"
+              *ngFor="let item of catModalItemList"
+            >
+              {{ item.itemName }}
+              <span>
+                <mdb-checkbox
+                  class="mb-2"
+                  [(ngModel)]="item.itemStatus"
+                  (change)="changeItemStatus(item)"
+                  style="overflow: hidden"
+                >
+                </mdb-checkbox>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          *ngIf="!editCategoryObj.id"
+          type="button"
+          [disabled]="!editCategoryObj.categoryName || addingCategories"
+          class="btn orange-bt text-white"
+          (click)="AddCategoryForMerchant(addCategoryModal)"
+        >
+          <span
+            *ngIf="addingCategories"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "Menus.Add Category" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #addProductModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  (close)="resetProductObj()"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="addProductModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4
+          *ngIf="!editProductObj.id"
+          class="modal-title w-100 text-white"
+          id="myModalLabel"
+        >
+          {{ "reuseableWords.Add" | transloco }}
+          {{ "reuseableWords.Item" | transloco }}
+        </h4>
+        <h4
+          *ngIf="editProductObj.id"
+          class="modal-title w-100 text-white"
+          id="myModalLabel"
+        >
+          {{ "reuseableWords.Edit" | transloco }}
+          {{ "reuseableWords.Item" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label>{{ "Menus.Item Name" | transloco }} </label>
+          <input
+            type="text"
+            [(ngModel)]="editProductObj.itemName"
+            class="form-control"
+            [placeholder]="'Menus.Item Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Short Name" | transloco }} </label>
+          <input
+            type="text"
+            [(ngModel)]="editProductObj.shortName"
+            class="form-control"
+            [placeholder]="'Menus.Short Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.POS Name" | transloco }} </label>
+          <input
+            type="text"
+            [(ngModel)]="editProductObj.posName"
+            class="form-control"
+            [placeholder]="'Menus.POS Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "reuseableWords.SKU" | transloco }} </label>
+          <input
+            type="text"
+            [(ngModel)]="editProductObj.itemSKU"
+            class="form-control"
+            [placeholder]="'reuseableWords.SKU' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "reuseableWords.Price" | transloco }}</label>
+          <input
+            type="number"
+            [max]="99999"
+            [(ngModel)]="editProductObj.itemUnitPrice"
+            class="form-control no-spinner"
+            [placeholder]="'reuseableWords.Price' | transloco"
+          />
+          <div
+            *ngIf="
+              editProductObj.itemUnitPrice < 0 ||
+              editProductObj.itemUnitPrice > 99999
+            "
+            class="alert alert-danger"
+          >
+            {{ "Menus.Value should be between 0 and 99999" | transloco }}
+          </div>
+        </div>
+        <div class="form-group">
+          <mdb-checkbox
+            class="mb-2"
+            default="true"
+            [(ngModel)]="platformBasedPricing"
+            (change)="fillPlatformPricingCheckboxes()"
+          >
+            {{
+              "Menus.Separate platform based Pricing" | transloco
+            }}</mdb-checkbox
+          >
+        </div>
+
+        <div *ngIf="platformBasedPricing">
+          <ng-container *ngIf="PlatformsPricingList.length == 0">{{
+            "Menus.No Platfrom connected" | transloco
+          }}</ng-container>
+          {{ validPlatformPriceFunc(true) }}
+          <div class="form-group" *ngFor="let item of PlatformsPricingList">
+            <label>{{ MerchantPlatformsEnum[item.platformType] }} Price</label>
+            <input
+              type="number"
+              max="99999"
+              [(ngModel)]="item.platformItemPrice"
+              class="form-control"
+              placeholder="Price"
+            />
+            <div
+              *ngIf="
+                item.platformItemPrice < 0 ||
+                item.platformItemPrice > 99999 ||
+                item.platformItemPrice == undefined
+              "
+              class="alert alert-danger"
+            >
+              {{ validPlatformPriceFunc(false) }}
+              {{ "Menus.Value should be between 0 and 99999" | transloco }}
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Select Type" | transloco }}</label>
+          <select
+            style="height: 40px"
+            type="text"
+            [(ngModel)]="editProductObj.itemType"
+            class="field"
+            placeholder="Select type"
+          >
+            <option
+              [selected]="[1, 2].indexOf(editProductObj.itemType) > -1"
+              value="0"
+            >
+              {{ "reuseableWords.Not applicable" | transloco }}
+            </option>
+            <option
+              *ngFor="let itemType1 of productTypeList"
+              [selected]="itemType1.id == editProductObj.itemType"
+              [value]="itemType1.id"
+            >
+              {{ itemType1.type }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label
+            >{{ "reuseableWords.Item" | transloco }}
+            {{ "reuseableWords.Status" | transloco }}</label
+          >
+          <select
+            style="height: 40px"
+            type="text"
+            [(ngModel)]="editProductObj.itemStatus"
+            class="field"
+            placeholder="Select Status"
+          >
+            <option value="1" [selected]="editProductObj.itemStatus == 1">
+              {{ "reuseableWords.Active" | transloco }}
+            </option>
+            <option value="0" [selected]="editProductObj.itemStatus == 0">
+              {{ "reuseableWords.Inactive" | transloco }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Description" | transloco }}</label>
+          <textarea
+            type="text"
+            [(ngModel)]="editProductObj.itemDescription"
+            rows="5"
+            class="form-control"
+            [placeholder]="'Menus.Item Description' | transloco"
+          >
+          </textarea>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          style="background-color: #ff000080; color: #fff"
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="addProductModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          *ngIf="!editProductObj.id"
+          type="button"
+          [disabled]="
+            !editProductObj.itemName ||
+            addingProducts ||
+            (!editProductObj.itemUnitPrice &&
+              editProductObj.itemUnitPrice !== 0) ||
+            !validPlatformPrice ||
+            editProductObj.itemUnitPrice < 0 ||
+            editProductObj.itemUnitPrice > 99999
+          "
+          class="btn orange-bt text-white"
+          (click)="AddProductForMerchant(addProductModal)"
+        >
+          <span
+            *ngIf="addingProducts"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.Add" | transloco }}
+        </button>
+        <button
+          *ngIf="editProductObj.id"
+          type="button"
+          [disabled]="
+            !editProductObj.itemName ||
+            addingProducts ||
+            (!editProductObj.itemUnitPrice &&
+              editProductObj.itemUnitPrice !== 0) ||
+            !validPlatformPrice ||
+            editProductObj.itemUnitPrice < 0 ||
+            editProductObj.itemUnitPrice > 99999
+          "
+          class="btn orange-bt text-white"
+          (click)="EditProductForMerchant(addProductModal)"
+        >
+          <span
+            *ngIf="addingProducts"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.Update" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  mdbModal
+  #addMenuModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  (close)="resetMenuObj()"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddMenuModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="addMenuModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+
+        <h4 class="modal-title w-100 text-white menu-heading" id="myModalLabel">
+          {{ "Menus.Menu" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label>{{ "Menus.Menu Name" | transloco }}</label>
+          <input
+            type="text"
+            [(ngModel)]="addMenuObj.name"
+            class="form-control"
+            [placeholder]="'Menus.Menu Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Cuisines" | transloco }}</label>
+          <input
+            type="text"
+            [(ngModel)]="addMenuObj.cusines"
+            class="form-control"
+            [placeholder]="'Menus.Cuisines' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Description" | transloco }}</label>
+          <textarea
+            type="text"
+            [(ngModel)]="addMenuObj.description"
+            rows="5"
+            class="form-control"
+            [placeholder]="'Menus.Description' | transloco"
+          >
+          </textarea>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="addMenuModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          type="button"
+          [disabled]="!addMenuObj.name"
+          class="btn orange-bt text-white"
+          (click)="AddMenuForMerchant(addMenuModal)"
+        >
+          <span
+            *ngIf="addingMenu"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.SAVE" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #addOnsModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  (close)="resetAddOnObj()"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="addOnsModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4
+          *ngIf="!addEditAddOnObj.addon.id"
+          class="modal-title w-100 text-white"
+          id="myModalLabel"
+        >
+          {{ "reuseableWords.New" | transloco }}
+          {{ "reuseableWords.Addon" | transloco }}
+        </h4>
+        <h4
+          *ngIf="addEditAddOnObj.addon.id"
+          class="modal-title w-100 text-white"
+          id="myModalLabel"
+        >
+          {{ "reuseableWords.Edit" | transloco }}
+          {{ "reuseableWords.Addon" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label>{{ "Menus.Addon Name" | transloco }}</label>
+          <input
+            [(ngModel)]="addEditAddOnObj.addon.addonName"
+            type="text"
+            class="form-control"
+            [placeholder]="'Menus.Addon Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.POS Name" | transloco }} </label>
+          <input
+            [(ngModel)]="addEditAddOnObj.addon.posName"
+            type="text"
+            class="form-control"
+            [placeholder]="'Menus.POS Name' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label>{{ "Menus.Description" | transloco }} </label>
+          <input
+            type="text"
+            [(ngModel)]="addEditAddOnObj.addon.addonDescription"
+            class="form-control"
+            [placeholder]="'Menus.Description' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label
+            >{{ "reuseableWords.Minimum" | transloco }}
+            {{ "reuseableWords.Quantity" | transloco }}
+          </label>
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="addEditAddOnObj.addon.minPermitted"
+            class="form-control"
+            [placeholder]="'Menus.Minimum Quantity' | transloco"
+          />
+        </div>
+        <div class="form-group">
+          <label
+            >{{ "reuseableWords.Maximum" | transloco }}
+            {{ "reuseableWords.Quantity" | transloco }}
+          </label>
+          <input
+            type="number"
+            min="0"
+            [(ngModel)]="addEditAddOnObj.addon.maxPermitted"
+            class="form-control"
+            [placeholder]="'Menus.Maximum Quantity' | transloco"
+          />
+        </div>
+
+        <div *ngIf="addEditAddOnObj.addon.id">
+          <h5 style="font-weight: 600">{{ "Menus.Used In" | transloco }}</h5>
+          <div style="background-color: rgba(0, 0, 0, 0.03); padding: 0.5em">
+            <div *ngFor="let item of productListByAddon">
+              <div style="margin: 0.4em 0em">
+                <span style="font-size: 15px">{{ item.itemname }}</span>
+              </div>
+            </div>
+            <h6 *ngIf="productListByAddon.length == 0">
+              {{ "Menus.No items assigned" | transloco }}
+            </h6>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="addOnsModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          *ngIf="!addEditAddOnObj.addon.id"
+          type="button"
+          [disabled]="
+            !addEditAddOnObj.addon.addonName ||
+            addingAddons ||
+            addEditAddOnObj.addon.minPermitted >
+              addEditAddOnObj.addon.maxPermitted
+          "
+          class="btn orange-bt text-white"
+          (click)="PostAddOnsForProduct(addOnsModal)"
+        >
+          <span
+            *ngIf="addingAddons"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.Add" | transloco }}
+        </button>
+        <button
+          *ngIf="addEditAddOnObj.addon.id"
+          type="button"
+          [disabled]="
+            !addEditAddOnObj.addon.addonName ||
+            addingAddons ||
+            addEditAddOnObj.addon.minPermitted >
+              addEditAddOnObj.addon.maxPermitted
+          "
+          class="btn orange-bt text-white"
+          (click)="EditAddOnsForProduct(addOnsModal)"
+        >
+          <span
+            *ngIf="addingAddons"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.Update" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #addOnSelectionModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+  (open)="fillModifierSelection()"
+  (close)="closeItemAdonModal()"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="addOnSelectionModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{ "reuseableWords.Select" | transloco }}
+          {{ "reuseableWords.Addon" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group position-relative">
+          <label
+            >{{ "reuseableWords.Search" | transloco }}
+            {{ "Menus.Modifier" | transloco }}</label
+          >
+          <input
+            [(ngModel)]="searchAddonRefModal"
+            type="text"
+            class="field pl-4"
+            [placeholder]="'Menus.Search for an existing modifier' | transloco"
+          />
+          <span class="fa fa-search search-icon"></span>
+        </div>
+        <div class="w-100"></div>
+        <div class="p-3 chaeckboxes-modal">
+          <div
+            class="d-flex justify-content-between"
+            *ngFor="
+              let item of MerchantaddOnsList
+                | filterByprop : 'addonName' : searchAddonRefModal
+            "
+          >
+            <mdb-checkbox
+              [disabled]="savingAssignModifier"
+              (change)="UpdateItemAddons(item)"
+              class="mb-2"
+              [(ngModel)]="item.selected"
+              [default]="true"
+              style="word-break: break-word; width: 60%"
+            >
+              {{ item.addonName }}
+            </mdb-checkbox>
+            <span
+              class="text-primary"
+              title="{{ item['concatOptionsStr'] }}"
+              style="width: max-content"
+              >{{
+                item["concatOptionsStr"].length > 8
+                  ? (item["concatOptionsStr"] | slice : 0 : 8) + ".."
+                  : item["concatOptions"]
+              }}</span
+            >
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="addOnSelectionModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <span
+          *ngIf="savingAssignModifier"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #AssignCategoryModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+  (open)="fillCategorySelection()"
+  (close)="onCloseModalMenuCategories()"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="AssignCategoryModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{ "reuseableWords.Select" | transloco }}
+          {{ "reuseableWords.Category" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group position-relative">
+          <label
+            >{{ "reuseableWords.Search" | transloco }}
+            {{ "reuseableWords.Category" | transloco }}</label
+          >
+          <input
+            [(ngModel)]="searchCatRefModal"
+            type="text"
+            class="field pl-4"
+            [placeholder]="'Menus.Search for categories' | transloco"
+          />
+          <span class="fa fa-search search-icon"></span>
+        </div>
+        <div class="w-100"></div>
+        <div class="p-3 chaeckboxes-modal" style="word-break: break-word">
+          <ng-container
+            *ngFor="
+              let item of CategoriesList
+                | filterByprop : 'categoryName' : searchCatRefModal
+            "
+          >
+            <mdb-checkbox
+              class="mb-2"
+              (change)="UpdateMenuCategories(AssignCategoryModal, item)"
+              [disabled]="savingAssignCategoriesToMenu"
+              [(ngModel)]="item.selected"
+              [default]="true"
+              >{{ item.categoryName }}
+            </mdb-checkbox>
+          </ng-container>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="AssignCategoryModal.hide()"
+          [disabled]="savingAssignCategoriesToMenu"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <span
+          *ngIf="savingAssignCategoriesToMenu"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #AssignItemsToAddonModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+  (open)="fillOptionsOrItemsSelected()"
+  (close)="closeCategorytoItemAndAddonModal()"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="AssignItemsToAddonModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{
+            (assignOptionOritemsModalSwitch === "option"
+              ? "Menus.Select Options"
+              : "Menus.Select Items"
+            ) | transloco
+          }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group position-relative">
+          <label
+            >{{ "reuseableWords.Search" | transloco }}
+            {{ "reuseableWords.Option" | transloco }}</label
+          >
+          <input
+            [(ngModel)]="searchItemtoAssignoptionRef"
+            type="text"
+            class="field pl-4"
+            [placeholder]="'reuseableWords.Search' | transloco"
+          />
+          <span class="fa fa-search search-icon"></span>
+        </div>
+        <div class="w-100"></div>
+        <div class="p-3 chaeckboxes-modal">
+          <div
+            class="d-flex justify-content-between"
+            *ngFor="
+              let item of ProductsList
+                | filterByprop : 'itemName' : searchItemtoAssignoptionRef
+            "
+          >
+            <mdb-checkbox
+              class="mb-2"
+              [(ngModel)]="item.selected"
+              (change)="
+                UpdateitemsForCategoriesAndAddonOptions(
+                  AssignItemsToAddonModal,
+                  item
+                )
+              "
+              [disabled]="UpdatingitemsForCategories"
+              [default]="true"
+              style="overflow: hidden"
+            >
+              {{ item.itemName }}</mdb-checkbox
+            >
+            <span>${{ item.itemUnitPrice }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="AssignItemsToAddonModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <span
+          *ngIf="UpdatingitemsForCategories"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #addOnOptionModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddCategoryModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-1000 modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="addOnOptionModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{ "Menus.Modify" | transloco }}
+          {{ "reuseableWords.Addon" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label>{{ "reuseableWords.Name" | transloco }}</label>
+                  <input
+                    [(ngModel)]="addEditAddOnObj.addon.addonName"
+                    type="text"
+                    class="form-control"
+                    placeholder="Cocktail Size"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>{{ "reuseableWords.SKU" | transloco }} </label>
+                  <input
+                    type="text"
+                    [(ngModel)]="editCategoryObj.categoryName"
+                    class="form-control"
+                    placeholder="SKU"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h6>{{ "Menus.Customer Can" | transloco }}</h6>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>{{ "Menus.Select at Least" | transloco }}</label>
+                  <select type="text" class="form-control">
+                    <option>1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label>{{ "Menus.Select at Most" | transloco }}</label>
+                  <select type="text" class="form-control">
+                    <option>1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label
+                    >{{ "reuseableWords.Free" | transloco }}
+                    {{ "reuseableWords.Option" | transloco }}</label
+                  >
+                  <select type="text" class="form-control">
+                    <option>1</option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-12">
+                <h6 class="text-secondary text-right">
+                  {{
+                    "Menus.Free Option Regardless of add on price" | transloco
+                  }}
+                </h6>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-12">
+                <h6>{{ "reuseableWords.Option" | transloco }}</h6>
+              </div>
+              <div
+                class="col-12 text-center"
+                *ngIf="gettingAddOnOptions || SavingOptionData"
+              >
+                <div class="spinner-border" role="status">
+                  <span class="sr-only">{{
+                    "Menus.Loading..." | transloco
+                  }}</span>
+                </div>
+              </div>
+              <div class="col-12">
+                <ng-container *ngFor="let item of AddOnOptionsList">
+                  <div class="d-flex align-items-center bordered p-2 mb-2">
+                    <span class="mr-2 cursor-pointer" style="min-width: 13px">
+                      <span class="fa fa-ellipsis-v text-primary"></span>
+                      <span class="fa fa-ellipsis-v text-primary"></span>
+                    </span>
+                    <div class="form-group w-100 mr-2 mb-0">
+                      <input
+                        [(ngModel)]="item.addonOptionName"
+                        type="text"
+                        class="form-control"
+                        placeholder="option name"
+                      />
+                    </div>
+                    <div
+                      class="form-group mr-2 mb-0 position-relative"
+                      style="min-width: 150px"
+                    >
+                      <input
+                        [(ngModel)]="item.addonOptionPrice"
+                        type="text"
+                        class="form-control"
+                        style="padding-left: 35px"
+                        placeholder="0.00"
+                      />
+                      <h6 class="plus-dollar">+ $</h6>
+                    </div>
+                    <button
+                      class="btn-rounded-white mr-1"
+                      (click)="SaveOptionData(item)"
+                    >
+                      <span class="fa fa-save text-primary"></span>
+                    </button>
+                    <button class="btn-rounded-white">
+                      <span class="fa fa-trash text-danger"></span>
+                    </button>
+                  </div>
+                </ng-container>
+                <a class="text-primary py-2" (click)="AddNewEmptyOption()"
+                  >+ {{ "Menus.Add an Option" | transloco }}</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-4 bg-status">
+            <h6>{{ "reuseableWords.Status" | transloco }}</h6>
+            <div class="btn-group">
+              <button class="btn orange-outline-bt btn-md m-0 active">
+                {{ "reuseableWords.Active" | transloco }}
+              </button>
+              <button class="btn orange-outline-bt btn-md">Inactive</button>
+            </div>
+            <div class="py-3">
+              <h6 class="text-danger cursor-pointer mt-3">
+                <span class="fa fa-trash"></span>
+                {{ "reuseableWords.Delete" | transloco }}
+                {{ "Menus.Modifier" | transloco }}
+              </h6>
+              <h6 class="mt-4">
+                {{ "Menus.ITEMS USING THIS MODIFIER" | transloco }}(7)
+              </h6>
+              <h6 style="font-size: 14px; font-weight: 600" class="mb-1">
+                {{ "Menus.Fresh Juice" | transloco }}
+              </h6>
+              <h6 style="font-size: 14px; font-weight: 600" class="mb-1">
+                {{ "Menus.Fresh Juice" | transloco }}
+              </h6>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <!-- <p class="w-100 text-center">
+          Edit will affect <a href=""> all the stores linked </a>to this menu
+        </p> -->
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="addOnOptionModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          *ngIf="!addEditAddOnObj.addon.id"
+          type="button"
+          [disabled]="!addEditAddOnObj.addon.addonName || addingAddons"
+          class="btn orange-bt text-white"
+          (click)="PostAddOnsForProduct(addOnOptionModal)"
+        >
+          <span
+            *ngIf="addingAddons"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.Add" | transloco }}
+        </button>
+        <button
+          *ngIf="addEditAddOnObj.addon.id"
+          type="button"
+          [disabled]="!addEditAddOnObj.addon.addonName || addingAddons"
+          class="btn orange-bt text-white"
+          (click)="EditAddOnsForProduct(addOnOptionModal)"
+        >
+          <span
+            *ngIf="addingAddons"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          {{ "reuseableWords.Update" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #AssignPlatformModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+  (open)="fillPlatformSelection()"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="AssignPlatformModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{ "reuseableWords.Select" | transloco }}
+          {{ "reuseableWords.Platform" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="p-3 chaeckboxes-modal">
+          <div class="form-group">
+            <label
+              >{{ "reuseableWords.Select" | transloco }}
+              {{ "reuseableWords.Platform" | transloco }}</label
+            >
+            <select
+              style="height: 40px"
+              type="text"
+              [(ngModel)]="selectedPlatformWhileAdding"
+              class="field"
+              placeholder="Select type"
+            >
+              <option value="0" selected="selected">
+                {{ "reuseableWords.Not applicable" | transloco }}
+              </option>
+              <option
+                *ngFor="let platform of PlatformsListOriginal"
+                [value]="platform.id"
+              >
+                {{ platform.name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="AssignPlatformModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          *ngIf="selectedViewType === 1"
+          [disabled]="
+            savingAssignPlatformsToMenu || selectedPlatformWhileAdding == 0
+          "
+          type="button"
+          class="btn orange-bt text-white"
+          (click)="UpdateMenuPlatforms(AssignPlatformModal)"
+        >
+          <span
+            *ngIf="savingAssignPlatformsToMenu"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Save Menu Platforms
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  mdbModal
+  #AssignVirtualModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="AssignVirtualModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{ "reuseableWords.Select" | transloco }}
+          {{ "reuseableWords.Virtual Restaurant" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="p-3 chaeckboxes-modal">
+          <div class="form-group">
+            <label
+              >{{ "reuseableWords.Select" | transloco }}
+              {{ "reuseableWords.Virtual Restaurant" | transloco }}</label
+            >
+            <select
+              style="height: 40px"
+              type="text"
+              [(ngModel)]="selectedVirtualMerchantWhileAdding"
+              class="field"
+              placeholder="Select type"
+            >
+              <option value="0" selected="selected">
+                {{ "reuseableWords.Select" | transloco }}
+                {{ "reuseableWords.virtual merchant" | transloco }}
+              </option>
+              <option *ngFor="let rest of virtualMerchants" [value]="rest.id">
+                {{ rest.virtualName }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="AssignVirtualModal.hide()"
+          mdbWavesEffect
+        >
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button
+          *ngIf="selectedViewType === 1"
+          type="button"
+          class="btn orange-bt text-white"
+          (click)="UpdateVrtualResMenu(AssignVirtualModal)"
+        >
+          {{ "reuseableWords.Add" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--menu details for mobile  -->
+<div
+  class="modal fade right details-mobile"
+  style="z-index: 1044"
+  tabindex="-1"
+  role="dialog"
+  mdbModal
+  #createOurPoints="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog-full-width modal-dialog momodel modal-fluid"
+    id="details-mobile"
+    role="document"
+  >
+    <div class="modal-content-full-width modal-content">
+      <div class="modal-header-full-width modal-header">
+        <h5
+          class="modal-title w-100"
+          style="font-size: 1.1rem !important; color: #00305a !important"
+          id="exampleModalPreviewLabel"
+        >
+          Menu Details
+        </h5>
+        <button
+          type="button"
+          (click)="createOurPoints.hide()"
+          aria-label="Close"
+          style="background: none; border: none"
+        >
+          <span aria-hidden="true">
+            <img
+              src="https://img.icons8.com/external-tanah-basah-basic-outline-tanah-basah/24/EE4423/external-cross-essentials-tanah-basah-basic-outline-tanah-basah-2.png"
+            />
+          </span>
+        </button>
+      </div>
+      <div
+        class="modal-body"
+        id="menu-details-mobile"
+        style="
+          padding: 0.5rem 1.3rem;
+          height: 100vh;
+          overflow-y: auto;
+          padding-bottom: 5em;
+        "
+      >
+        <div class="">
+          <div>
+            <div
+              class="height-card custom-scroll"
+              style="height: 100%; overflow-y: auto; overflow-x: hidden"
+            >
+              <div class="product-details">
+                <div
+                  class="product-text"
+                  *ngIf="selectedMenu && selectedMenu.name"
+                >
+                  <p class="mb-1 title">{{ selectedMenu.name }}</p>
+                </div>
+                <div
+                  class="product-text"
+                  *ngIf="!selectedMenu || !selectedMenu.name"
+                >
+                  <span class="text-danger">No Menu</span>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="description">
+                    <h4 class="heading">Description</h4>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <textarea
+                    readonly
+                    [(ngModel)]="selectedMenu.description"
+                    class="desc-text-area"
+                    placeholder="Add Description"
+                    name=""
+                    id=""
+                    cols="28"
+                    rows="5"
+                  ></textarea>
+                </div>
+                <div class="col-md-6">
+                  <div class="description">
+                    <h4 class="heading">Menu cuisines</h4>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  {{ selectedMenu.cusines }}
+                </div>
+              </div>
+
+              <hr style="margin-bottom: 3px !important; margin-top: 0px" />
+              <div class="categories">
+                <div
+                  class="modification d-flex justify-content-between align-items-center"
+                >
+                  <h4 class="heading">Categories</h4>
+
+                  <h5
+                    *ngIf="userRoleType != 4"
+                    class="m-0 d-flex align-items-center"
+                  >
+                    <app-rearrange
+                      [type]="'Categories'"
+                      [merchantId]="selectedMerchantId"
+                      class="pr-1"
+                      [menuId]="selectedMenu.id"
+                      [dataToSort]="selectedMenu.categories"
+                      *ngIf="!gettingCategories"
+                    >
+                    </app-rearrange>
+
+                    <span
+                      *ngIf="!gettingCategories"
+                      (click)="AssignCategoryModal.show()"
+                      style="margin-left: 0.7em"
+                      class="fa fa-plus cursor-pointer"
+                    ></span>
+                  </h5>
+                </div>
+                <hr style="margin-top: 0px !important" />
+
+                <strong
+                  class="text-danger"
+                  *ngIf="
+                    !selectedMenu.categories || !selectedMenu.categories.length
+                  "
+                >
+                  No categories assigned
+                </strong>
+                <div class="burrito-div">
+                  <div
+                    class="burrito"
+                    *ngFor="let item of selectedMenu.categories"
+                  >
+                    <h6
+                      class="burrito-text"
+                      (click)="
+                        searchCatRef = item.categoryName; selectedViewType = 4
+                      "
+                    >
+                      {{ item.categoryName }}
+                    </h6>
+                    <i
+                      *ngIf="userRoleType != 4"
+                      (click)="OpenConfirmUnAssignCategoryToMenu(item, item.id)"
+                      class="cross-icon fa fa-times-circle"
+                      aria-hidden="true"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <hr style="margin-bottom: 3px !important" />
+              <div
+                class="modification d-flex justify-content-between align-items-center"
+              >
+                <h4 class="heading">Platforms</h4>
+                <h5 *ngIf="userRoleType != 4" class="m-0">
+                  <span
+                    (click)="AssignPlatformModal.show()"
+                    class="fa fa-plus cursor-pointer"
+                  ></span>
+                </h5>
+              </div>
+              <hr style="margin-top: 0px !important" />
+              <strong
+                class="text-danger"
+                *ngIf="
+                  !selectedMenu.menuPlatforms ||
+                  !selectedMenu.menuPlatforms.length
+                "
+              >
+                No Platforms Found
+              </strong>
+              <div class="burrito-div">
+                <div
+                  class="burrito"
+                  *ngFor="let item of selectedMenu.menuPlatforms"
+                >
+                  <h6 class="burrito-text">
+                    {{ MerchantPlatformsEnum[item.platformType] }}
+                  </h6>
+                  <i
+                    *ngIf="userRoleType != 4"
+                    (click)="
+                      OpenConfirmUnAssignPlatformFromMenu(
+                        item,
+                        item.platformType
+                      )
+                    "
+                    class="cross-icon fa fa-times-circle"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+              <div
+                class="modification d-flex justify-content-between align-items-center"
+              >
+                <h4 class="heading mt-4">Virtual Restaurants</h4>
+                <h5 *ngIf="userRoleType != 4" class="m-0">
+                  <span
+                    (click)="AssignVirtualModal.show()"
+                    class="fa fa-plus cursor-pointer"
+                  ></span>
+                </h5>
+              </div>
+              <hr style="margin-top: 0px !important" />
+
+              <div class="burrito-div">
+                <div
+                  class="burrito"
+                  *ngFor="let item of selectedMenu.virtualMerchants"
+                >
+                  <h6 class="burrito-text">{{ item.virtualName }}</h6>
+                  <i
+                    *ngIf="userRoleType != 4"
+                    (click)="OpenConfirmUnAssignVirtualMenu(item.id)"
+                    class="cross-icon fa fa-times-circle"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+              <hr style="margin-bottom: 3px !important" />
+              <div
+                class="modification d-flex justify-content-between align-items-center"
+              >
+                <h4
+                  *ngIf="
+                    selectedMerchantId &&
+                    selectedMenu.id &&
+                    checkUbereatsConnected()
+                  "
+                  class="heading mt-4"
+                >
+                  MENU HOURS
+                </h4>
+              </div>
+              <app-menu-hours
+                *ngIf="
+                  selectedMerchantId &&
+                  selectedMenu.id &&
+                  checkUbereatsConnected()
+                "
+                [merchantId]="selectedMerchantId"
+                [menuId]="selectedMenu.id"
+              ></app-menu-hours>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- select categories model for mobile -->
+  <div
+    mdbModal
+    #AssignCategoryModal="mdbModal"
+    style="z-index: 1050"
+    [config]="{ ignoreBackdropClick: true }"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myaddCategoryModalLabel"
+    aria-hidden="true"
+    (open)="fillCategorySelection()"
+    (close)="onCloseModalMenuCategories()"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+      role="document"
+    >
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button
+            type="button"
+            class="close pull-right text-white"
+            aria-label="Close"
+            (click)="AssignCategoryModal.hide()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100 text-white" style="font-size: 1em">
+            Select Category
+          </h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="form-group position-relative">
+            <label>Search Category</label>
+            <input
+              [(ngModel)]="searchCatRefModal"
+              type="text"
+              class="field pl-4"
+              placeholder="Search for categories"
+            />
+            <span class="fa fa-search search-icon"></span>
+          </div>
+          <div class="w-100"></div>
+          <div class="p-3 chaeckboxes-modal" style="word-break: break-word">
+            <ng-container
+              *ngFor="
+                let item of CategoriesList
+                  | filterByprop : 'categoryName' : searchCatRefModal
+              "
+            >
+              <mdb-checkbox
+                class="mb-2"
+                (change)="UpdateMenuCategories(AssignCategoryModal, item)"
+                [disabled]="savingAssignCategoriesToMenu"
+                [(ngModel)]="item.selected"
+                [default]="true"
+                >{{ item.categoryName }}
+              </mdb-checkbox>
+            </ng-container>
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <button
+            type="button"
+            mdbBtn
+            style="background-color: #ff000080; color: #fff"
+            class="waves-light"
+            aria-label="Close"
+            (click)="AssignCategoryModal.hide()"
+            [disabled]="savingAssignCategoriesToMenu"
+            mdbWavesEffect
+          >
+            Close
+          </button>
+          <span
+            *ngIf="savingAssignCategoriesToMenu"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- select platforms model for mobile -->
+  <div
+    mdbModal
+    #AssignPlatformModal="mdbModal"
+    [config]="{ ignoreBackdropClick: true }"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myaddPlatformModalLabel"
+    aria-hidden="true"
+    (open)="fillPlatformSelection()"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+      role="document"
+    >
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button
+            type="button"
+            class="close pull-right text-white"
+            aria-label="Close"
+            (click)="AssignPlatformModal.hide()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100 text-white">Select Platform</h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="p-3 chaeckboxes-modal">
+            <div class="form-group">
+              <label>Select Platform</label>
+              <select
+                style="height: 40px"
+                type="text"
+                [(ngModel)]="selectedPlatformWhileAdding"
+                class="field"
+                placeholder="Select type"
+              >
+                <option value="0" selected="selected">Not applicable</option>
+                <option
+                  *ngFor="let platform of PlatformsListOriginal"
+                  [value]="platform.id"
+                >
+                  {{ platform.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <button
+            type="button"
+            mdbBtn
+            style="background-color: #ff000080; color: #fff"
+            class="waves-light"
+            aria-label="Close"
+            (click)="AssignPlatformModal.hide()"
+            mdbWavesEffect
+          >
+            Close
+          </button>
+          <button
+            *ngIf="selectedViewType === 1"
+            [disabled]="
+              savingAssignPlatformsToMenu || selectedPlatformWhileAdding == 0
+            "
+            type="button"
+            class="btn orange-bt text-white"
+            (click)="UpdateMenuPlatforms(AssignPlatformModal)"
+          >
+            <span
+              *ngIf="savingAssignPlatformsToMenu"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Save Menu Platforms
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- select virtual restaurant model for mobile  -->
+  <div
+    mdbModal
+    #AssignVirtualModal="mdbModal"
+    [config]="{ ignoreBackdropClick: true }"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myaddPlatformModalLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+      role="document"
+    >
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button
+            type="button"
+            class="close pull-right text-white"
+            aria-label="Close"
+            (click)="AssignVirtualModal.hide()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100 text-white">
+            Select Virtual Restaurant
+          </h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="p-3 chaeckboxes-modal">
+            <div class="form-group">
+              <label>Select Virtual Restaurant</label>
+              <select
+                style="height: 40px"
+                type="text"
+                [(ngModel)]="selectedVirtualMerchantWhileAdding"
+                class="field"
+                placeholder="Select type"
+              >
+                <option value="0" selected="selected">
+                  Select virtual merchant
+                </option>
+                <option *ngFor="let rest of virtualMerchants" [value]="rest.id">
+                  {{ rest.virtualName }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <button
+            type="button"
+            mdbBtn
+            style="background-color: #ff000080; color: #fff"
+            class="waves-light"
+            aria-label="Close"
+            (click)="AssignVirtualModal.hide()"
+            mdbWavesEffect
+          >
+            Close
+          </button>
+          <button
+            *ngIf="selectedViewType === 1"
+            type="button"
+            class="btn orange-bt text-white"
+            (click)="UpdateVrtualResMenu(AssignVirtualModal)"
+          >
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--items details for mobile  -->
+<div
+  class="modal fade right"
+  style="z-index: 1044"
+  tabindex="-1"
+  role="dialog"
+  mdbModal
+  #createItemsDetails="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog-full-width modal-dialog momodel modal-fluid"
+    role="document"
+  >
+    <div class="modal-content-full-width modal-content">
+      <div class="modal-header-full-width modal-header">
+        <h5
+          class="modal-title w-100"
+          style="font-size: 1.1rem !important; color: #00305a !important"
+          id="exampleModalPreviewLabel"
+        >
+          Item Details
+        </h5>
+        <button
+          type="button"
+          (click)="closeItemModal()"
+          aria-label="Close"
+          style="background: none; border: none"
+        >
+          <span aria-hidden="true">
+            <img
+              src="https://img.icons8.com/external-tanah-basah-basic-outline-tanah-basah/24/EE4423/external-cross-essentials-tanah-basah-basic-outline-tanah-basah-2.png"
+            />
+          </span>
+        </button>
+      </div>
+      <div
+        class="modal-body"
+        id="menu-details-mobile"
+        style="
+          padding: 0.5rem 1.3rem;
+          height: 100vh;
+          overflow-y: auto;
+          padding-bottom: 5em;
+        "
+      >
+        <div class="">
+          <div class="d-flex justify-content-between align-items-center">
+            <h5 class="m-0"></h5>
+          </div>
+          <div class="">
+            <div
+              class="height-card custom-scroll"
+              style="height: 100%; overflow-y: auto; overflow-x: hidden"
+            >
+              <div class="product-details">
+                <div class="product-img">
+                  <img src="assets/images/place.jpg" width="45" class="m-0" />
+                </div>
+                <div
+                  class="product-text"
+                  *ngIf="selectedProduct && selectedProduct.itemName"
+                >
+                  <p class="mb-1 title" style="word-break: break-word">
+                    Item Name: {{ selectedProduct.itemName }}
+                  </p>
+                  <p class="mb-1 title" style="word-break: break-word">
+                    Short Name: {{ selectedProduct.shortName }}
+                  </p>
+                  <p class="mb-1 title" style="word-break: break-word">
+                    POS Name: {{ selectedProduct.posName }}
+                  </p>
+                  <p class="mb-1 price">
+                    Standard Price: ${{ selectedProduct.itemUnitPrice }}
+                  </p>
+                  <p
+                    class="mb-1 price"
+                    *ngFor="let price of itemsDetailObj.itemPriceMappings"
+                  >
+                    {{ MerchantPlatformsEnum[price.platformType] }} Price: ${{
+                      price.platformItemPrice
+                    }}
+                  </p>
+                </div>
+                <div
+                  class="product-text"
+                  *ngIf="!selectedProduct || !selectedProduct.itemName"
+                >
+                  <span class="text-danger">No Product</span>
+                </div>
+              </div>
+              <div class="inventory" hidden>
+                <h4 class="mb-0">Inventory</h4>
+                <div class="custom-control custom-switch">
+                  <input
+                    type="checkbox"
+                    class="custom-control-input"
+                    id="customSwitches"
+                  />
+                  <label
+                    class="custom-control-label"
+                    for="customSwitches"
+                  ></label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="description">
+                    <h4 class="heading">Description</h4>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <textarea
+                    readonly
+                    [(ngModel)]="itemsDetailObj.itemDescription"
+                    class="desc-text-area"
+                    placeholder="Add Description"
+                    name=""
+                    id=""
+                    cols="28"
+                    rows="5"
+                  ></textarea>
+                </div>
+              </div>
+
+              <hr style="margin-bottom: 3px !important; margin-top: 0px" />
+
+              <div
+                class="modification d-flex justify-content-between align-items-center"
+              >
+                <h4 class="heading">Modification/Add-ons</h4>
+                <h5 *ngIf="userRoleType != 4" class="m-0">
+                  <span
+                    (click)="addOnSelectionModal.show()"
+                    class="fa fa-plus cursor-pointer"
+                  ></span>
+                  <app-rearrange
+                    [type]="'item addons'"
+                    [merchantId]="selectedMerchantId"
+                    [itemId]="itemsDetailObj.id"
+                    [dataToSort]="itemsDetailObj.addons"
+                  >
+                  </app-rearrange>
+                </h5>
+              </div>
+              <hr style="margin-top: 0px !important" />
+
+              <strong
+                class="text-danger"
+                *ngIf="!itemsDetailObj.addons || !itemsDetailObj.addons.length"
+              >
+                No addons found
+              </strong>
+              <div class="burrito-div">
+                <div class="burrito" *ngFor="let item of itemsDetailObj.addons">
+                  <h6
+                    class="burrito-text"
+                    (click)="
+                      searchAddonRef = item.addonName;
+                      AddOnOptionsListInline = item.addonOptions
+                    "
+                  >
+                    {{ item.addonName }}
+                  </h6>
+                  <i
+                    *ngIf="userRoleType != 4"
+                    (click)="
+                      OpenConfirmUnAssignAddonFromItem(item, itemsDetailObj.id)
+                    "
+                    class="cross-icon fa fa-times-circle"
+                    aria-hidden="true"
+                  ></i>
+                </div>
+              </div>
+              <hr style="margin-top: 0px !important" />
+              <div *ngIf="AddOnOptionsListInline.length">
+                Selected Addon Option Details
+                <div class="burrito-div">
+                  <div
+                    class="burrito"
+                    style="cursor: default"
+                    *ngFor="let item of AddOnOptionsListInline"
+                  >
+                    <h6 class="burrito-text" style="cursor: default">
+                      {{ item.addonOptionName }} ${{ item.addonOptionPrice }}
+                    </h6>
+                  </div>
+                </div>
+
+                <hr style="margin-top: 0px !important" />
+              </div>
+              <strong
+                class="text-danger"
+                *ngIf="!itemsDetailObj.imageUrl || !itemsDetailObj.imageUrl"
+              >
+                No image found
+              </strong>
+              <div class="burrito-div">
+                <img src="{{ itemsDetailObj.imageUrl }}" height="150px" />
+                <button
+                  *ngIf="itemsDetailObj.imageUrl"
+                  type="button"
+                  (click)="RemoveProductImage()"
+                  class="brn button-theme mt-2"
+                >
+                  Remove Item Image
+                </button>
+              </div>
+              <div class="burrito-div" *ngIf="!itemsDetailObj.imageUrl">
+                <div class="form-group">
+                  <input
+                    type="file"
+                    id="file"
+                    accept="image/*"
+                    (change)="handleFileInputForProduct($event)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

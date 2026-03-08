@@ -1,0 +1,489 @@
+<div class="container-fluid pb-4" *ngIf="showmainloader">
+  <div class="loader-main">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+    </span>
+  </div>
+</div>
+<div class="container-fluid" *ngIf="!showmainloader">
+  <div *ngIf="merchantDto.stripeAccountId">
+    <span *ngIf="gettingAccountDetails" class="spinner-border spinner-border-sm" role="status"
+      aria-hidden="true"></span>
+
+    <button class="btn button-theme" *ngIf="
+        accountDetails.data != undefined &&
+        accountDetails.data.financialAccountMissing == true
+      " (click)="addTreasuryCapability(0)" type="button">
+      Click here to open Stripe treasury
+    </button>
+
+    <div class="row" *ngIf="
+        accountDetails.restricted_features != undefined &&
+        accountDetails.restricted_features.length == 0 &&
+        accountDetails.id
+      ">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><b>Account Details</b></h5>
+            <p class="card-text">
+              Account Holder Name:
+              <b>{{
+                accountDetails.financial_addresses[0].aba.account_holder_name
+                }}</b>
+              <br />
+              Account Number:
+              <b>{{
+                accountDetails.financial_addresses[0].aba.account_number
+                }}</b>
+              <br />
+              Routing Number:
+              <b>{{
+                accountDetails.financial_addresses[0].aba.routing_number
+                }}</b>
+              <br />
+              <br />
+              Bank name:
+              <b>{{ accountDetails.financial_addresses[0].aba.bank_name }}</b>
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card margin-for-mobile">
+          <div class="card-body">
+            <h5 class="card-title"><b>Balance</b></h5>
+            <p class="card-text">
+              {{
+              accountDetails.balance.cash.usd / 100
+              | currency : "USD" : "symbol"
+              }}
+            </p>
+          </div>
+        </div>
+        <div style="text-align: right">
+          <button class="btn button-theme" *ngIf="!merchantDto.trasuaryPhoneValid" (click)="registerNumber.show()"
+            type="button">
+            Register Mobile Number
+          </button>
+          <button class="btn button-theme" (click)="
+              registerNumber.show(); changePhoneNumber = true; enterPin = true
+            " *ngIf="merchantDto.trasuaryPhoneValid" type="button" [disabled]="has_treasury_edit_access == 0">
+            Change Registered Mobile Number ({{
+            merchantDto.trasuaryAuthPhone
+            }})
+          </button>
+          <a *ngIf="userRoleType === 1" [queryParams]="{ merchant: merchantId }" routerLink="/home/logs/treasury-logs">
+            <button class="btn button-theme">View Finance Logs</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-12 mt-3">
+        <div class="card">
+          <div class="card-header">
+            <div class="main-div">
+              <div class="header-div">
+                <div class="text">
+                  <h4>Transactions</h4>
+                </div>
+
+                <div class="button">
+                  <button (click)="ManagerecipientsApi()" class="btn button-theme" type="button">
+                    MANAGE RECIPIENTS
+                  </button>
+                  <button *ngIf="
+                      accountDetails.balance.cash.usd / 100 > 0 &&
+                      has_treasury_edit_access == 1
+                    " (click)="resendPin(); sendMoney_btn(); smsPin = ''" class="btn button-theme" type="button">
+                    Send Money
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive 2 desktop-view">
+            <div *ngIf="gettingTransactions" class="d-flex justify-content-center text-center">
+              <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+            </div>
+            <table class="table table-bordered table-hover" role="table">
+              <thead class="bg-theme white-text sorting" role="rowgroup">
+                <tr role="row">
+                  <th role="columnheader">Transaction Reference</th>
+                  <th role="columnheader">Amount</th>
+                  <th role="columnheader">Description</th>
+                  <th role="columnheader">Date & Time</th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                <tr *ngFor="let item of allTransactions" role="row">
+                  <td> <a *ngIf="item.hosted_regulatory_receipt_url" [href]="item.hosted_regulatory_receipt_url"
+                      target="_blank" style="text-decoration: none;">{{ item.id }}</a>
+                    <span *ngIf="!item.hosted_regulatory_receipt_url">{{ item.id }}</span>
+                  </td>
+                  <td>{{ item.amount / 100 | currency : "USD" : "symbol" }}</td>
+                  <td>{{ item.description }}</td>
+                  <td>{{ getTime(item.created) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Table for Mobile view -->
+          <div class="mobile-view">
+            <div class="table-responsive">
+              <table class="table" *ngIf="expandtable.length > 0">
+                <thead>
+                  <tr class="mobile-table-bg">
+                    <th scope="col"></th>
+                    <th role="col">Date & Time</th>
+                    <th scope="col">Amount</th>
+                  </tr>
+                </thead>
+                <tbody *ngFor="let item of expandtable">
+                  <tr class="" (click)="onChangeExpandtable(item.idx)">
+                    <td>
+                      <!-- Add Icon -->
+                      <div *ngIf="!item.expandtable">
+                        <i class="fas fa-caret-down"></i>
+                      </div>
+                      <!-- Minus Icon -->
+                      <div *ngIf="item.expandtable">
+                        <i class="fas fa-sort-up"></i>
+                      </div>
+                    </td>
+                    <td>
+                      {{ getTime(allTransactions[item.idx].created) }}
+                    </td>
+                    <td>
+                      $
+                      {{
+                      allTransactions[item.idx].amount / 100
+                      | currency : "USD" : "symbol"
+                      }}
+                    </td>
+                  </tr>
+
+                  <!-- Expandable Area -->
+                  <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+                    <td></td>
+                    <td colspan="3">
+                      <div>
+                        <div class="d-flex justify-content-between mt-3">
+                          <div style="
+                              font-weight: 600;
+                              margin-left: -1.8em;
+                              font-size: 15px;
+                            ">
+                            Transaction Reference
+                          </div>
+                          <div style="font-size: 15px; width: 70%">
+                            {{ allTransactions[item.idx].id }}
+                          </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-3">
+                          <div style="
+                              font-weight: 600;
+                              margin-left: -1.8em;
+                              font-size: 15px;
+                            ">
+                            Description
+                          </div>
+                          <div style="font-size: 15px; width: 70%">
+                            {{ allTransactions[item.idx].description }}
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="
+      accountDetails.restricted_features != undefined &&
+      accountDetails.restricted_features.length > 0
+    ">
+    Go to stripe to activate your account
+    <a [href]="stripeDashboardUrl" target="_blank">Click Here</a>
+  </div>
+  <div *ngIf="!merchantDto.stripeAccountId">
+    Merchant does not have any connected account.
+  </div>
+
+  <div mdbModal #registerNumber="mdbModal" [config]="{ ignoreBackdropClick: true }"
+    (open)="firstTimePin = true; smsPin = ''; smsPin2 = ''; phoneNumber = ''" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button (click)="registerNumber.hide(); changePhoneNumber = false" type="button"
+            class="close pull-right text-white" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-heading">Register Mobile Number</h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1"><span *ngIf="changePhoneNumber">New</span> Phone Number</label>
+            <input type="text" class="form-control" placeholder="Phone Number" [(ngModel)]="phoneNumber" />
+          </div>
+          <div class="form-group" *ngIf="enterPin && !firstTimePin">
+            <label for="exampleFormControlTextarea1">Pin
+              <span *ngIf="changePhoneNumber">Sent to {{ merchantDto.trasuaryAuthPhone }}
+              </span></label>
+            <input type="text" class="form-control" placeholder="Enter sms verification pin" [(ngModel)]="smsPin" />
+          </div>
+          <div class="form-group" *ngIf="enterPin && changePhoneNumber && !firstTimePin">
+            <label for="exampleFormControlTextarea1">Pin
+              <span *ngIf="changePhoneNumber">Sent to {{ phoneNumber }}
+              </span></label>
+            <input type="text" class="form-control" placeholder="Enter sms verification pin" [(ngModel)]="smsPin2" />
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <span *ngIf="verifyingPhone" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          <button (click)="registerNumber.hide(); changePhoneNumber = false" type="button" mdbBtn
+            style="background-color: #ff000080; color: #fff" class="waves-light" aria-label="Close" mdbWavesEffect>
+            Close
+          </button>
+          <button *ngIf="firstTimePin" (click)="sendPin(); firstTimePin = false" type="button"
+            class="btn orange-bt text-white">
+            Send Pin
+          </button>
+          <button *ngIf="enterPin && !firstTimePin" (click)="resendPin()" type="button"
+            class="btn orange-bt text-white">
+            Resend Pin
+          </button>
+          <button *ngIf="enterPin && !firstTimePin" (click)="validatePin()" type="button"
+            class="btn orange-bt text-white">
+            Verify Pin
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #sendMoney="mdbModal" (open)="
+      amount = null;
+      routingNumber = '';
+      accountNumber = '';
+      accountName = '';
+      note = '';
+      smsPin = ''
+    " [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button (click)="sendMoney.hide()" type="button" class="close pull-right text-white" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-heading">Send Money to Any Account</h4>
+        </div>
+        <div *ngIf="gettingrecipients" class="d-flex justify-content-center text-center">
+          <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+        </div>
+        <div class="modal-body px-3">
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">To</label>
+            <ng-select [(ngModel)]="accountName" [searchable]="true" type="text" class="bg ng-select-side-nav"
+              placeholder="Select recipients" (change)="select_recipient_for_sending_money($event)">
+              <ng-option [value]="item" *ngFor="let item of recipients">{{ item.account_holder_name }}
+                <span *ngIf="item.default_for_currency == true">(Default)</span>
+              </ng-option>
+            </ng-select>
+            <button (click)="
+                resendPin(); sendMoney.hide(); Addrecipients.show(); smsPin = ''
+              " class="btn btn-link float-end" role="link">
+              <u>ADD RECIPIENT</u>
+            </button>
+          </div>
+          <div class="form-group mt-4">
+            <label for="exampleFormControlTextarea1">Account Number (Last 4 digits)
+            </label>
+            <input type="text" class="form-control" placeholder="" [(ngModel)]="accountNumber" disabled />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Routing Number</label>
+            <input type="text" class="form-control" placeholder="" [(ngModel)]="routingNumber" disabled />
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Reference (Optional)</label>
+            <input type="text" class="form-control" placeholder="House rent payment" [(ngModel)]="note" />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Amount</label>
+            <input type="number" class="form-control" placeholder="123" [(ngModel)]="amount" />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">OTP</label>
+            <input type="text" class="form-control" placeholder="123456" [(ngModel)]="smsPin" />
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <span *ngIf="sendingMoney" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+          <button [disabled]="
+              !(
+                amount > 0 && amount <= accountDetails.balance.cash.usd / 100
+              ) ||
+              routingNumber == '' ||
+              accountNumber == '' ||
+              smsPin == ''
+            " (click)="sendMoneyApi_torecipient()" type="button" class="btn orange-bt text-white">
+            Send Money
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #Addrecipients="mdbModal" (open)="
+      name = '';
+      routingNumber = '';
+      accountNumber = '';
+      default_for_currency = true
+    " [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button (click)="Addrecipients.hide()" type="button" class="close pull-right text-white" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-heading">ADD RECIPIENT</h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Name</label>
+            <input type="text" class="form-control" placeholder="Name" [(ngModel)]="name" />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Account Number </label>
+            <input type="text" class="form-control" placeholder="000123456789" [(ngModel)]="accountNumber" />
+          </div>
+
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Routing Number</label>
+            <input type="text" class="form-control" placeholder="110000000" [(ngModel)]="routingNumber" />
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">OTP</label>
+            <input type="text" class="form-control" placeholder="123456" [(ngModel)]="smsPin" />
+          </div>
+          <div class="form-group ms-1">
+            <mdb-checkbox [(ngModel)]="default_for_currency" [default]="true">Make default recipient</mdb-checkbox>
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <button [disabled]="
+              name == '' ||
+              routingNumber == '' ||
+              accountNumber == '' ||
+              smsPin == ''
+            " (click)="AddrecipientsApi()" type="button" class="btn orange-bt text-white">
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #Managerecipients="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-white">
+          <button (click)="Managerecipients.hide()" type="button" class="close pull-right text-black"
+            aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-heading txt">Recipients List</h4>
+        </div>
+        <div *ngIf="gettingrecipients" class="d-flex justify-content-center text-center">
+          <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+        </div>
+        <div class="modal-body px-3">
+          <div>
+            <button *ngIf="has_treasury_edit_access == 1" (click)="
+                resendPin();
+                Managerecipients.hide();
+                Addrecipients.show();
+                smsPin = ''
+              " class="btn button-theme float-end" type="button">
+              ADD RECIPIENT
+            </button>
+          </div>
+          <div>
+            <table class="table table-bordered table-hover" role="table">
+              <thead class="bg-theme white-text sorting" role="rowgroup">
+                <tr>
+                  <th role="columnheader">Name</th>
+                  <th role="columnheader">Account No</th>
+                  <th role="columnheader">Routing No</th>
+
+                  <th *ngIf="has_treasury_edit_access == 1" role="columnheader">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody role="rowgroup">
+                <tr role="row" *ngFor="let item of recipients">
+                  <td>
+                    {{ item.account_holder_name }}
+                    <span *ngIf="item.default_for_currency == true" class="badge badge-danger">
+                      Default</span>
+                  </td>
+                  <td>********{{ item.last4 }}</td>
+                  <td>{{ item.routing_number }}</td>
+                  <td *ngIf="has_treasury_edit_access == 1">
+                    <button class="btn button-theme" (click)="
+                        resendPin();
+                        Managerecipients.hide();
+                        smsPin = '';
+                        del_recipients(item.id)
+                      ">
+                      <i class="fas fa-trash fa-1x"></i>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer px-3"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div mdbModal #Deleterecipients="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade " tabindex="-1"
+      role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg-delete" role="document">
+          <div class="modal-content">
+
+              <div class="modal-body px-3">
+                  <div>
+                      <h4 class="p-3"> Are you sure to delete recipients ?</h4>
+                  </div>
+                  <div class="form-group">
+                      <label for="exampleFormControlTextarea1">OTP</label>
+                      <input type="text" class="form-control" placeholder="123456" [(ngModel)]="smsPin" />
+                  </div>
+
+
+              </div>
+              <div class="modal-footer px-3 row">
+
+                      <button (click)="Deleterecipients.hide();Managerecipients.show()" class="btn button-theme float-end col" type="button">No</button>
+                      <button   [disabled]="smsPin==''" (click)="del_recipients();Deleterecipients.hide();"class="btn button-theme float-end col" type="button">Yes</button>
+
+              </div>
+          </div>
+      </div>
+  </div> -->
+</div>

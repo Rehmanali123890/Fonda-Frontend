@@ -1,0 +1,37 @@
+.header-div{
+    display: flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.create-btn{
+    background-color: #00305a !important;
+}
+table td{
+    text-align: center;
+}
+table th{
+    text-align: center;
+}
+.download-menu{
+    display: flex;
+    justify-content:flex-end;
+    align-items: center;
+}
+.mobile-view{
+  display: none;
+}
+.desktop-view{
+  display: block;
+}
+@media screen and (max-width:786px) {
+
+  .mobile-view{
+    display: block;
+  }
+  .desktop-view{
+    display: none;
+  }
+  .header-div{
+    flex-direction: column;
+}
+}

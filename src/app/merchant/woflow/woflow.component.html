@@ -1,0 +1,486 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <div class="main-div">
+        <div class="header-div">
+          <div class="text">
+            <h4>Woflow Jobs</h4>
+          </div>
+          <div class="button">
+            <button
+              class="btn button-theme"
+              type="button"
+              (click)="AssignPlatformModal.show()"
+            >
+              Create New Woflow Job
+              <span
+                *ngIf="isNewJob"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="table-responsive desktop-view">
+      <div
+        *ngIf="gettingWoflowList"
+        class="d-flex justify-content-center text-center"
+      >
+        <mat-progress-bar
+          class="progress primary-color-dark mb-0"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </div>
+      <table class="table table-bordered table-hover" id="price-table">
+        <thead class="bg-theme white-text sorting">
+          <tr>
+            <th>Woflow Job ID</th>
+            <th>Status</th>
+
+            <th>User Name</th>
+            <th>Job Type</th>
+            <th>Date Time</th>
+            <th>Original File</th>
+            <th>
+              Download Woflow generated menu
+              <span
+                *ngIf="downloadWoflowMenu"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of allJobs">
+            <td>{{ item.jobId }}</td>
+            <td>
+              {{ item.jobState }}
+              <div *ngIf="item.jobState == 'initiated'">
+                <mdb-icon
+                  fas
+                  icon="redo"
+                  (click)="reloadJob(item.id)"
+                ></mdb-icon>
+              </div>
+            </td>
+            <td>{{ item.createdByUser }}</td>
+            <td>{{ item.processingType }}</td>
+            <td>{{ item.createdDateTime }}</td>
+            <td class="button-group">
+              <a
+                *ngFor="let url of item.urls; let indexOfelement = index"
+                href="{{ url }}"
+                target="_blank"
+                >Catalouge {{ indexOfelement + 1 }}
+              </a>
+              &nbsp;
+            </td>
+
+            <td class="button-group">
+              <button
+                *ngIf="item.jobState == 'completed'"
+                (click)="downloadMenu(item.jobMenuId)"
+                class="btn button-theme btn-sm"
+              >
+                Download
+                <!-- <span *ngIf="downloadWoflowMenu" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                </span> -->
+              </button>
+              <!-- <button  (click)='downloadMenu("5d9bbaaf-2994-49cb-b759-16223fb2e097")'
+                class="btn button-theme btn-sm">
+                Download
+              accept =>1
+              reject=>2
+              </button> -->
+            </td>
+            <td class="button-group">
+              <div *ngIf="item.jobState == 'completed'">
+                <div *ngIf="item.status == 0">
+                  <button
+                    class="btn button-theme btn-sm"
+                    (click)="acceptMenu(item.id, 'accept')"
+                    type="button"
+                  >
+                    Accept
+                  </button>
+                  <button
+                    class="btn button-theme btn-sm"
+                    (click)="acceptMenu(item.id, 'reject')"
+                    type="button"
+                  >
+                    Reject
+                  </button>
+                </div>
+                <div *ngIf="item.status == 1">
+                  Accepted by {{ item.updatedByUser }}
+                </div>
+                <div *ngIf="item.status == 2">
+                  Rejected by {{ item.updatedByUser }}
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--Table for Mobile view -->
+    <div class="mobile-view">
+      <div class="table-responsive">
+        <div
+          *ngIf="gettingWoflowList"
+          class="d-flex justify-content-center text-center"
+        >
+          <mat-progress-bar
+            class="progress primary-color-dark mb-0"
+            mode="indeterminate"
+          ></mat-progress-bar>
+        </div>
+        <table class="table">
+          <thead>
+            <tr class="mobile-table-bg">
+              <th scope="col"></th>
+              <th role="col">Woflow Job ID</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of expandtable">
+            <tr class="" (click)="onChangeExpandtable(item.idx)">
+              <td>
+                <!-- Add Icon -->
+                <div *ngIf="!item.expandtable">
+                  <i class="fas fa-caret-down"></i>
+                </div>
+                <!-- Minus Icon -->
+                <div *ngIf="item.expandtable">
+                  <i class="fas fa-sort-up"></i>
+                </div>
+              </td>
+
+              <td>
+                {{ allJobs[item.idx].jobId }}
+              </td>
+              <td>
+                {{ allJobs[item.idx].jobState }}
+                <div *ngIf="allJobs[item.idx].jobState == 'initiated'">
+                  <mdb-icon
+                    fas
+                    icon="redo"
+                    (click)="reloadJob(allJobs[item.idx].id)"
+                  ></mdb-icon>
+                </div>
+              </td>
+            </tr>
+
+            <!-- Expandable Area -->
+            <tr
+              class="hide-table-padding"
+              *ngIf="item.expandtable"
+              style="background-color: #eee"
+            >
+              <td></td>
+              <td colspan="3">
+                <div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      User Name
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ allJobs[item.idx].createdByUser }}
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Date Time
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ allJobs[item.idx].createdDateTime }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Original File
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      <a
+                        *ngFor="
+                          let url of allJobs[item.idx].urls;
+                          let indexOfelement = index
+                        "
+                        href="{{ url }}"
+                        target="_blank"
+                        >Catalouge {{ indexOfelement + 1 }}
+                      </a>
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                        text-align: left;
+                      "
+                    >
+                      Download Woflow generated menu
+                      <span
+                        *ngIf="downloadWoflowMenu"
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      >
+                      </span>
+                    </div>
+                    <div style="font-size: 15px; width: unset">
+                      {{ allJobs[item.idx].createdDateTime }}
+                      <button
+                        *ngIf="allJobs[item.idx].jobState == 'completed'"
+                        (click)="downloadMenu(allJobs[item.idx].jobMenuId)"
+                        class="btn button-theme btn-sm"
+                      >
+                        Download
+                        <!-- <span *ngIf="downloadWoflowMenu" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+                      </span> -->
+                      </button>
+                      <!-- <button  (click)='downloadMenu("5d9bbaaf-2994-49cb-b759-16223fb2e097")'
+                      class="btn button-theme btn-sm">
+                      Download
+                    accept =>1
+                    reject=>2
+                    </button> -->
+                    </div>
+                  </div>
+                  <div class="w-100 mt-3">
+                    <div style="font-size: 15px; width: unset">
+                      <div *ngIf="allJobs[item.idx].jobState == 'completed'">
+                        <div *ngIf="allJobs[item.idx].status == 0">
+                          <button
+                            class="btn button-theme btn-sm"
+                            (click)="acceptMenu(allJobs[item.idx].id, 'accept')"
+                            type="button"
+                          >
+                            Accept
+                          </button>
+                          <button
+                            class="btn button-theme btn-sm"
+                            (click)="acceptMenu(allJobs[item.idx].id, 'reject')"
+                            type="button"
+                          >
+                            Reject
+                          </button>
+                        </div>
+                        <div *ngIf="item.status == 1">
+                          Accepted by {{ allJobs[item.idx].updatedByUser }}
+                        </div>
+                        <div *ngIf="item.status == 2">
+                          Rejected by {{ allJobs[item.idx].updatedByUser }}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+
+  <div
+    mdbModal
+    #AssignPlatformModal="mdbModal"
+    [config]="{ ignoreBackdropClick: true }"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myaddPlatformModalLabel"
+    aria-hidden="true"
+    (open)="instrutions = ''; namesArrayToShowOnUI = []"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+      role="document"
+    >
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button
+            type="button"
+            class="close pull-right text-white"
+            aria-label="Close"
+            (click)="AssignPlatformModal.hide()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100 text-white">Create Woflow Job</h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="">
+            <div class="modal-body">
+              <div class="form-group">
+                <label for="printCopies">Processing Type</label>
+                <select
+                  class="form-control"
+                  [(ngModel)]="processingType"
+                  class="form-select"
+                  id="order-date-form"
+                  aria-label="Default select example"
+                >
+                  <option value="standard" selected="selected">
+                    Standard (3 business days to process)
+                  </option>
+                  <option value="rush">Rush (1 business day to process)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Instrutions</label>
+                <textarea
+                  [(ngModel)]="instrutions"
+                  class="form-control"
+                  id="exampleFormControlTextarea1"
+                  rows="3"
+                ></textarea>
+              </div>
+              <button
+                type="button"
+                class="btn button-theme"
+                onclick="document.getElementById('takeInput').click()"
+              >
+                Select menu files
+              </button>
+              <input
+                (change)="showNamesONUI()"
+                type="file"
+                multiple
+                #takeInput
+                id="takeInput"
+                style="display: none"
+              />
+              <div
+                *ngIf="namesArrayToShowOnUI.length > 0"
+                style="height: 140px; overflow-y: auto"
+              >
+                You have selected the following files:
+                <ol type="1">
+                  <li *ngFor="let item of namesArrayToShowOnUI">{{ item }}</li>
+                </ol>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                class="btn button-theme"
+                (click)="AssignPlatformModal.hide(); submitJob()"
+              >
+                Submit job to woflow
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    mdbModal
+    #ConfirmModal="mdbModal"
+    [config]="{ ignoreBackdropClick: true }"
+    class="modal fade"
+    tabindex="-1"
+    role="dialog"
+    aria-labelledby="myaddPlatformModalLabel"
+    aria-hidden="true"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+      role="document"
+    >
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button
+            type="button"
+            class="close pull-right text-white"
+            aria-label="Close"
+            (click)="ConfirmModal.hide()"
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100 text-white">Are you Sure</h4>
+        </div>
+        <div class="modal-body px-3">
+          <div *ngIf="action == 'accept'">
+            <b>
+              Are you sure you want to accept the woflow menu? This will create
+              a new menu in merchant.</b
+            >
+          </div>
+          <div *ngIf="action == 'reject'">
+            <b> Are you sure that you want to reject the menu?</b>
+          </div>
+          <div class="form-group">
+            <label for="exampleFormControlTextarea1">Enter Remarks</label>
+            <textarea
+              [(ngModel)]="remarks"
+              class="form-control"
+              rows="3"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <button
+            type="button"
+            mdbBtn
+            style="background-color: #ff000080; color: #fff"
+            class="waves-light"
+            aria-label="Close"
+            (click)="ConfirmModal.hide()"
+            mdbWavesEffect
+          >
+            Close
+          </button>
+          <button
+            type="button"
+            class="btn orange-bt text-white"
+            [disabled]="!remarks"
+            (click)="performActionPopup()"
+          >
+            <span
+              *ngIf="savingActionReason"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+            Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

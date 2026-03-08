@@ -1,0 +1,44 @@
+.mainDiv{
+  background-color: #fff;
+    padding: 10px 20px;
+    margin-top: 1em;
+}
+.contant{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 2em 0em;
+  gap: 20px;
+}
+.btn{
+  width: 235px;
+}
+.merchant-heading {
+  font-size: 25.7px;
+}
+
+@media screen and (max-width:768px) {
+
+  .mainDiv{
+    background-color: #fff;
+      padding: 0px 10px;
+      margin-top: 1em;
+  }
+  .contant{
+   flex-direction: column;
+  align-items: start;
+
+  }
+  h2 {
+    padding: 0px 10px;
+
+  }
+  .forMibile{
+    width: 100%;
+  }
+  .btn{
+    width: 100%;
+  }
+
+
+}

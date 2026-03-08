@@ -1,0 +1,196 @@
+<button class="btn button-theme mb-2" style="float: right" (click)="openmodal='add';openModalforAddEdit()">
+  {{ "VirtualResturants.ADD VIRTUAL RESTAURANT" | transloco }}
+</button>
+
+<!-- Table For Desktop -->
+<div class="table-responsive desktop-view">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">{{ "reuseableWords.id" | transloco }}</th>
+        <th scope="col">{{ "reuseableWords.Name" | transloco }}</th>
+        <th scope="col">
+          {{ "VirtualResturants.Active/Inactive" | transloco }}
+        </th>
+        <th scope="col">{{ "reuseableWords.Actions" | transloco }}</th>
+        <th scope="col">{{ "reuseableWords.Platforms" | transloco }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container *ngFor="let data of virtaulRestaurantList">
+        <tr>
+          <td>{{ data.id }}</td>
+          <td>{{ data.virtualName }}</td>
+          <td>
+            <label class="toggle">
+              <input [(ngModel)]="data.status" (change)="merchantStatusToogle(data)" class="toggle-checkbox"
+                type="checkbox" />
+              <div class="toggle-switch"></div>
+            </label>
+          </td>
+          <td>
+            <button class="btn btn-info"
+              (click)="openmodal='edit';virtualRestaurantObj = data; addVirtualRestuarant.show()">
+              {{ "reuseableWords.EDIT" | transloco }}
+            </button>
+          </td>
+          <td (click)="data.expanded = !data.expanded" style="cursor: pointer; font-size: 20px">
+            {{ data.expanded ? "&ndash;" : "+" }}
+          </td>
+        </tr>
+        <ng-container *ngIf="data.expanded">
+          <tr style="
+              background-color: #f5f6fa;
+              border-bottom: 2px solid #00305a;
+              border-top: 2px solid #00305a;
+            ">
+            <td colspan="5">
+              <div>
+                <app-merchant-platforms [virtualMerchantId]="data.id"></app-merchant-platforms>
+              </div>
+            </td>
+          </tr>
+        </ng-container>
+      </ng-container>
+    </tbody>
+  </table>
+  <div *ngIf="!virtaulRestaurantList?.length" class="alert alert-info w-100" role="alert">
+    {{ "reuseableWords.No record found" | transloco }}
+  </div>
+</div>
+
+<!--Table For Mobile view -->
+<div class="mt-3 mobile-view">
+  <div class="table-responsive">
+    <table class="table" *ngIf="expandtable.length > 0">
+      <thead>
+        <tr class="mobile-table-bg">
+          <th scope="col"></th>
+          <th scope="col">Name</th>
+          <th scope="col">Active/Inactive</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of expandtable">
+        <tr class="" (click)="onChangeExpandtable(item.idx)">
+          <td>
+            <!-- Add Icon -->
+            <div *ngIf="!item.expandtable">
+              <i class="fas fa-caret-down"></i>
+            </div>
+            <!-- Minus Icon -->
+            <div *ngIf="item.expandtable">
+              <i class="fas fa-sort-up"></i>
+            </div>
+          </td>
+          <td>{{ virtaulRestaurantList[item.idx].virtualName }}</td>
+          <td>
+            <label class="toggle">
+              <input [(ngModel)]="virtaulRestaurantList[item.idx].status"
+                (change)="merchantStatusToogle(virtaulRestaurantList[item.idx])" class="toggle-checkbox"
+                type="checkbox" />
+              <div class="toggle-switch"></div>
+            </label>
+          </td>
+        </tr>
+        <!-- Expandable Area -->
+        <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+          <td></td>
+          <td colspan="3">
+            <div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  ID
+                </div>
+                <div style="font-size: 15px; padding-left: 1em; text-align: right">
+                  {{ virtaulRestaurantList[item.idx].id }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Platforms
+                </div>
+                <div style="font-size: 15px">
+                  <span (click)="
+                      virtaulRestaurantList[item.idx].expanded =
+                        !virtaulRestaurantList[item.idx].expanded
+                    " style="cursor: pointer; font-size: 25px; font-weight: 600">
+                    {{
+                    virtaulRestaurantList[item.idx].expanded ? "&ndash;" : "+"
+                    }}
+                  </span>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div class="w-100">
+                  <button class="btn btn-info" (click)="openmodal='edit';
+                      virtualRestaurantObj = virtaulRestaurantList[item.idx];
+                      addVirtualRestuarant.show()
+                    ">
+                    Edit
+                  </button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div *ngIf="!expandtable?.length" class="alert alert-info w-100" role="alert">
+      {{ "reuseableWords.No record found" | transloco }}
+    </div>
+  </div>
+  <span *ngFor="let item of expandtable">
+    <ng-container *ngIf="virtaulRestaurantList[item.idx].expanded">
+      <tr style="
+          background-color: #f5f6fa;
+          border-bottom: 2px solid #00305a;
+          border-top: 2px solid #00305a;
+        ">
+        <td colspan="5">
+          <div>
+            <app-merchant-platforms [virtualMerchantId]="virtaulRestaurantList[item.idx].id"></app-merchant-platforms>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
+  </span>
+</div>
+
+<!-- edit modal -->
+
+<div mdbModal #addVirtualRestuarant="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close"
+          (click)="addVirtualRestuarant.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-mobile-heading">
+          <span *ngIf="openmodal=='add'">{{ "VirtualResturants.Create virtual merchant" | transloco }}</span>
+          <span *ngIf="openmodal=='edit'">{{ "VirtualResturants.Edit virtual merchant" | transloco }}</span>
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">{{ "VirtualResturants.Name of virtual restaurant" | transloco }}
+            <span style="color: red"> *</span></label>
+          <input type="text" [(ngModel)]="virtualRestaurantObj.virtualName" class="form-control" />
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button [disabled]="virtualRestaurantObj.virtualName == ''" type="button" class="btn orange-bt text-white"
+          (click)="addModifyRestaurant()">
+          <span *ngIf="saveingVirtualRestaurant" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true"></span>
+          {{ "reuseableWords.SAVE" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

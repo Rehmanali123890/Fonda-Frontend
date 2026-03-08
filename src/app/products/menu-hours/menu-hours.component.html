@@ -1,0 +1,99 @@
+<div class="row align-items-center">
+  <div class="col-md-9 for-mobile">
+    <div class="form-group">
+      <label>{{'Menus.Select Day to add slot (minimum slot duration: 1 hour)' | transloco }}</label>
+      <select [(ngModel)]="selectedDayDropdown" class="form-control">
+        <option selected value="0">{{'reuseableWords.Select Day' | transloco }}</option>
+        <option value="1">{{'Hours.Monday' | transloco }}</option>
+        <option value="2">{{'Hours.Tuesday' | transloco }}</option>
+        <option value="3">{{'Hours.Wednesday' | transloco }}</option>
+        <option value="4">{{'Hours.Thursday' | transloco }}</option>
+        <option value="5">{{'Hours.Friday' | transloco }}</option>
+        <option value="6">{{'Hours.Saturday' | transloco }}</option>
+        <option value="7">{{'Hours.Sunday' | transloco }}</option>
+      </select>
+    </div>
+  </div>
+  <div class="col-md-3 add-div-mobile" style="padding-top: 24px">
+    <button
+      type="button"
+      class="btn button-theme add-for-desktop"
+      [disabled]="selectedDayDropdown == 0"
+      (click)="AddSlotinList()"
+    >
+    {{'reuseableWords.Add' | transloco }}
+    </button>
+    <img
+      src="https://img.icons8.com/ios-filled/41/EE4423/plus-2-math.png"
+      class="add-for-mobile"
+      (click)="AddSlotinList()"
+    />
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <div
+      class="row align-items-center mb-4"
+      *ngFor="let day of defaultData; let i = index"
+    >
+      <div class="col-lg-3 col-md-3 col-12">
+        <div class="weekdays">
+          <h5 class="mb-2">
+            <span> {{ DaysTranslation(day.weekDay) }}</span>
+          </h5>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3 col-12">
+        <div class="time-select-week">
+          <select [(ngModel)]="day.startTime" class="field mb-2">
+            <option [value]="''">{{'Hours.Select' | transloco }}</option>
+            <option [value]="time" *ngFor="let time of timeArr">
+              {{ time }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-3 col-12">
+        <div class="time-select-week">
+          <select [(ngModel)]="day.endTime" class="field mb-2">
+            <option [value]="''">{{'Hours.Select' | transloco }}</option>
+            <option [value]="time" *ngFor="let time of timeArr">
+              {{ time }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-3 col-12">
+        <div class="plus-icon mb-2 text-center">
+          <ng-container>
+            <button class="text-dark" (click)="deleteHours(i)">
+              <span class="fa fa-minus-circle text-danger fa-2x"></span>
+            </button>
+          </ng-container>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="loadingSlots == true" class="text-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+    <div *ngIf="defaultData.length === 0 && loadingSlots == false">
+      <div class="alert alert-info w-100" role="alert">
+        No Slots added for this menu. Menu must have a slot attached.
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 text-center">
+    <button
+      class="btn button-theme"
+      (click)="saveMenuHours()"
+      [disabled]="defaultData.length == 0"
+    >
+    {{'Hours.SAVE' | transloco }} {{'Hours.HOURS' | transloco }}
+    </button>
+  </div>
+</div>

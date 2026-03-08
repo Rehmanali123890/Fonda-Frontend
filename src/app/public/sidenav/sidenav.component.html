@@ -1,0 +1,1449 @@
+<!--
+<header>
+
+  <span
+    [ngClass]="{
+      'hide-merchant-name-element': !CheckMerchantName,
+      'show-merchant-name-element': CheckMerchantName
+    }"
+  >
+    <div
+      class="error navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav"
+      *ngIf="merchantDto.merchantStatus === 0"
+    >
+      <div
+        class="error__icon"
+        [ngStyle]="{ 'margin-left': getRedBannerMargin() }"
+      >
+        <img src="../../../assets/icons/alert.svg" class="error__icon" alt="" />
+      </div>
+      <div class="error__title">Merchant Is Inactive</div>
+    </div>
+  </span>
+
+  <div
+    class="side-navbar d-flex flex-column bg-theme custom-scroll"
+    id="sidebar"
+    [ngClass]="{ 'active-nav': isSideNavActive }"
+  >
+    <mdb-navbar-brand>
+      <li>
+        <div class="logo-wrapper waves-light logo-main-div">
+          <a href="#" class="text-center" style="background-color: #00305a">
+            <img
+              class="dashbord-logo"
+              src="../../../assets/images/Artboard 3 copy 2.png"
+            />
+          </a>
+        </div>
+      </li>
+      <div class="form-group mx-3 mt-3 desktop-view-merchant-list">
+        <label style="font-size: 12px; color: #fff">{{
+          "reuseableWords.Select Merchant" | transloco
+        }}</label>
+        <span
+          *ngIf="showheaderloader"
+          class="spinner-border ms-2"
+          role="status"
+          aria-hidden="true"
+          style="height: 20px; width: 20px; color: white"
+        >
+        </span>
+        <ng-select
+          [(ngModel)]="selectedMerchantId"
+          (ngModelChange)="MerchantChanged()"
+          [clearable]="false"
+          [loading]="gettingMerchants"
+          [searchable]="true"
+          type="text"
+          class="bg ng-select-side-nav"
+          placeholder="Select Merchant"
+        >
+          <ng-option [value]="item.id" *ngFor="let item of MerchantsList">
+            {{ item.merchantName }}
+          </ng-option>
+        </ng-select>
+      </div>
+      <ul class="nav flex-column text-white w-100">
+        <h5 style="margin-left: 17px" class="mt-1">General</h5>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/dashboard"
+          class="nav-link"
+        >
+          <mdb-icon class="sidenav-icon-image" fas icon="home"></mdb-icon>
+          <span class="">{{ "Sidenav.Home" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/orders/ordersList"
+          class="nav-link"
+        >
+          <img
+            src="../../../assets/icons/orders (1).png"
+            class="sidenav-icon-image"
+            alt=""
+          />
+          <span>{{ "Sidenav.Order" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/merchantsList"
+          class="nav-link"
+        >
+          <mdb-icon class="sidenav-icon-image" fab icon="shopware"></mdb-icon>
+          <span> {{ "Sidenav.Merchants" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/products/productsList"
+          class="nav-link"
+        >
+          <img
+            src="../../../assets/icons/menu (2).png"
+            class="sidenav-icon-image"
+            alt=""
+          />
+          <span> {{ "Sidenav.Menus" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/{{ this.selectedMerchantId }}/platforms"
+          class="nav-link"
+        >
+          <img
+            src="../../../assets/icons/platforms (2).png"
+            class="sidenav-icon-image"
+            alt=""
+          />
+          <span class=""> {{ "Sidenav.Platforms" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/StoreFrontSettingsComponent"
+          class="nav-link"
+          *ngIf="userRoleType === 1 || userRoleType === 3"
+        >
+          <mdb-icon class="sidenav-icon-image" fas icon="store"></mdb-icon>
+          <span>Store Front</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/StripeTreasuryAccountComponent"
+        <li (click)="shouldDisplayElement(true)" routerLink="/home/merchants/StripeTreasuryAccountComponent"
+          class="nav-link" *ngIf="userRoleType === 1">
+          <mdb-icon class="sidenav-icon-image" fas icon="wallet"></mdb-icon>
+          <span>{{ "Sidenav.Wallet" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/reports"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <img
+            src="../../../assets/icons/Reports (1).png"
+            class="sidenav-icon-image"
+            alt=""
+          />
+          <span> {{ "Sidenav.Reports" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/google-analytics"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fad fa-analytics sidenav-icon-image"></i>
+          <span>{{ "Sidenav.Business Analytics" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/onBoarding/merchant-onBoarding"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fas fa-handshake sidenav-icon-image"></i>
+          <span>{{ "Sidenav.Merchants ONBoarding" | transloco }}</span>
+        </li>
+        <li
+          routerLink="/onBoarding/onboarding-form"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fas fa-handshake sidenav-icon-image"></i>
+          <span> {{ "Sidenav.ONBoarding Form" | transloco }}</span>
+        </li>
+        <!-- <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/google-my-business"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <mdb-icon class="sidenav-icon-image" fas icon="wallet"></mdb-icon>
+          <span>{{ "Sidenav.Wallet" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/reports"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <img
+            src="../../../assets/icons/Reports (1).png"
+            class="sidenav-icon-image"
+            alt=""
+          />
+          <span> {{ "Sidenav.Reports" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/google-analytics"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fad fa-analytics sidenav-icon-image"></i>
+          <span>{{ "Sidenav.Business Analytics" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/onBoarding/merchant-onBoarding"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fas fa-handshake sidenav-icon-image"></i>
+          <span>{{ "Sidenav.Merchants ONBoarding" | transloco }}</span>
+        </li>
+        <li
+          routerLink="/onBoarding/onboarding-form"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fas fa-handshake sidenav-icon-image"></i>
+          <span> {{ "Sidenav.ONBoarding Form" | transloco }}</span>
+        </li>
+
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/google_my_business"
+          class="nav-link"
+          *ngIf="userRoleType === 1 || userRoleType === 3"
+        >
+          <i class="fab fa-google sidenav-icon-image"></i>
+          <span> GMB</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/bulk-invoice"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i
+            class="fa fa-credit-card sidenav-icon-image"
+            aria-hidden="true"
+          ></i>
+          <span> {{ "Sidenav.Bulk Invoice" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/new-bulk-invoice"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i
+            class="fa fa-credit-card sidenav-icon-image"
+            aria-hidden="true"
+          ></i>
+          <span> {{ "Sidenav.New Bulk Invoice" | transloco }}</span>
+        </li>
+
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/payout"
+          class="nav-link"
+          *ngIf="userRoleType === 3"
+        >
+          <i
+            class="fa fa-credit-card sidenav-icon-image"
+            aria-hidden="true"
+          ></i>
+          <span> {{ "Sidenav.Payouts" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/new-payout"
+          class="nav-link"
+          *ngIf="userRoleType === 3"
+        >
+          <i
+            class="fa fa-credit-card sidenav-icon-image"
+            aria-hidden="true"
+          ></i>
+          <span> New {{ "Sidenav.Payouts" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/woflow"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fa fa-tasks sidenav-icon-image" aria-hidden="true"></i>
+          <span> Woflow</span>
+        </li>
+        <li (click)="shouldDisplayElement(true)" routerLink="/home/customers/customer" class="nav-link"
+         >
+          <i class="fa fa-tasks sidenav-icon-image" aria-hidden="true"></i>
+          <span> Customers</span>
+        </li>
+        <li (click)="shouldDisplayElement(false)" routerLink="/home/merchants/import-toast-orders" class="nav-link"
+          *ngIf="userRoleType === 1">
+          <mdb-icon class="sidenav-icon-image" fas icon="file-upload"></mdb-icon>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/import-toast-orders"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <mdb-icon
+            class="sidenav-icon-image"
+            fas
+            icon="file-upload"
+          ></mdb-icon>
+          <span> {{ "Sidenav.Import Orders" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/merchants/import-transaction-file"
+          class="nav-link"
+          *ngIf="userRoleType === 1 && showTransactiontab"
+        >
+          <mdb-icon
+            class="sidenav-icon-image"
+            fas
+            icon="file-upload"
+          ></mdb-icon>
+          <span> {{ "Sidenav.Import Transaction File" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/logs/logs"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <i class="fas fa-history sidenav-icon-image"></i>
+          <span> {{ "Sidenav.Logs" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/term-and-condition"
+          class="nav-link"
+          *ngIf="userRoleType === 1 || userRoleType === 3 || userRoleType === 4"
+        >
+          <img
+            class="fas fa-history sidenav-icon-image"
+            src="../../../assets/icons/Terms and Conditions.svg"
+            alt=""
+          />
+          <span> T&Cs</span>
+        </li>
+        <h5 style="margin-left: 17px" class="mt-3">
+          {{ "Sidenav.Configuration" | transloco }}
+        </h5>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/users/list"
+          class="nav-link"
+          *ngIf="userRoleType === 1 || userRoleType === 3 || userRoleType === 4"
+        >
+          <mdb-icon class="sidenav-icon-image" fas icon="users"></mdb-icon>
+          <span> {{ "Sidenav.Users" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(false)"
+          routerLink="/home/profile/myprofile"
+          class="nav-link"
+        >
+          <mdb-icon class="sidenav-icon-image" far icon="gem"></mdb-icon>
+          <span> {{ "Sidenav.My Profile" | transloco }}</span>
+        </li>
+        <li
+          (click)="shouldDisplayElement(true)"
+          routerLink="/home/merchants/MerchantSubscriptionDetailsComponent"
+          class="nav-link"
+          *ngIf="userRoleType === 1"
+        >
+          <mdb-icon
+            class="sidenav-icon-image"
+            far
+            icon="calendar-alt"
+          ></mdb-icon>
+          <span> {{ "Sidenav.Subscription" | transloco }}</span>
+        </li>
+        <li (click)="Logout()" class="nav-link">
+          <mdb-icon
+            class="sidenav-icon-image"
+            fas
+            icon="sign-out-alt"
+          ></mdb-icon>
+          <span>{{ "Sidenav.Signout" | transloco }}</span>
+        </li>
+      </ul>
+    </mdb-navbar-brand>
+  </div>
+
+
+  <div
+    [ngStyle]="getContainerStyles()"
+    class="p-1 my-container margn-top-mobile-view"
+  >
+    <main [ngStyle]="getMainStyles()">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+  <mdb-navbar
+    id="sidebar"
+    SideClass="navbar fixed-top navbar-toggleable-md navbar-expand-lg scrolling-navbar double-nav"
+    class="top-navbar"
+    [containerInside]="false"
+  >
+    <a
+      class="button-collapse desktop-menu-view"
+      style="font-size: 1.4em; color: black"
+      (click)="toggleSideNav()"
+      [ngStyle]="{ 'margin-left': getbarsMargin() }"
+    >
+      <mdb-icon
+        *ngIf="isSideNavActive === false"
+        fas
+        icon="bars"
+        class="bars-icon"
+        style="margin-left: 0.6em"
+      ></mdb-icon>
+      <i
+        *ngIf="isSideNavActive === true"
+        class="fas fa-xmark m-for-mmobile"
+      ></i>
+    </a>
+
+    <div
+      [ngClass]="{
+        'hide-merchant-name-element': !CheckMerchantName,
+        'show-merchant-name-element': CheckMerchantName
+      }"
+      style="width: max-width"
+      id="top-head-merchant-name"
+    >
+      <h4
+        style="
+          width: max-content;
+          margin-bottom: 0px;
+          color: #00305a;
+          text-decoration: underline;
+          cursor: pointer;
+        "
+        [ngStyle]="{ 'margin-left': getheadingMargin() }"
+        (click)="navigateToMerchantSetting(merchantDto)"
+      >
+        {{ merchantDto.merchantName }}
+      </h4>
+    </div>
+    <navlinks class="navbar-container">
+      <div class="float-left">
+        <a class="nav-links waves-light" id="mobile-link" mdbWavesEffect>
+          <img
+            class="dashbord-mobile-logo"
+            src="../../../assets/images/Artboard_3_copy_7-removebg-preview.png"
+          />
+        </a>
+      </div>
+
+    </navlinks>
+
+    <mdb-navbar-brand>
+      <div class="d-flex justify-content-center align-items-center">
+        <select
+          class="selectpicker mobile-view-merchant-list"
+          [(ngModel)]="selectedMerchantId"
+          (ngModelChange)="MerchantChanged()"
+          clearable="false"
+          loading="gettingMerchants"
+          searchable="true"
+        >
+          <option [value]="item.id" *ngFor="let item of MerchantsList">
+            {{ item.merchantName }}
+          </option>
+        </select>
+      </div>
+    </mdb-navbar-brand>
+
+    <navlinks>
+      <ul
+        class="nav navbar-nav nav-flex-icons ml-auto ie-double-nav align-items-center"
+        style="margin-left: auto"
+      >
+        <li
+          class="nav-item bell-icon"
+          *ngIf="showNotificationIcon && userRoleType === 1"
+          (click)="NavigateToLogs()"
+        >
+          <a class="nav-link waves-light" mdbWavesEffect>
+            <mdb-icon style="color: #00305a" fas icon="bell"></mdb-icon>
+            <span style="color: black" class="clearfix d-none d-sm-inline-block"
+              >review merchant changes</span
+            >
+          </a>
+        </li>
+        <li
+          class="nav-item bell-icon mr-3"
+          *ngIf="showErrorNotificationIcon && userRoleType === 1"
+          (click)="NavigateToErrorLogs()"
+        >
+          <a class="nav-link waves-light" mdbWavesEffect>
+            <mdb-icon style="color: #00305a" fas icon="bell"></mdb-icon>
+            <span class="clearfix d-none d-sm-inline-block"
+              >view error log
+            </span>
+          </a>
+        </li>
+        <li
+          class="nav-item bell-icon"
+          *ngIf="userRoleType === 1 || userRoleType === 2"
+        >
+          <div class="mute-unmute-container" (click)="toggleMute()">
+            <i *ngIf="isMuted" class="fas fa-volume-mute"></i>
+            <i *ngIf="!isMuted" class="fas fa-volume-up"></i>
+          </div>
+        </li>
+        <li class="nav-link">
+          <a
+            class="user-profile dropdown-toggle profile-dropdown"
+            data-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <img
+              src="https://img.icons8.com/material/34/FFFFFF/user-male-circle--v1.png"
+              style="margin-left: 0.2em"
+            />
+          </a>
+          <ul class="dropdown-menu dropdown-usermenu pull-right">
+            <li
+              class="nav-item bell-icon-for-mobile"
+              *ngIf="userRoleType === 1 || userRoleType === 2"
+            >
+              <div class="mute-unmute-container" (click)="toggleMute()">
+                <i *ngIf="isMuted" class="fas fa-volume-mute"></i>
+                <i *ngIf="!isMuted" class="fas fa-volume-up"></i>
+              </div>
+            </li>
+            <li>
+              <a routerLink="/home/profile/myprofile">
+                <mdb-icon far icon="gem"></mdb-icon> My Profile
+              </a>
+            </li>
+            <li style="border-bottom: 1px solid #d5d1d1; margin-bottom: 1em">
+              <a (click)="Logout()">
+                <mdb-icon fas icon="sign-out-alt"></mdb-icon> Signout
+              </a>
+            </li>
+            <li>
+              <a routerLink="/home/dashboard" routerLinkActive>
+                <mdb-icon fas icon="home"></mdb-icon> Home
+              </a>
+            </li>
+            <li
+              *ngIf="
+                userRoleType === 1 ||
+                userRoleType === 2 ||
+                userRoleType === 4 ||
+                userRoleType === 3
+              "
+            >
+              <a routerLink="/home/orders/ordersList">
+                <img
+                  src="../../../assets/icons/ordertransactionreport (1).png"
+                  class="sidenav-icon-image-mobile"
+                  alt=""
+                />
+                Order
+              </a>
+            </li>
+            <li>
+              <a routerLink="/home/merchants/merchantsList">
+                <mdb-icon fab icon="shopware"></mdb-icon> Merchants
+              </a>
+            </li>
+
+            <li>
+              <a routerLink="/home/products/productsList">
+                <img
+                  src="../../../assets/icons/menu (3).png"
+                  class="sidenav-icon-image-mobile"
+                  alt=""
+                />
+                Menus
+              </a>
+            </li>
+            <li /home/merchants/>
+              <a
+                routerLink="/home/merchants/{{
+                  this.selectedMerchantId
+                }}/platforms"
+              >
+                <img
+                  src="../../../assets/icons/platforms (3).png"
+                  class="sidenav-icon-image-mobile"
+                  alt=""
+                />
+                Platforms
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1 || userRoleType === 3">
+              <a
+                href="/home/merchants/StoreFrontSettingsComponent"
+                class="mobile-view-font"
+                style="font-size: 1rem"
+              >
+                <i class="fas fa-store"></i> Store Front
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a
+                href="/home/merchants/StripeTreasuryAccountComponent"
+                class="mobile-view-font"
+                style="font-size: 1rem"
+              >
+                <mdb-icon fas icon="wallet"></mdb-icon> Wallet
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/reports">
+                <i class="fas fa-file-alt"></i>
+                Reports
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/google-analytics">
+                <i class="fad fa-analytics"></i> Business Analytics
+              </a>
+            </li>
+
+            <li *ngIf="userRoleType === 1">
+              <a
+                href="/onBoarding/merchant-onBoarding"
+                class="mobile-view-font"
+                target="_blank"
+                style="font-size: 1rem"
+              >
+                <i class="fas fa-handshake"></i> Merchants ONBoarding
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a
+                href="/onBoarding/onboarding-form"
+                class="mobile-view-font"
+                target="_blank"
+                style="font-size: 1rem"
+              >
+                <i class="fas fa-handshake"></i> ONBoarding Form
+              </a>
+            </li>
+
+            <li *ngIf="userRoleType === 1 || userRoleType === 3">
+              <a routerLink="/home/merchants/google_my_business">
+                <i class="fab fa-google"></i> GMB
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/bulk-invoice">
+                <i class="fa fa-credit-card" aria-hidden="true"></i> Bulk
+                Invoice
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/new-bulk-invoice">
+                <i class="fa fa-credit-card" aria-hidden="true"></i> New Bulk
+                Invoice
+              </a>
+            </li>
+
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/woflow">
+                <i class="fa fa-tasks" aria-hidden="true"></i> Woflow
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/import-toast-orders">
+                <mdb-icon fas icon="file-upload"></mdb-icon> Import Orders
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/import-transaction-file">
+                <mdb-icon fas icon="file-upload"></mdb-icon> Import Transaction
+                file
+              </a>
+            </li>
+
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/logs/logs">
+                <i class="fas fa-history"></i> Logs
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1">
+              <a routerLink="/home/merchants/term-and-condition">
+                <img
+                  style="width: 17px !important"
+                  class="fas fa-history sidenav-icon-image"
+                  src="../../../assets/icons/termcondition-mobile.svg"
+                  alt=""
+                />
+                T&Cs
+              </a>
+            </li>
+            <li
+              *ngIf="
+                userRoleType === 1 || userRoleType === 3 || userRoleType === 4
+              "
+            >
+              <a routerLink="/home/users/list" routerLinkActive>
+                <mdb-icon fas icon="users"></mdb-icon> Users
+              </a>
+            </li>
+            <li *ngIf="userRoleType === 1" style="margin-bottom: 4em">
+              <a
+                routerLink="/home/merchants/MerchantSubscriptionDetailsComponent"
+              >
+                <mdb-icon far icon="calendar-alt"></mdb-icon> Subscription
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </navlinks>
+  </mdb-navbar>
+</header> -->
+
+<nav class="navbar navbar-expand-lg navbar-dark nav_bg">
+  <a class="navbar-brand brand-for-mobile">
+    <img
+      src="../../../assets/images/Artboard 3 copy 2.png"
+      class="logo-for-desktop-view"
+      alt=""
+    />
+    <img
+      src="../../../assets/images/Artboard_3_copy_7-removebg-preview.png"
+      class="logo-for-mobile-view"
+      alt=""
+    />
+    <ul class="navbar-nav selected-res-for-mobile">
+      <li class="nav-item dropdown nav-div">
+        <span class="mr-3">
+          <a
+            class="dropdown-toggle userDrop"
+            (click)="toggleDropdown('username')"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="user-name"> {{ username }}</span>
+            <img
+              src="../../../assets/icons/dropdown.svg"
+              class="drop-icon"
+              alt=""
+              [ngClass]="{
+                'icon-rotated-up-for-mobi': isOpen === 'username',
+                'icon-rotated-down-for-mobi': isOpen !== 'username'
+              }"
+            />
+          </a>
+          <div class="selected-merchant">
+            <span
+              *ngIf="showheaderloader"
+              class="spinner-border ms-2"
+              role="status"
+              aria-hidden="true"
+              style="height: 20px; width: 20px; color: white"
+            ></span>
+            <!-- merchant name for mobile  -->
+            <ng-container *ngIf="!showheaderloader">
+              <span class="merchant-name-selected-for-mobile">
+                <span class="merchant-name-moving">
+                  <span
+                    *ngIf="merchantDto.merchantStatus === 0 && selectedMerchant"
+                    style="font-size: 14px; color: #ed665b; font-weight: 500"
+                  >
+                    <img
+                      src="../../../assets/icons/inactive.svg"
+                      height="15"
+                      alt=""
+                    />
+                    <!-- {{ "Sidenav.Inactive" | transloco }} -->
+                  </span>
+                  <span
+                    *ngIf="merchantDto.merchantStatus === 1 && selectedMerchant"
+                    style="font-size: 14px; color: #08b051; font-weight: 500"
+                  >
+                    <img
+                      src="../../../assets/icons/active.svg"
+                      height="16"
+                      alt=""
+                    />
+                    <!-- {{ "Sidenav.Active" | transloco }} -->
+                  </span>
+                  <div
+                    class="merchant-name-selected"
+                    style="cursor: pointer"
+                    (click)="navigateToMerchantSetting(merchantDto)"
+                  >
+                    <span>{{ selectedMerchant }}</span>
+                  </div>
+                </span>
+              </span>
+            </ng-container>
+          </div>
+
+          <div
+            class="dropdown-menu user_dropdown user-profile-drop"
+            [ngClass]="{ show: isOpen === 'username' }"
+            (click)="$event.stopPropagation()"
+          >
+            <div class="did-floating-label-content">
+              <ng-select
+                style="top: 7px; z-index: 0"
+                [(ngModel)]="selectedMerchantId"
+                (ngModelChange)="MerchantChanged()"
+                [searchable]="false"
+                [clearable]="false"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    [(ngModel)]="searchTerm"
+                    (input)="filterMerchants(searchTerm)"
+                    class="ng-select-search-input"
+                  />
+                </ng-template>
+                <ng-option [value]="item.id" *ngFor="let item of MerchantsList">
+                  {{ item.merchantName }}
+                </ng-option>
+              </ng-select>
+              <label class="did-floating-label" style="top: -1px"
+                >Merchant</label
+              >
+            </div>
+            <a
+              [ngClass]="{ 'disabled-link': !selectedMerchant }"
+              class="dropdown-item user-dropdown"
+              (click)="navigateToMerchantSetting(merchantDto)"
+              >{{ "Sidenav.Merchant Profile" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/profile/myprofile"
+              >{{ "Sidenav.User Profile" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/users/list"
+              *ngIf="
+                userRoleType === 1 || userRoleType === 3 || userRoleType === 4
+              "
+              >{{ "Sidenav.Users" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/logs/logs"
+              *ngIf="userRoleType === 1"
+              >{{ "Sidenav.Logs/Activities" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/merchants/term-and-condition"
+              *ngIf="
+                userRoleType === 1 || userRoleType === 3 || userRoleType === 4
+              "
+              >{{ "Sidenav.Terms & Conditions" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item user-dropdown" (click)="Logout()">{{
+              "Sidenav.Signout" | transloco
+            }}</a>
+            <div class="dropdown-divider"></div>
+            <div class="dropdown language-dropdown">
+              <div
+                class="dropdown-toggle d-flex align-items-center gap-2"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                (click)="toggleDropdownLanguage()"
+              >
+                <i class="fas fa-globe"></i>
+                {{ currentLang === "en" ? "English" : "Spanish" }}
+                <i
+                  style="font-size: 14px"
+                  [class]="
+                    isDropdownOpen ? 'fas fa-chevron-up' : 'fas fa-chevron-down'
+                  "
+                ></i>
+              </div>
+              <div
+                class="dropdown-menu language-main-drop-div"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <a
+                  class="dropdown-item d-flex align-items-center gap-2"
+                  (click)="changeLanguage('en')"
+                >
+                  <img
+                    src="../../../assets/images/usa.svg"
+                    class="flag-img"
+                    alt=""
+                  />
+                  English
+                </a>
+                <a
+                  class="dropdown-item d-flex align-items-center gap-2"
+                  (click)="changeLanguage('es')"
+                >
+                  <img
+                    src="../../../assets/images/span.svg"
+                    class="flag-img"
+                    alt=""
+                  />
+                  Spanish
+                </a>
+              </div>
+            </div>
+          </div>
+        </span>
+        <div class="mute-unmute-container" (click)="toggleMute()">
+          <i *ngIf="isMuted" class="fas fa-volume-mute"></i>
+          <i *ngIf="!isMuted" class="fas fa-volume-up"></i>
+        </div>
+      </li>
+    </ul>
+  </a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <img src="../../../assets/icons/menu.svg" class="navbar-menu-icon" alt="" />
+  </button>
+
+  <div
+    class="collapse navbar-collapse mobile-menu"
+    [ngClass]="{ show: isMenuOpen }"
+    id="navbarSupportedContent"
+  >
+    <ul
+      class="navbar-nav ml-3 mr-auto d-flex align-items-center menu-inline-div"
+    >
+      <li class="nav-item active border-for-mobi">
+        <a class="nav-link" routerLink="/home/dashboard">{{
+          "Sidenav.Home" | transloco
+        }}</a>
+      </li>
+      <li
+        class="nav-item dropdown border-for-mobi"
+        (click)="toggleDropdown('food')"
+      >
+        <a
+          class="nav-link dropdown-toggle"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ "Sidenav.Food" | transloco }}
+          <img
+            src="../../../assets/icons/dropdown.svg"
+            class="drop-icon-for-menu desk-view"
+            alt=""
+            [ngClass]="{
+              'icon-rotated-up': isOpen === 'food',
+              'icon-rotated-down': isOpen !== 'food'
+            }"
+          />
+          <img
+            src="../../../assets/icons/dropdownblack.svg"
+            class="drop-icon-for-menu mobi-view"
+            alt=""
+            [ngClass]="{
+              'icon-rotated-up': isOpen === 'food',
+              'icon-rotated-down': isOpen !== 'food'
+            }"
+          />
+        </a>
+        <div
+          class="dropdown-menu user_dropdown removebg-for-mobile"
+          [ngClass]="{ show: isOpen === 'food' }"
+        >
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/products/productsList"
+          >
+            {{ "Sidenav.Menus" | transloco }} {{ "Sidenav.Old" | transloco }}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/menus/menu"
+            >{{ "Sidenav.Menus" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/menus/categories"
+          >
+            {{ "Menus.Categories" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item user-dropdown" routerLink="/home/menus/items">
+            {{ "reuseableWords.Items" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/menus/modifiers"
+          >
+            {{ "Menus.Modifiers" | transloco }}</a
+          >
+          <!-- <div class="dropdown-divider"></div> -->
+          <!-- <a class="dropdown-item user-dropdown" routerLink="/home/menus/menu-templates">Menu Templates</a> -->
+        </div>
+      </li>
+
+      <li
+        class="nav-item dropdown border-for-mobi"
+        (click)="toggleDropdown('finance')"
+      >
+        <a
+          class="nav-link dropdown-toggle"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ "Sidenav.Finance" | transloco }}
+          <img
+            src="../../../assets/icons/dropdown.svg"
+            class="drop-icon-for-menu desk-view"
+            alt=""
+            [ngClass]="{
+              'icon-rotated-up': isOpen === 'finance',
+              'icon-rotated-down': isOpen !== 'finance'
+            }"
+          />
+          <img
+            src="../../../assets/icons/dropdownblack.svg"
+            class="drop-icon-for-menu mobi-view"
+            alt=""
+            [ngClass]="{
+              'icon-rotated-up': isOpen === 'finance',
+              'icon-rotated-down': isOpen !== 'finance'
+            }"
+          />
+        </a>
+        <div
+          class="dropdown-menu user_dropdown removebg-for-mobile"
+          [ngClass]="{ show: isOpen === 'finance' }"
+        >
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/orders/ordersList"
+            >{{ "Sidenav.Order" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+          <a
+            *ngIf="userRoleType === 1 || userRoleType === 2"
+            class="dropdown-item user-dropdown"
+            routerLink="/home/merchants/import-toast-orders"
+            >{{
+              "Sidenav.Import
+            Orders" | transloco
+            }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/reports"
+            >{{ "Sidenav.Reports" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/bulk-invoice"
+            >{{ "Sidenav.Billing" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/new-bulk-invoice"
+            >{{ "Sidenav.NewBulkInvoice" | transloco }}</a
+          >
+          <div class="dropdown-divider" *ngIf="userRoleType === 1"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/MerchantSubscriptionDetailsComponent"
+            >{{ "reuseableWords.Subscriptions" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/google-analytics"
+            >{{ "Sidenav.Executive Analytics" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1 && showTransactiontab"
+            routerLink="/home/merchants/import-transaction-file"
+            >{{ "Sidenav.Import Transaction File" | transloco }}</a
+          >
+
+             <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1 && showTransactiontab"
+            routerLink="/home/merchants/payout-reconciliation"
+            >{{ "Payout Reconciliation" | transloco }}</a
+          >
+
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 3"
+            routerLink="/home/merchants/payout"
+            >{{ "Sidenav.Payouts" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 3"
+            routerLink="/home/merchants/new-payout"
+          >
+            New {{ "Sidenav.Payouts" | transloco }}</a
+          >
+        </div>
+      </li>
+
+      <li
+        class="nav-item dropdown border-for-mobi"
+        (click)="toggleDropdown('admin')"
+      >
+        <a
+          class="nav-link dropdown-toggle"
+          role="button"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ "Sidenav.Admin" | transloco }}
+          <img
+            src="../../../assets/icons/dropdown.svg"
+            class="drop-icon-for-menu desk-view"
+            alt=""
+            [ngClass]="{
+              'icon-rotated-up': isOpen === 'admin',
+              'icon-rotated-down': isOpen !== 'admin'
+            }"
+          />
+          <img
+            src="../../../assets/icons/dropdownblack.svg"
+            class="drop-icon-for-menu mobi-view"
+            alt=""
+            [ngClass]="{
+              'icon-rotated-up': isOpen === 'admin',
+              'icon-rotated-down': isOpen !== 'admin'
+            }"
+          />
+        </a>
+        <div
+          class="dropdown-menu user_dropdown removebg-for-mobile"
+          [ngClass]="{ show: isOpen === 'admin' }"
+        >
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1 || userRoleType === 3"
+            routerLink="/home/merchants/StoreFrontSettingsComponent"
+            >{{ "Sidenav.Storefront" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/merchants/merchantsList"
+            >{{ "Sidenav.Merchants" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/customers/customer"
+            >{{ "reuseableWords.Customers" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            routerLink="/home/merchants/{{ selectedMerchantId }}/platforms"
+            >{{ "Sidenav.Connections" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            target="_blank"
+            href="https://onboarding.mifonda.io/"
+          >
+            {{ "Sidenav.ONBoarding Form" | transloco }}</a
+          >
+
+          <div class="dropdown-divider"></div>
+
+          <!-- <a class="dropdown-item user-dropdown" *ngIf="userRoleType === 1"
+            routerLink="/onBoarding/merchant-onBoarding">{{ "Sidenav.Merchants ONBoarding" | transloco }}</a>
+          <div class="dropdown-divider"></div> -->
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/woflow"
+            >{{ "Sidenav.Woflow" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1 || userRoleType === 3"
+            routerLink="/home/merchants/google_my_business"
+            >{{ "Sidenav.Google My Business" | transloco }}</a
+          >
+          <div class="dropdown-divider"></div>
+
+          <a
+            class="dropdown-item user-dropdown"
+            *ngIf="userRoleType === 1"
+            routerLink="/home/merchants/StripeTreasuryAccountComponent"
+            >{{ "Sidenav.Wallet" | transloco }}</a
+          >
+        </div>
+      </li>
+    </ul>
+    <div class="form-inline my-2 my-lg-0 selected-res-for-desktop">
+      <ul class="navbar-nav ml-3 mr-auto">
+        <li class="nav-item dropdown mr-3">
+          <a
+            class="nav-link dropdown-toggle userDrop"
+            (click)="toggleDropdown('username')"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            <span class="user-name"> {{ username }}</span>
+            <img
+              src="../../../assets/icons/dropdown.svg"
+              class="drop-icon"
+              alt=""
+              [ngClass]="{
+                'icon-rotated-up': isOpen === 'username',
+                'icon-rotated-down': isOpen !== 'username'
+              }"
+            />
+          </a>
+          <div class="selected-merchant">
+            <span
+              *ngIf="showheaderloader"
+              class="spinner-border ms-2"
+              role="status"
+              aria-hidden="true"
+              style="height: 20px; width: 20px; color: white"
+            ></span>
+            <ng-container *ngIf="!showheaderloader">
+              <span
+                *ngIf="merchantDto.merchantStatus === 0 && selectedMerchant"
+                style="font-size: 14px; color: #ed665b; font-weight: 500"
+              >
+                <img
+                  src="../../../assets/icons/inactive.svg"
+                  height="15"
+                  alt=""
+                />
+                {{ "Sidenav.Inactive" | transloco }}
+              </span>
+              <span
+                *ngIf="merchantDto.merchantStatus === 1 && selectedMerchant"
+                style="font-size: 14px; color: #08b051; font-weight: 500"
+              >
+                <img
+                  src="../../../assets/icons/active.svg"
+                  height="16"
+                  alt=""
+                />
+                {{ "Sidenav.Active" | transloco }}
+              </span>
+              <div
+                class="merchant-name-selected"
+                style="cursor: pointer"
+                (click)="navigateToMerchantSetting(merchantDto)"
+              >
+                {{ selectedMerchant }}
+              </div>
+            </ng-container>
+          </div>
+          <div
+            class="dropdown-menu user_dropdown user-profile-drop"
+            [ngClass]="{ show: isOpen === 'username' }"
+            (click)="$event.stopPropagation()"
+          >
+            <div class="did-floating-label-content">
+              <ng-select
+                style="top: 7px; z-index: 0"
+                [(ngModel)]="selectedMerchantId"
+                (ngModelChange)="MerchantChanged()"
+                [searchable]="false"
+                [clearable]="false"
+              >
+                <ng-template ng-header-tmp>
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    [(ngModel)]="searchTerm"
+                    (input)="filterMerchants(searchTerm)"
+                    class="ng-select-search-input"
+                  />
+                </ng-template>
+                <ng-option [value]="item.id" *ngFor="let item of MerchantsList">
+                  {{ item.merchantName }}
+                </ng-option>
+              </ng-select>
+              <label class="did-floating-label" style="top: -1px"
+                >Merchant</label
+              >
+            </div>
+            <a
+              [ngClass]="{ 'disabled-link': !selectedMerchant }"
+              class="dropdown-item user-dropdown"
+              (click)="navigateToMerchantSetting(merchantDto)"
+              >{{ "Sidenav.Merchant Profile" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/profile/myprofile"
+              >{{ "Sidenav.User Profile" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/users/list"
+              *ngIf="
+                userRoleType === 1 || userRoleType === 3 || userRoleType === 4
+              "
+              >{{ "Sidenav.Users" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/logs/logs"
+              *ngIf="userRoleType === 1"
+              >{{ "Sidenav.Logs/Activities" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a
+              class="dropdown-item user-dropdown"
+              routerLink="/home/merchants/term-and-condition"
+              *ngIf="
+                userRoleType === 1 || userRoleType === 3 || userRoleType === 4
+              "
+              >{{ "Sidenav.Terms & Conditions" | transloco }}</a
+            >
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item user-dropdown" (click)="Logout()">{{
+              "Sidenav.Signout" | transloco
+            }}</a>
+            <div class="dropdown-divider"></div>
+
+            <div class="dropdown language-dropdown">
+              <div
+                class="dropdown-toggle d-flex align-items-center gap-2"
+                type="button"
+                id="dropdownMenuButton"
+                data-bs-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+                (click)="toggleDropdownLanguage()"
+              >
+                <i class="fas fa-globe"></i>
+                {{ currentLang === "en" ? "English" : "Spanish" }}
+                <i
+                  style="font-size: 14px"
+                  [class]="
+                    isDropdownOpen ? 'fas fa-chevron-up' : 'fas fa-chevron-down'
+                  "
+                ></i>
+              </div>
+              <div
+                class="dropdown-menu language-main-drop-div"
+                aria-labelledby="dropdownMenuButton"
+              >
+                <a
+                  class="dropdown-item d-flex align-items-center gap-2"
+                  (click)="changeLanguage('en')"
+                >
+                  <img
+                    src="../../../assets/images/usa.svg"
+                    class="flag-img"
+                    alt=""
+                  />
+                  English
+                </a>
+                <a
+                  class="dropdown-item d-flex align-items-center gap-2"
+                  (click)="changeLanguage('es')"
+                >
+                  <img
+                    src="../../../assets/images/span.svg"
+                    class="flag-img"
+                    alt=""
+                  />
+                  Spanish
+                </a>
+              </div>
+            </div>
+          </div>
+        </li>
+        <li class="nav-item bell-icon">
+          <div class="mute-unmute-container" (click)="toggleMute()">
+            <i *ngIf="isMuted" class="fas fa-volume-mute"></i>
+            <i *ngIf="!isMuted" class="fas fa-volume-up"></i>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="main_content">
+  <router-outlet></router-outlet>
+</div>

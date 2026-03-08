@@ -1,0 +1,10 @@
+table.table td,
+table.table th {
+  padding: 12px 8px !important;
+  width: 20px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px;
+}

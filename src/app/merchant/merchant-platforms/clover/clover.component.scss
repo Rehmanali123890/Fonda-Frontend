@@ -1,0 +1,88 @@
+div > h2 {
+  margin: 0rem 2rem;
+}
+
+#link {
+  text-align: right !important;
+  text-decoration: underline;
+}
+#buttons-group {
+  display: flex;
+  flex-direction: column;
+  margin: 1rem 2rem;
+  transition: all 0.4 ease;
+}
+.checkbox-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  transition: all 0.4s ease;
+  border: 1px solid rgb(189, 188, 188);
+  border-radius: 5px;
+}
+.checkbox-div:hover {
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.1);
+}
+.radio-div {
+  margin-right: 40px;
+}
+.row{
+  align-items: center !important;
+}
+
+
+// ============media query============
+
+@media screen and (max-width:1024px) {
+  .checkbox-div{
+    flex-direction: column;
+    padding: 0px 5px;
+    align-items: flex-start;
+  }
+  .form-check{
+    padding: 0.25rem !important;
+  }
+}
+@media screen and (max-width:767px) {
+  .checkbox-div{
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 50%;
+    margin: 10px 0px
+  }
+  .platforms-btn{
+    width: 50%;
+  }
+  .auto-sync-div{
+    margin: 0px 4px;
+  }
+
+}
+@media screen and (max-width:550px) {
+  .checkbox-div{
+   width: 70%;
+
+  }
+  .platforms-btn{
+    width: 70%;
+  }
+  .auto-sync-div{
+    margin: 0px 4px;
+  }
+
+}
+
+@media screen and (max-width:415px) {
+  .checkbox-div{
+   width: 90%;
+
+  }
+  .platforms-btn{
+    width: 90%;
+  }
+  .auto-sync-div{
+    margin: 0px 4px;
+  }
+
+}

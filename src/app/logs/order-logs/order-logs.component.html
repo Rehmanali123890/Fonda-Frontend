@@ -1,0 +1,65 @@
+<div class="card mt-4">
+  <div class="card-body">
+    <div class="row forMobile">
+      <div class="col">
+        <label for=""> External Reference Id</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Enter Here"
+          [(ngModel)]="orderExternalRefrence"
+        />
+      </div>
+      <div class="col mt-4">
+        <button class="btn button-theme" (click)="activityDataList()">
+          Get Logs
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-3">
+  <div *ngIf="ShowgettingActivityList">
+    <div
+      class="table-responsive"
+      infinite-scroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="0"
+    >
+      <div
+        *ngIf="gettingActivityList"
+        class="d-flex justify-content-center text-center"
+      >
+        <mat-progress-bar
+          class="progress primary-color-dark mb-0"
+          mode="indeterminate"
+        ></mat-progress-bar>
+      </div>
+
+      <div *ngIf="Shownotfound" class="alert alert-info w-100" role="alert">
+        No record found
+      </div>
+    </div>
+
+    <div *ngFor="let item of orderLogsList" class="mt-2">
+      <p><strong> Event Date: </strong> {{ item.orderdatetime }}</p>
+      <p><strong> Message Id: </strong> {{ item.gmail_message_id }}</p>
+      <p><strong> Message: </strong> {{ item.message }}</p>
+      <p>
+        <strong>Event Detail:</strong>
+        <span>
+          <pre>{{ item.order_state }}</pre>
+        </span>
+      </p>
+
+      <p class="mt-2">...........................</p>
+    </div>
+  </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+<script>
+  hljs.highlightAll();
+</script>
+<!-- <div  style="white-space: pre-line;"> {{formattedString}}</div> -->
+<!-- </div> -->

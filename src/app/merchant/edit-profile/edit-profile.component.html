@@ -1,0 +1,296 @@
+<div class="mb-4 mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h4 class="status-heading">
+        {{ 'GMB.Verification Status' | transloco }}:
+        <div class="d-flex" style="margin-left: 0.2em" *ngIf="loc_obj.status == 3">
+          <span id="verified">
+            <img *ngIf="loc_obj.status == 3" src="../../../assets/icons/verified.svg" class="verified-img" alt="" />
+            {{ loc_obj.status == 3 ? "verified" : "" }}
+          </span>
+        </div>
+        <div class="d-flex mb-2" style="margin-left: 0.2em" *ngIf="loc_obj.status != 3">
+          <span id="unverified">
+            <img src="../../../assets/icons/unverified.svg" class="unverified-img" alt="" />
+
+            {{ loc_obj.status == 1 ? "Pending verify" : "" }}
+            {{ loc_obj.status == 2 ? "Suspended" : "" }}
+            {{ loc_obj.status == 4 ? "duplicate" : "" }}
+          </span>
+        </div>
+      </h4>
+
+      <!-- for unverified -->
+      <!-- <h4 class="status-heading">
+        Verification Status:
+        <span class="unverified">
+          <img
+            src="../../../assets/icons/unverified.svg"
+            class="verified-img"
+            alt=""
+          />
+          Unverified</span
+        >
+      </h4> -->
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div>
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+              <p>
+                Make update to this setting by accessing your merchant profile
+                in the Fonda dashboard
+              </p>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"> {{ 'GMB.Business Name' | transloco }} </label>
+              <input [(ngModel)]="loc_obj.title" type="text" disabled class="form-control"
+                placeholder="Business Name" />
+            </div>
+          </div>
+          <div>
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+              <p>
+                Make update to this setting by accessing your merchant profile
+                in the Fonda dashboard
+              </p>
+            </div>
+            <div class="form-group">
+              <label class="form-label"> {{ 'GMB.Phone Number' | transloco }} </label>
+              <input [(ngModel)]="loc_obj.phoneNumber" disabled type="text" class="form-control"
+                placeholder="Phone Number" />
+            </div>
+          </div>
+          <div>
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+              <p>
+                Make update to this setting by accessing your merchant profile
+                in the Fonda dashboard
+              </p>
+            </div>
+            <div class="form-group">
+              <label class="form-label"> {{ "GMB.Website" | transloco }} </label>
+              <input [(ngModel)]="loc_obj.websiteUri" type="text" disabled class="form-control" placeholder="Website" />
+            </div>
+          </div>
+          <div>
+            <div class="form-group">
+              <label class="form-label location-label">
+                {{ "GMB.Business Location" | transloco }}
+                <img src="../../../assets/icons/edit.svg" class="edit-img" alt="edit-icon"
+                  (click)="editBusinessModal()" />
+              </label>
+              <p style="text-decoration: underline">
+                <span *ngFor="let addressLine of loc_obj.address.addressLines">{{ addressLine
+                  }}<span *ngIf="addressLine != ''">, </span></span>
+                <span *ngIf="loc_obj.address.town && loc_obj.address.town != ''">{{ loc_obj.address.town }},
+                </span>
+                <span *ngIf="loc_obj.address.state && loc_obj.address.state != ''">{{ loc_obj.address.state }}
+                </span>
+                <span *ngIf="
+                    loc_obj.address.postalCode &&
+                    loc_obj.address.postalCode != ''
+                  ">{{ loc_obj.address.postalCode }}</span>
+              </p>
+            </div>
+
+            <div id="map1"></div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <div class="form-group">
+              <label class="form-label"> {{ "GMB.Business Category" | transloco }} </label>
+              <input [(ngModel)]="loc_obj.category" type="text" class="form-control" placeholder="Business Category"
+                minlength="30" maxlength="100" />
+            </div>
+          </div>
+
+          <div>
+            <div class="form-group">
+              <label class="form-label"> {{ 'Menus.Description' | transloco }} </label>
+              <textarea [(ngModel)]="loc_obj.profile" placeholder="Description" class="form-control" cols="30"
+                rows="5"></textarea>
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label"> {{ 'GMB.Opening Hours' | transloco }} </label>
+
+            <ul class="days" id="opening-hour-sec">
+              <li *ngFor="let item of loc_obj.regularHours">
+                <div class="time">
+                  <div class="day">{{ getdayTranslation(item.Day) }}</div>
+                  <div>
+                    <div *ngFor="let t of item.time">
+                      <div class="time-slot">{{ t }}</div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <div class="mt-4 d-flex justify-content-end" *ngIf="loc_obj.regularHours">
+                <button type="button" class="btn orange-bt text-white m-0" (click)="syncOpeningHours(); closeModal()">
+                  {{ "GMB.Sync Opening Hours" | transloco }}
+                </button>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="update-button">
+    <button class="btn button-theme" (click)="confirmModal()">{{ "reuseableWords.Update" | transloco }}</button>
+  </div>
+</div>
+
+<!-- opening hours modal -->
+<!-- <div mdbModal #openinghoursmodal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="openinghoursmodal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">Opening Hours</h4>
+      </div>
+      <div class="modal-body px-3">
+        <ul class="days">
+          <li *ngFor="let item of loc_obj.regularHours">
+            <div class="time">
+              <div class="day">{{ item.Day }}</div>
+              <div>
+                <div *ngFor="let t of item.time">
+                  <div class="time-slot">{{ t }}</div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeModal()" mdbWavesEffect>
+          Close
+        </button>
+        <button type="button" class="btn orange-bt text-white" (click)="syncOpeningHours(); closeModal()">
+          Sync Opening Hours
+        </button>
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- confermation modal -->
+<div mdbModal #confirmationmodal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="confirmationmodal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">{{ "GMB.Sure you want to sync profile?" | transloco }}</h4>
+      </div>
+      <div class="modal-body px-3">
+        <p>{{ "GMB.This action will sync the business profile to GMB." | transloco }}</p>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeConfirmModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button type="button" class="btn orange-bt text-white" (click)="syncBusinessProfile(); closeConfirmModal()">
+          {{ "GMB.Yes Confirm" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit business location modal -->
+<div mdbModal #editbusinesslocatonmodal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade"
+  tabindex="-1" role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-width-for-business" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close"
+          (click)="editbusinesslocatonmodal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">{{ 'GMB.Edit Business Location' | transloco }}</h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label class="form-label"> {{ "GMB.Country Region" | transloco }} </label>
+              <input type="text" disabled class="form-control" placeholder="Country Region"
+                [(ngModel)]="Loc_Address.regionCode" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">{{ "GMB.Street Address Line" | transloco }} 1: </label>
+              <input type="text" class="form-control" [(ngModel)]="Loc_Address.addressLines[0]"
+                placeholder="Street Address Line 1" minlength="1" maxlength="35" />
+            </div>
+            <div class="form-group" *ngIf="Loc_Address.addressLines.length == 2">
+              <label class="form-label">{{ "GMB.Street Address Line" | transloco }} 2: </label>
+              <input type="text" class="form-control" [(ngModel)]="Loc_Address.addressLines[1]"
+                placeholder="Street Address Line 2" minlength="1" maxlength="35" />
+            </div>
+            <div class="form-group">
+              <div *ngIf="Loc_Address.addressLines.length < 2" (click)="addAddressLine()">
+                <h5 style="color: blue; cursor: pointer">
+                  + {{ "GMB.Add address line (optional)" | transloco }}
+                </h5>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label"> {{ "GMB.City/Town" | transloco }} </label>
+              <input type="text" class="form-control" placeholder="City/Town" [(ngModel)]="Loc_Address.town"
+                minlength="1" maxlength="15" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"> {{ "MerchantOnBoarding.State" | transloco }}</label>
+              <input type="text" class="form-control" placeholder="State" [(ngModel)]="Loc_Address.state" minlength="1"
+                maxlength="15" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"> {{ "reuseableWords.zipcode" | transloco }} </label>
+              <input type="number" class="form-control" placeholder="Post Code" [(ngModel)]="Loc_Address.postalCode"
+                minlength="2" maxlength="15" />
+            </div>
+          </div>
+
+
+          <div class="col-md-6">
+            <div id="map2" class="edit-map"></div>
+          </div>
+
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeEditBusinessModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button type="button" class="btn orange-bt text-white" (click)="saveaddress(); closeEditBusinessModal()"
+          [disabled]="
+            Loc_Address.addressLines[0] == '' ||
+            Loc_Address.town == '' ||
+            Loc_Address.state == '' ||
+            Loc_Address.postalCode == ''
+          ">
+          {{ "reuseableWords.SAVE" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

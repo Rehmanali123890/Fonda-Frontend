@@ -1,0 +1,92 @@
+<div class="row align-items-start mb-5">
+  <div class="col-md-6">
+    <div class="card store-front-card">
+      <div class="card-header">
+        <h4>{{ "GMB.Cover Photo" | transloco }}</h4>
+      </div>
+      <div class="card-body">
+        <ng-container *ngIf="!coverLoading">
+          <div class="upload-btn-wrapper" *ngIf="!cover_image_obj.googleUrl">
+            <img src="../../../assets/icons/upload.svg" class="upload-img" alt="" />
+            <h3 class="upload-file">{{ "GMB.Upload a file" | transloco }}</h3>
+            <p>{{ "GMB.You can add one photo" | transloco }}</p>
+            <input type="file" name="myfile" (change)="handleFileInput($event, 'COVER')" accept=".jpg,.png,.jpeg" />
+          </div>
+        </ng-container>
+        <div class="d-flex justify-content-center mt-4" *ngIf="coverLoading">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div class="image-container uploded-img-div" *ngIf="cover_image_obj.googleUrl">
+          <img [src]="cover_image_obj.googleUrl" class="upload-image" />
+          <div class="icons-div-cover">
+            <span class="icon-cover" (click)="removeImage(cover_image_obj, 'COVER')">
+              <img src="../../../assets/icons/cross.svg" class="cross-icon" alt="" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card store-front-card">
+      <div class="card-header">
+        <h4>{{ "GMB.Logo Photo" | transloco }}</h4>
+      </div>
+      <div class="card-body">
+        <ng-container *ngIf="!logoLoading">
+          <div class="upload-btn-wrapper" *ngIf="!logo_image_obj.googleUrl">
+            <img src="../../../assets/icons/upload.svg" class="upload-img" alt="" />
+            <h3 class="upload-file">{{ "GMB.Upload a file" | transloco }}</h3>
+            <p>{{ "GMB.You can add one photo" | transloco }}</p>
+            <input type="file" name="myfile" (change)="handleFileInput($event, 'PROFILE')" accept=".jpg,.png,.jpeg" />
+          </div>
+        </ng-container>
+        <div class="d-flex justify-content-center mt-4" *ngIf="logoLoading">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div class="image-container uploded-img-div" *ngIf="logo_image_obj.googleUrl">
+          <img [src]="logo_image_obj.googleUrl" class="upload-image" />
+          <div class="icons-div-cover">
+            <span class="icon-cover" (click)="removeImage(logo_image_obj, 'PROFILE')">
+              <img src="../../../assets/icons/cross.svg" class="cross-icon" alt="" />
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header gallery-photo">
+    <h4>{{ "GMB.Photos" | transloco }}</h4>
+    <div class="add-gellary-img">
+      <img src="../../../assets/icons/add-image.svg" class="add-image" alt="" />
+      <input type="file" name="myfile" (change)="handleFileInput($event, 'ADDITIONAL')" accept=".jpg,.png,.jpeg" />
+    </div>
+  </div>
+  <div class="card-body for-scroll">
+    <!-- <div *ngFor="let row of rows; let i = index" class="image-row"> -->
+    <div class="image-container">
+      <div class="row">
+        <ng-container *ngFor="let image of media_obj; let i = index">
+          <div class="col-md-3 gellary-img-main" *ngIf="
+              image.locationAssociation.category != 'COVER' &&
+              image.locationAssociation.category != 'PROFILE'
+            ">
+            <img [src]="image.googleUrl" class="gallery-img" [alt]="image.alt" />
+            <div class="icons-div">
+              <span class="icon" (click)="removeImage(image, 'ADDITIONAL', i)">
+                <img src="../../../assets/icons/cross.svg" class="cross-icon" alt="" />
+              </span>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,453 @@
+<div class="row">
+  <div class="col-12 mt-4 finance-main">
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>{{ "FinanceSetting.Tax and Commission Setup" | transloco }}</h4>
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.businessTaxDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Business Tax" | transloco }} </label>
+              <input [(ngModel)]="merchantDto.merchantTaxRate" min="0" type="number" class="field"
+                placeholder="Business Tax %" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.staffTipDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Staff Tip" | transloco }} </label>
+              <input [(ngModel)]="merchantDto.staffTipsRate" min="0" type="number" class="field"
+                placeholder="Staff Tip %" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.ubereatsCommissionDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Ubereats Commission" | transloco }}
+              </label>
+              <input [(ngModel)]="merchantDto.ubereatsCommission" min="0" type="number" class="field"
+                placeholder="Ubereats Commission %" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.doordashCommissionDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Doordash Commission" | transloco }}
+              </label>
+              <input [(ngModel)]="merchantDto.doordashCommission" min="0" type="number" class="field"
+                placeholder="Doordash Commission %" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.grubhubCommissionDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Grubhub Commission" | transloco }}
+              </label>
+              <input [(ngModel)]="merchantDto.grubhubCommission" min="0" type="number" class="field"
+                placeholder="Grubhub Commission %" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.flipdishCommissionDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "FinanceSetting.Flipdish Commission" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.flipdishCommission" min="0" type="number" class="field"
+                placeholder="Flipdish Commission %" />
+            </div>
+          </div>
+
+          <div class="col-md-8">
+            <div class="card">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="help-tip">
+                    <i class="fas fa-info-circle information-icon"></i>
+
+                    <p>
+                      {{
+                      "tooltips.FinanceComponentsTooltips.processingfeeDescription"
+                      | transloco
+                      }}
+                    </p>
+                  </div>
+                  <div class="form-group pl-2 pr-2">
+                    <label class="pr-3">{{ "FinanceSetting.Processing fee" | transloco }}
+                    </label>
+                    <input [(ngModel)]="merchantDto.processingFeePercentage" min="0" type="number" class="field"
+                      placeholder="Processing fee percentage %" readonly />
+                  </div>
+                </div>
+                <div class="col-md-6 plus-sign">
+                  <span><i class="fa fa-plus" aria-hidden="true"></i></span>
+                  <div class="help-tip">
+                    <i class="fas fa-info-circle information-icon"
+                      style="position: absolute; top: -44px; left: -20px"></i>
+
+                    <p>
+                      {{
+                      "tooltips.FinanceComponentsTooltips.processingFeeFixedAmountDescription"
+                      | transloco
+                      }}
+                    </p>
+                  </div>
+                  <div class="form-group pl-2 pr-2 processing-fee-input">
+                    <label class="pr-3">{{
+                      "FinanceSetting.Processing fee fixed amount in USD"
+                      | transloco
+                      }}
+                    </label>
+                    <input [(ngModel)]="merchantDto.processingFeeFixed" min="0" type="number" class="field"
+                      placeholder="Processing fee fixed amount in USD" readonly />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.marketPlaceDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label class="pr-3">{{
+                "FinanceSetting.Market Place Facilitator Tax Uber eats"
+                | transloco
+                }}
+              </label>
+              <input [(ngModel)]="merchantDto.marketplaceTaxRate" min="0" type="number" class="field"
+                placeholder="Market Place Facilitator Tax %" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.squareProcessingFeeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Square processing fee" | transloco }}
+              </label>
+              <input [(ngModel)]="merchantDto.squareCommission" min="0" type="number" class="field"
+                placeholder="Square processing fee %" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>
+          {{
+          "FinanceSetting.Automatic Revenue Processing Fee Calculation Settings"
+          | transloco
+          }}
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="row" style="align-items: baseline !important">
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.automaticRevenueProcessingFeeThresholdDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "FinanceSetting.Automatic Revenue Processing Fee Threshold"
+                | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.RevenueProcessingThreshold" min="0" type="number" class="field"
+                placeholder="Revenue Processing Threshold Value" aria-describedby="RevenueProcessingThreshold" (input)="
+                  preventNegativeInput($event, 'RevenueProcessingThreshold')
+                " />
+              <small id="RevenueProcessingThreshold" class="form-text text-muted">
+                {{
+                "FinanceSetting.Automatic Revenue Processing Fee Threshold text"
+                | transloco
+                }}
+              </small>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.revenueProcessingFeePercentageDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "FinanceSetting.Revenue Processing Fee Percentage" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.RevenueProcessingFeePercent" min="0" type="number" class="field"
+                placeholder="Revenue Processing Fee %" aria-describedby="RevenueProcessingFeePercent" (input)="
+                  preventNegativeAndLessThanHunderedInput(
+                    $event,
+                    'RevenueProcessingFeePercent'
+                  )
+                " />
+              <small id="RevenueProcessingFeePercent" class="form-text text-muted">
+                {{
+                "FinanceSetting.Revenue Processing Fee Percentage text"
+                | transloco
+                }}
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>
+          {{
+          "FinanceSetting.Auto-Subscription Charges Waiver Settings"
+          | transloco
+          }}
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="row" style="align-items: baseline !important">
+          <label class="toggle">
+            <input [(ngModel)]="merchantDto.AutoWaivedStatus" class="toggle-checkbox" type="checkbox" />
+            <div class="toggle-switch"></div>
+          </label>
+          <span style="font-size: 14px; color: #716a6a" class="">
+            (
+            {{
+            "FinanceSetting.Enable or Disable auto-subscription waived off"
+            | transloco
+            }}
+            )</span>
+
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.minimumRevenueForSubscriptionDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "FinanceSetting.Minimum Revenue for Subscription Calculation"
+                | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.minimumLifetimeRevenue" min="0" type="number" class="field"
+                placeholder="Minimum Lifetime Revenue Value"
+                (input)="preventNegativeInput($event, 'minimumLifetimeRevenue')" />
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.FinanceComponentsTooltips.downtimePercentageDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "FinanceSetting.Downtime Percentage" | transloco }}
+              </label>
+              <input [(ngModel)]="merchantDto.DownTimeThreshold" min="0" type="number" class="field" placeholder="3"
+                aria-describedby="downtimePercentage" (input)="
+                  preventNegativeAndLessThanHunderedInput(
+                    $event,
+                    'DownTimeThreshold'
+                  )
+                " />
+              <small id="downtimePercentage" class="form-text text-muted">{{
+                "FinanceSetting.Downtime Percentage text" | transloco
+                }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>
+          {{
+          "FinanceSetting.market place price flag"
+          | transloco
+          }}
+        </h4>
+      </div>
+      <div class="card-body">
+        <div class="row" style="align-items: baseline !important">
+          <label class="toggle">
+            <input (change)="openModalforConfirmation()" [(ngModel)]="merchantDto.MarketPlacePriceStatus"
+              class="toggle-checkbox" type="checkbox" />
+            <div class="toggle-switch"></div>
+          </label>
+          <span style="font-size: 14px; color: #716a6a" class="">
+            (
+            {{
+            "FinanceSetting.market place price flag descp"
+            | transloco
+            }}
+            )</span>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12">
+        <div class="d-flex w-100 justify-content-end">
+          <button [disabled]="savingMerchant" class="btn button-theme m-0 ml-2 px-4 save-setting-btn"
+            (click)="saveMerchantComissionData()">
+            <span *ngIf="savingMerchantComission" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true">
+            </span>
+            {{ "reuseableWords.Save All Settings" | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- popup for confirmation -->
+
+<div mdbModal #createOurPoints="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="closeModal()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h5 class="modal-heading" *ngIf="this.merchantDto.MarketPlacePriceStatus">WARNING: Market Place Price Flag
+          Activation</h5>
+        <h5 class="modal-heading" *ngIf="!this.merchantDto.MarketPlacePriceStatus">WARNING: Market Place Price Flag
+          Deactivation</h5>
+      </div>
+      <div class="modal-body px-3">
+        <ul style="list-style-type: disc; padding: 20px;">
+          <!--<li>
+            <label>
+              <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleSelectAll()">
+              <strong class="ml-2">Select All</strong>
+            </label>
+          </li>-->
+
+          <li *ngFor="let checkbox of checkboxes; let i = index"> <label>
+              <input type="checkbox" [(ngModel)]="checkbox.checked" (change)="checkAllChecked()">
+              {{ checkbox.label }}
+            </label>
+          </li>
+        </ul>
+
+        <span class="mt-3"><b>Important:</b> Incorrect configuration can result in significant financial impact.
+          Double-check all settings and marketplace pricing details prior to <span
+            *ngIf="!this.merchantDto.MarketPlacePriceStatus">deactivation</span><span
+            *ngIf="this.merchantDto.MarketPlacePriceStatus">activation</span>.</span>
+
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <!-- <button type="button" class="btn orange-bt text-white" (click)="transferHistoryReport()">
+          Send
+          <span *ngIf="gettingHistoryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button> -->
+        <button [disabled]="!isAllChecked" (click)="savePopup()" type="button" class="btn orange-bt text-white">
+          {{ "reuseableWords.Save" | transloco }} <span *ngIf="savingMerchantComission"
+            class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,1273 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "reuseableWords.From Date" | transloco }}</label>
+          <input type="date" class="form-control" [(ngModel)]="startDate" placeholder="Start Date" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "reuseableWords.To Date" | transloco }}</label>
+          <input type="date" class="form-control" [(ngModel)]="endDate" placeholder="End Date" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "reuseableWords.Subscriptions" | transloco }}</label>
+          <select style="height: 40px" type="text" [(ngModel)]="payoutType" class="field" placeholder="Select type">
+            <option value="1">
+              {{
+              "MerchantPayoutDetail.Include all the unpaid subscriptions"
+              | transloco
+              }}
+            </option>
+            <option value="2">
+              {{
+              "MerchantPayoutDetail.Include subscriptions within the specified date range"
+              | transloco
+              }}
+            </option>
+            <option value="3">
+              {{
+              "MerchantPayoutDetail.Do not include subscription in payout"
+              | transloco
+              }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button (click)="
+            transferType = 1;
+            payoutAdjustments = 0;
+            doordash = 0;
+            ubereats = 0;
+            grubhub = 0;
+            storefront = 0;
+            others = 0;
+            TotalRevenue = 0;
+            TotalFondaPayout = 0;
+            FondaRevenue = 0;
+            FondaRevenuePercentage = 0;
+            marketingFee = 0;
+            commisionAdjustment = 0;
+            commisionAdjustmentBackup = 0;
+            marketingFeeBackup = 0;
+            payoutAdjustmentsBackup = 0;
+            remarks = '';
+            calculatePayout(0)
+          " [disabled]="gettingCalculations" class="btn button-theme button-for-mobile">
+          {{ "MerchantPayoutDetail.CALCULATE TRANSFERS" | transloco }}
+          <span *ngIf="gettingCalculations" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+      </div>
+      <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button class="btn button-theme button-for-mobile" (click)="financeReportSummary(); financeReportData()">
+          {{ "MerchantPayoutDetail.DOWNLOAD REVENUE DETAILS" | transloco }}
+          <span *ngIf="gettingSummaryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+        <!-- <button class="btn button-theme button-for-mobile" (click)="financeReportSummaryNewFormat()">
+          Email summary report
+          <span *ngIf="gettingSummaryReportNew" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button> -->
+      </div>
+      <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button class="btn button-theme button-for-mobile" (click)="
+            emailbtn = 2;
+            openModalforCreatePoints(
+              'MerchantPayoutDetail.EMAIL SUMMARY REPORT'
+            )
+          ">
+          {{ "MerchantPayoutDetail.EMAIL SUMMARY REPORT" | transloco }}
+          <span *ngIf="gettingSummaryReportNew" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true">
+          </span>
+        </button>
+      </div>
+      <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button class="btn button-theme button-for-mobile" (click)="
+            emailbtn = 1;
+            openModalforCreatePoints(
+              'MerchantPayoutDetail.Transfer Summary Report'
+            )
+          ">
+          {{
+          "MerchantPayoutDetail.DOWNLOAD TRANSFER HISTORY REPORT" | transloco
+          }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="showDetails">
+  <div class="col-md-12">
+    <h4 class="mt-3">
+      {{ "MerchantPayoutDetail.Revenue - Channels" | transloco }}
+    </h4>
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Doordash ( $ )</label>
+              <input type="number" class="field" [(ngModel)]="doordash" (ngModelChange)="calculateRevenue()"
+                placeholder="Doordash" appPreventE />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>UberEats ( $ )</label>
+              <input type="number" class="field" [(ngModel)]="ubereats" (ngModelChange)="calculateRevenue()"
+                placeholder="UberEats" appPreventE />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Grubhub ( $ )</label>
+              <input type="number" class="field" [(ngModel)]="grubhub" (ngModelChange)="calculateRevenue()"
+                placeholder="Grubhub" appPreventE />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Storefront ( $ )</label>
+              <input type="number" class="field" [(ngModel)]="storefront" (ngModelChange)="calculateRevenue()"
+                placeholder="Storefront" appPreventE />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Others ( $ )</label>
+              <input type="number" class="field" [(ngModel)]="others" (ngModelChange)="calculateRevenue()"
+                placeholder="Others" appPreventE />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="table-responsive mt-5 table-details">
+    <h4>{{ "MerchantPayoutDetail.Net Payout Calculations" | transloco }}</h4>
+    <table class="table table-bordered table-hover">
+      <tbody>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Number of Orders" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.numberOfOrdersDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            {{ PayoutCalculationsObj.numberOfOrders }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Sub Total" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.subTotalDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.subTotal | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "reuseableWords.Tax" | transloco }}
+            </span>
+
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{ "tooltips.PayoutScreenTooltips.taxDescription" | transloco }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.tax | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Commission" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.commissionDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.commission | number : "1.2-2" }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Commission Adjustments" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.commissionAdjustmentsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <span class="adjustment-div">$
+            <input type="number" class="form-control" [(ngModel)]="commisionAdjustment" placeholder="+ve or -ve value"
+              (ngModelChange)="reCalculatePayout(3)" appPreventE />
+          </span>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Square Fee" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.squareFeeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.squarefee | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Processing Fee" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.processingFeeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.processingFee | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Error Charges" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.errorChargesDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.errorCharges | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Staff Tips" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.staffTipsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.staffTips | number : "1.2-2" }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Order Adjustments" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.orderAdjustmentsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.orderAdjustments | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile"></span>
+            <span class="adjust-wt-for-mobile">
+              {{
+              "FinanceSetting.Market Place Facilitator Tax - Uber eats"
+              | transloco
+              }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.marketPlaceFacilitatorTaxUbereatsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.marketplaceTax | number : "1.2-2" }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Promo Discount" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.promoDiscountDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.promoDiscount | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Subscription Adjustments" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.subscriptionAdjustmentsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $
+            {{
+            PayoutCalculationsObj.subscriptionAdjustments | number : "1.2-2"
+            }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Revenue Processing Fee" | transloco }}
+            </span>
+            <i class="fas fa-eye ms-1" (mouseenter)="showHint(0)" (mouseleave)="hideHint(0)"
+              *ngIf="PayoutCalculationsObj.numberOfOrders > 0"></i>
+            <p class="status-hint" *ngIf="showHintOnHover">
+              {{ PayoutCalculationsObj.Revenue_processing_fee_Reason }}
+            </p>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.revenueProcessingFeeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $
+            <span *ngIf="PayoutCalculationsObj.RevenueProcessingFee > 0">-</span>{{
+            PayoutCalculationsObj.RevenueProcessingFee | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Marketing Fee" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.marketingFeeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+
+          <span class="adjustment-div">$
+            <input type="number" class="form-control" [(ngModel)]="marketingFee" placeholder="-ve value"
+              #marketingFeeInput (ngModelChange)="
+                marketingFee <= 0
+                  ? reCalculatePayout(2)
+                  : reset_marketing_fee(marketingFeeInput)
+              " appPreventE />
+          </span>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Payout Adjustments" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.payoutAdjustmentsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <span class="adjustment-div">$
+            <input type="number" class="form-control" [(ngModel)]="payoutAdjustments" placeholder="+ve or -ve value"
+              (ngModelChange)="reCalculatePayout(1)" appPreventE />
+          </span>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Net Payout" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.netPayoutDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ PayoutCalculationsObj.netPayout | number : "1.2-2" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="table-responsive mt-5 table-details">
+    <h4>{{ "MerchantPayoutDetail.Fonda Revenue Details" | transloco }}</h4>
+    <table class="table table-bordered table-hover">
+      <tbody>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Total GMV" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.totalRevenueFromAllChannels"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ TotalRevenue | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Sub Payout" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{ "tooltips.PayoutScreenTooltips.fondaPayout" | transloco }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            ${{ TotalFondaPayout | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Difference" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{ "tooltips.PayoutScreenTooltips.fondaRevenue" | transloco }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            ${{ FondaRevenue | number : "1.2-2" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Revenue %" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.fondaRevenuePercentage"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            {{ FondaRevenuePercentage | number : "1.2-2" }} %
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="form-group">
+    <label>{{ "reuseableWords.Remarks" | transloco }}</label>
+    <textarea class="form-control" [(ngModel)]="remarks"
+      [placeholder]="'reuseableWords.Remarks' | transloco"></textarea>
+  </div>
+  <div class="button-div">
+    <!-- <button *ngIf="PayoutCalculationsObj.netPayout > 0 && not_connect_to_finacc" [disabled]="disableTransferBtn || !merchantDto.stripeAccountId"
+      (click)="swarlText='';transferType=1;calculatePayout(1);payoutAdjustments=0" class="btn btn-success" >Transfer to Merchat's Connected Account
+      <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+    </button> -->
+    <button *ngIf="PayoutCalculationsObj.netPayout > 0" (click)="
+        disableTransferPopupBtn = false;
+        transfer.show();
+        showRemarks = false;
+        getstripeaccountdetail()
+      " class="btn button-theme button-for-mobile">
+      {{ "MerchantPayoutDetail.TRANSFER" | transloco }}
+      <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+    </button>
+    <button *ngIf="PayoutCalculationsObj.netPayout > 0" (click)="payoutDraft()"
+      class="btn button-theme button-for-mobile">
+      {{ "MerchantPayoutDetail.SAVE AS DRAFT" | transloco }}
+    </button>
+  </div>
+</div>
+<br />
+<!-- table for desktop view -->
+<div class="card">
+  <div class="card-header">
+    <h4 class="transfer-heading">
+      {{ "MerchantPayoutDetail.Transfer History" | transloco }}
+    </h4>
+  </div>
+  <div class="table-responsive history-table desktop-view">
+    <div *ngIf="PayoutCalculationsListObj.length == 0">
+      <div class="alert alert-info" role="alert">
+        <th>
+          {{
+          "MerchantPayoutDetail.No transfer history available." | transloco
+          }}
+        </th>
+      </div>
+    </div>
+    <table *ngIf="PayoutCalculationsListObj.length > 0" class="table table-bordered table-hover" id="price-table">
+      <thead class="bg-theme white-text sorting">
+        <tr>
+          <th>{{ "reuseableWords.From Date" | transloco }}</th>
+          <th>{{ "reuseableWords.To Date" | transloco }}</th>
+          <th>
+            {{ "MerchantPayoutDetail.Payout Created Date & Time" | transloco }}
+          </th>
+          <th>{{ "MerchantPayoutDetail.Payout Done By" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Number of Orders" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Sub Total" | transloco }}</th>
+          <th>{{ "reuseableWords.Tax" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Commission" | transloco }}</th>
+          <th>
+            {{ "MerchantPayoutDetail.Commission Adjustments" | transloco }}
+          </th>
+          <th>{{ "MerchantPayoutDetail.Square Fee" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Processing Fee" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Error Charges" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Staff Tips" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Order Adjustments" | transloco }}</th>
+          <th>
+            {{
+            "MerchantPayoutDetail.Market Price Facilitator Tax" | transloco
+            }}
+          </th>
+          <th>
+            {{ "MerchantPayoutDetail.Revenue Processing Fee" | transloco }}
+          </th>
+          <th>{{ "MerchantPayoutDetail.Promo Discount" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Payout Type" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Payout Adjustments" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Marketing Fee" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Payout Remarks" | transloco }}</th>
+          <th>
+            {{ "MerchantPayoutDetail.Subscription Adjustments" | transloco }}
+          </th>
+          <th>{{ "MerchantPayoutDetail.Subscription Date(s)" | transloco }}</th>
+          <ng-container *ngIf="userRoleType == 1">
+            <th>{{ "MerchantPayoutDetail.Doordash Revenue" | transloco }}</th>
+            <th>{{ "MerchantPayoutDetail.Ubereats Revenue" | transloco }}</th>
+            <th>{{ "MerchantPayoutDetail.Grubhub Revenue" | transloco }}</th>
+            <th>{{ "MerchantPayoutDetail.Storefront Revenue" | transloco }}</th>
+            <th>{{ "MerchantPayoutDetail.Others Revenue" | transloco }}</th>
+          </ng-container>
+          <th>{{ "MerchantPayoutDetail.Net Payout" | transloco }}</th>
+          <th class="wrap-column">{{ "reuseableWords.Status" | transloco }}</th>
+          <th>{{ "reuseableWords.Actions" | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of PayoutCalculationsListObj; let i = index">
+          <td>{{ item.startDate | date : "MM-dd-yyyy" }}</td>
+          <td>{{ item.endDate | date : "MM-dd-yyyy" }}</td>
+          <td>{{ item.created_datetime }}</td>
+          <td>{{ item.doneByUser }}</td>
+          <td>
+            {{ item.numberOfOrders }}
+          </td>
+          <td>$ {{ item.subTotal != 'None'? (item.subTotal | number : "1.2-2") : '0.0' }}</td>
+
+          <td>$ {{ item.tax != 'None'? (item.tax | number : "1.2-2") : '0.0'}}</td>
+          <td>$ {{ item.commission != 'None'?(item.commission | number : "1.2-2") : '0.0'}}</td>
+          <td>$ {{ item.commisionAdjustment }}</td>
+          <td>$ {{ item.squarefee != 'None'? (item.squarefee | number : "1.2-2"):'0.0' }}</td>
+          <td>$ {{ item.processingFee != 'None'? (item.processingFee | number : "1.2-2") : '0.0'}}</td>
+          <td>$ {{ item.errorCharges!= 'None' ? (item.errorCharges | number : "1.2-2") : '0.0'}}</td>
+          <td>$ {{ item.staffTips != 'None'? (item.staffTips | number : "1.2-2") : '0.0'}}</td>
+          <td>$ {{ item.orderAdjustments != 'None'? (item.orderAdjustments | number : "1.2-2") : '0.0'}}</td>
+          <td>$ {{ item.marketplaceTax != 'None'? (item.marketplaceTax | number : "1.2-2") : '0.0'}}</td>
+          <td>
+            $ <span *ngIf="item.RevenueProcessingFee > 0">-</span>{{ item.RevenueProcessingFee != 'None' ?
+            (item.RevenueProcessingFee | number : "1.2-2"):'0.0' }}
+
+            <i class="fas fa-eye" (mouseenter)="showHint(1, i)" (mouseleave)="hideHint(1)"
+              *ngIf="item.numberOfOrders > 0"></i>
+            <p class="status-hint1" *ngIf="showHintOnHover1 && hoverindex == i">
+              {{ item.Revenue_processing_fee_Reason }}
+            </p>
+          </td>
+          <td>$ {{ item.promoDiscount | number : "1.2-2" }}</td>
+          <td>{{ PayoutTypeDescription[item.payoutType] }}</td>
+          <td>$ {{ item.payoutAdjustments }}</td>
+          <td>$ {{ item.marketingFee }}</td>
+          <td>{{ item.remarks }}</td>
+          <td>$ {{ item.subscriptionAdjustments }}</td>
+          <td>
+            <ul>
+              <li *ngFor="let p of item.subscriptions">
+                {{ p.date }} ($ {{ p.amount | number : "1.2-2" }})
+              </li>
+            </ul>
+          </td>
+          <ng-container *ngIf="userRoleType == 1">
+            <td>$ {{ item.doordash | number : "1.2-2" }}</td>
+            <td>$ {{ item.ubereats | number : "1.2-2" }}</td>
+            <td>$ {{ item.grubhub | number : "1.2-2" }}</td>
+            <td>$ {{ item.storefront | number : "1.2-2" }}</td>
+            <td>$ {{ item.others | number : "1.2-2" }}</td>
+          </ng-container>
+          <td>$ {{ item.netPayout }}</td>
+          <td class="wrap-column">
+            <ng-container *ngIf="item.status == '1' || item.status == '0'">{{
+              SubscriptionDescription[item.status]
+              }}</ng-container>
+            <ng-container *ngIf="item.status == '2'">{{ SubscriptionDescription[item.status] }} (by
+              {{ item.revertedByName }} on
+              {{ item.revertedDateTime }})</ng-container>
+            <ng-container *ngIf="item.status == '3' && item.transferType == 1">Paid out from stripe balance to bank
+              {{ getBankInfoText(item) }}
+              by
+              {{ item.transferredToBankBy }} on
+              {{ item.transferredToBankTime }}</ng-container>
+            <ng-container *ngIf="item.status == '3' && item.transferType == 2">Paid out from stripe treasury to bank
+              {{
+              item.bankName !== ""
+              ? "( Bank Name: " +
+              item.bankName +
+              ", Account Holder Name: " +
+              item.accountHolderName +
+              ", Account
+              Number:
+              ********" +
+              item.last4 +
+              " )"
+              : ""
+              }}
+              by
+              {{ item.transferredToBankBy }} on
+              {{ item.transferredToBankTime }}</ng-container>
+            <ng-container *ngIf="item.status == '3' && item.transferType == 3">Paid out ( {{ item.remarks }} ) on
+              {{ item.created_datetime }}</ng-container>
+          </td>
+
+          <td>
+            <a routerLink="/home/merchants/transfer-details/{{ item.id }}" [queryParams]="{ referrer: 'settings' }">
+              <button class="btn button-theme" style="width: fit-content">
+                {{ "MerchantPayoutDetail.ViEW DETAILS" | transloco }}
+              </button>
+            </a>
+            <!-- <button class="btn btn-primary" *ngIf="item.status==1 || item.status==3"
+              (click)="sendEmailPayout(item.id)">Email Report
+            </button> -->
+            <button class="btn button-theme" style="width: fit-content" *ngIf="item.status == 1 || item.status == 3"
+              (click)="
+                payoutiD = item.id;
+                emailbtn = 3;
+                openModalforCreatePoints('MerchantPayoutDetail.EMAIL REPORT')
+              ">
+              {{ "MerchantPayoutDetail.EMAIL REPORT" | transloco }}
+            </button>
+            <button class="btn button-theme" style="width: fit-content"
+              *ngIf="item.status == 1 && item.transferredToBankBy == null" [disabled]="gettingTransfers"
+              (click)="revertTransfer(item.id)">
+              {{ "MerchantPayoutDetail.REVERT TRANSFER" | transloco }}
+            </button>
+            <button class="btn button-theme" style="width: fit-content"
+              *ngIf="item.status == 1 && item.transferredToBankBy == null" [disabled]="transferringBank"
+              (click)="getBankAccountDetails(item.id)">
+              {{ "MerchantPayoutDetail.PAYOUT TO BANK" | transloco }}
+
+              <span *ngIf="gettingTransfertoBank" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true">
+              </span>
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--table for Mobile view -->
+<div class="mobile-view">
+  <div class="table-responsive">
+    <div *ngIf="expandtable.length == 0">
+      <div class="alert alert-info" role="alert">
+        <th>
+          {{
+          "MerchantPayoutDetail.No transfer history available." | transloco
+          }}
+        </th>
+      </div>
+    </div>
+    <table class="table" *ngIf="expandtable.length > 0">
+      <thead>
+        <tr class="mobile-table-bg">
+          <th scope="col"></th>
+          <th scope="col">Datetime</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of expandtable">
+        <tr class="" (click)="onChangeExpandtable(item.idx)">
+          <td>
+            <!-- Add Icon -->
+            <div *ngIf="!item.expandtable">
+              <i class="fas fa-caret-down"></i>
+            </div>
+            <!-- Minus Icon -->
+            <div *ngIf="item.expandtable">
+              <i class="fas fa-sort-up"></i>
+            </div>
+          </td>
+          <td>{{ PayoutCalculationsListObj[item.idx].created_datetime }}</td>
+          <td>
+            <ng-container *ngIf="
+                PayoutCalculationsListObj[item.idx].status == '1' ||
+                PayoutCalculationsListObj[item.idx].status == '0'
+              ">
+              {{
+              SubscriptionDescription[
+              PayoutCalculationsListObj[item.idx].status
+              ]
+              }}</ng-container>
+            <ng-container *ngIf="PayoutCalculationsListObj[item.idx].status == '2'">
+              {{
+              SubscriptionDescription[
+              PayoutCalculationsListObj[item.idx].status
+              ]
+              }}
+              (by {{ PayoutCalculationsListObj[item.idx].revertedByName }} on
+              {{
+              PayoutCalculationsListObj[item.idx].revertedDateTime
+              }})</ng-container>
+            <ng-container *ngIf="PayoutCalculationsListObj[item.idx].status == '3'">Paid out to bank by
+              {{ PayoutCalculationsListObj[item.idx].transferredToBankBy }} on
+              {{
+              PayoutCalculationsListObj[item.idx].transferredToBankTime
+              }}</ng-container>
+          </td>
+        </tr>
+
+        <!-- Expandable Area -->
+        <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+          <td></td>
+          <td colspan="3">
+            <div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  From Date
+                </div>
+                <div style="font-size: 15px">
+                  {{
+                  PayoutCalculationsListObj[item.idx].startDate
+                  | date : "MM-dd-yyyy"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  To Date
+                </div>
+                <div style="font-size: 15px">
+                  {{
+                  PayoutCalculationsListObj[item.idx].endDate
+                  | date : "MM-dd-yyyy"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Done By
+                </div>
+                <div class="">
+                  {{ PayoutCalculationsListObj[item.idx].doneByUser }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Number of Orders
+                </div>
+                <div style="font-size: 15px">
+                  {{ PayoutCalculationsListObj[item.idx].numberOfOrders }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Net Payout
+                </div>
+                <div style="font-size: 15px">
+                  $ {{ PayoutCalculationsListObj[item.idx].netPayout }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Sub Total
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].subTotal
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Tax
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].tax | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Commission
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].commission
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Square Fee
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].squarefee
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Processing Fee
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].processingFee
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Error Charges
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].errorCharges
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Staff Tips
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].staffTips
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Order Adjustments
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].orderAdjustments
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Market Price Facilitator Tax
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].marketplaceTax
+                  | number : "1.2-2"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Type
+                </div>
+                <div style="font-size: 15px; text-align: end">
+                  {{
+                  PayoutTypeDescription[
+                  PayoutCalculationsListObj[item.idx].payoutType
+                  ]
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Adjustments
+                </div>
+                <div style="font-size: 15px">
+                  $ {{ PayoutCalculationsListObj[item.idx].payoutAdjustments }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Remarks
+                </div>
+                <div style="font-size: 15px">
+                  $ {{ PayoutCalculationsListObj[item.idx].remarks }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Subscription Adjustments
+                </div>
+                <div style="font-size: 15px">
+                  $
+                  {{
+                  PayoutCalculationsListObj[item.idx].subscriptionAdjustments
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Subscription Date(s)
+                </div>
+                <div style="font-size: 15px">
+                  <ul>
+                    <li *ngFor="
+                        let p of PayoutCalculationsListObj[item.idx]
+                          .subscriptions
+                      ">
+                      {{ p.date }} ($ {{ p.amount | number : "1.2-2" }})
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div style="font-size: 15px">
+                  <a routerLink="/home/merchants/transfer-details/{{
+                      PayoutCalculationsListObj[item.idx].id
+                    }}" [queryParams]="{ referrer: 'settings' }">
+                    <button class="btn button-theme action-for-mobile">
+                      View Details
+                    </button>
+                  </a>
+                  <button class="btn button-theme action-for-mobile"
+                    *ngIf="PayoutCalculationsListObj[item.idx].status == '1'" (click)="
+                      sendEmailPayout(PayoutCalculationsListObj[item.idx].id)
+                    ">
+                    Email Report
+                  </button>
+                  <button class="btn button-theme action-for-mobile" *ngIf="
+                      PayoutCalculationsListObj[item.idx].status == '1' &&
+                      PayoutCalculationsListObj[item.idx].transferredToBankBy ==
+                        null
+                    " [disabled]="gettingTransfers" (click)="
+                      revertTransfer(PayoutCalculationsListObj[item.idx].id)
+                    ">
+                    Revert Transfer
+                  </button>
+                  <button class="btn button-theme action-for-mobile" *ngIf="
+                      PayoutCalculationsListObj[item.idx].status == '1' &&
+                      PayoutCalculationsListObj[item.idx].transferredToBankBy ==
+                        null
+                    " [disabled]="transferringBank" (click)="
+                      transferToBank(PayoutCalculationsListObj[item.idx].id)
+                    ">
+                    Payout to bank
+                  </button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Email list modal -->
+<div mdbModal #createOurPoints="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="createOurPoints.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">{{ popupheadeing }}</h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="tagChipWrapper">
+          <div class="tagChipContent">
+            <label> {{ "reuseableWords.Email" | transloco }}</label>
+            <div class="tagChipUL">
+              <ul class="tagChipliWrapper" *ngFor="let email of tagsEmailDistributionArray">
+                <li class="tagChipLI" *ngIf="email != ''">
+                  <span>{{ email }}</span>
+                  <img (click)="removeTag(email)" class="tagChipI"
+                    src="https://img.icons8.com/material-rounded/24/FA5252/multiply--v1.png" />
+                </li>
+              </ul>
+              <input class="tagChipInputField" [(ngModel)]="inputText" (keyup.enter)="onEnterKeyPressed($event)"
+                type="text" spellcheck="false" />
+            </div>
+          </div>
+          <!-- <div class="tagChipDetails"> -->
+          <!-- <button>Remove All</button> -->
+          <!-- </div> -->
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <!-- <button type="button" class="btn orange-bt text-white" (click)="transferHistoryReport()">
+          Send
+          <span *ngIf="gettingHistoryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button> -->
+        <button type="button" class="btn orange-bt text-white" (click)="emailsSend()"
+          [disabled]="tagsEmailDistributionArray.length === 0">
+          {{ "reuseableWords.Send" | transloco }}
+          <span *ngIf="gettingHistoryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #transfer="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document"
+    [ngClass]="{ 'modal-dialog-width': connect_to_finacc || check_stripe_connected_id }">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button (click)="transfer.hide()" type="button" class="close pull-right text-white" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">
+          {{ "reuseableWords.Transfer" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3 row">
+        <div class="col-md-6">
+          <button [disabled]="disableTransferPopupBtn" (click)="
+              popup_remarks = '';
+              disableTransferPopupBtn = true;
+              showRemarks = true;
+              transferType = 3
+            " class="btn btn-danger btn_font ms-2" style="width: 100%">
+            {{ "MerchantPayoutDetail.SETTLE OUT SIDE BY FONDA" | transloco }}
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+          </button>
+        </div>
+        <div class="col-md-6" *ngIf="check_stripe_connected_id">
+          <button [disabled]="disableTransferPopupBtn" (click)="
+              popup_remarks = '';
+              transferType = 1;
+              calculatePayout(
+                1,
+                'MerchantPayoutDetail.finance account to merchant connected account'
+              );
+              transfer.hide()
+            " class="btn btn-danger btn_font ms-2" style="width: 100%">
+            {{
+            "MerchantPayoutDetail.TRANSFER FUNDS FROM CONNECT A/C" | transloco
+            }}
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+            <p> Fonda Stripe Balance : ${{StripeBalance}}</p>
+          </button>
+        </div>
+        <div class="col-md-6" *ngIf="connect_to_finacc">
+          <button [disabled]="disableTransferPopupBtn" (click)="
+              popup_remarks = '';
+              transferType = 2;
+              calculatePayout(
+                1,
+                'MerchantPayoutDetail.merchant’s treasury account to default recipient bank account'
+              );
+              transfer.hide()
+            " class="btn btn-danger mt-2 btn_font" style="width: 100%">
+            {{
+            "MerchantPayoutDetail.TRANSFER FUNDS FROM TREASURY A/C"
+            | transloco
+            }}
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+            <p> Merchant Treasury Balance : ${{TreasuryBalance}}</p>
+          </button>
+        </div>
+        <span *ngIf="showRemarks" class="mt-4 ms-2">
+          <div class="ms-1">
+            {{ "reuseableWords.Remarks" | transloco }} :
+            <textarea class="form-control" [(ngModel)]="popup_remarks" (input)="onInputChange()"
+              [placeholder]="'reuseableWords.Remarks' | transloco"></textarea>
+          </div>
+          <button class="btn btn-success mt-5 float-right" (click)="calculatePayout(1); remarks = ''; transfer.hide()"
+            [disabled]="popup_remarks == ''">
+            {{ "reuseableWords.SAVE" | transloco }}
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

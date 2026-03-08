@@ -1,0 +1,63 @@
+.back-mobile {
+    display: none;
+}
+
+.back-desktop {
+    display: block !important;
+}
+
+.loader-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.edit-heading {
+    display: block;
+}
+
+.edit-heading-mobile {
+    display: none;
+}
+
+.custom-tab {
+    background-color: #3498db;
+    color: #fff;
+}
+
+// media query
+@media screen and (max-width:575px) {
+    .back-mobile {
+        display: block;
+    }
+
+    .back-desktop {
+        display: none !important;
+    }
+
+    .edit-heading {
+        display: none;
+    }
+
+    .edit-heading-mobile {
+        display: block;
+        font-size: 1.4em;
+        margin-left: 0.4em !important;
+        margin: auto;
+    }
+
+    .container-fluid {
+        overflow-x: hidden !important;
+        margin-top: -12px;
+    }
+
+    .merchant-name {
+        font-size: 14px;
+        display: none;
+    }
+
+    .edit-main-dev {
+        margin-bottom: 1em !important;
+    }
+}

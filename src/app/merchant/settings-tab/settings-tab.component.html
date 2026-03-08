@@ -1,0 +1,539 @@
+<div class="card mb-4">
+  <div class="card-header">
+    <h4>{{ "MerchantSettingTab.Settings" | transloco }}</h4>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-12 mt-4 setting-main-div">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.acceptSpecialInstructionsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Accept special instructions in order"
+                | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.acceptSpecialInstructions"
+                style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.acceptSpecialInstructions === 1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.acceptSpecialInstructions === 0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.autoAcceptUbereatsOrdersDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Auto Accept ubereats orders" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.autoAcceptOrder" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.autoAcceptOrder === true">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.autoAcceptOrder === false">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>{{ "MerchantSettingTab.Merchant Status" | transloco }}
+                <i class="fas fa-eye ms-1" (mouseenter)="showHint()" (mouseleave)="hideHint()"></i></label>
+              <p class="status-hint" *ngIf="showHintOnHover && merchantDto.merchantStatus == 1">
+                {{
+                "MerchantSettingTab.MerchantStatusDescriptionActive"
+                | transloco
+                }}
+              </p>
+              <p class="status-hint" *ngIf="showHintOnHover && merchantDto.merchantStatus == 0">
+                {{
+                "MerchantSettingTab.MerchantStatusDescriptionNotActive"
+                | transloco
+                }}
+              </p>
+              <select [(ngModel)]="merchantDto.merchantStatus" style="height: 36px; width: -webkit-fill-available"
+                [disabled]="merchantDto.merchantStatus == 1">
+                <option value="1" [selected]="merchantDto.merchantStatus === 1">
+                  {{ "reuseableWords.Active" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.merchantStatus === 0">
+                  {{ "reuseableWords.Inactive" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="merchantDto.esperDeviceId">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.connectedDeviceIdDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>Connected Device Id</label>
+              <input [(ngModel)]="merchantDto.esperDeviceId" type="text" class="field" placeholder="Esper Device Id" />
+            </div>
+          </div>
+          <div class="col-md-4" *ngIf="merchantDto.esperDeviceId">
+            <label class="label-for-mobile" style="display: block; visibility: hidden; margin-bottom: 0em">Detach
+              Device</label>
+            <button class="btn button-theme" style="width: 100%" (click)="detachEsperDevice()">
+              Detach Device
+              <span *ngIf="detachingDeviceToMerchant" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.pauseResumeParserDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Pause/Resume Parser" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.parserStatus" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.parserStatus === 1">
+                  {{ "reuseableWords.Resume" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.parserStatus === 0">
+                  {{ "reuseableWords.Pause" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.pauseResumeFondaParserDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Pause/Resume Fonda Parser" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.order_creation_permission"
+                style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.order_creation_permission === 1">
+                  {{ "reuseableWords.Resume" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.order_creation_permission === 0">
+                  {{ "reuseableWords.Pause" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.busyModeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{ "MerchantSettingTab.Busy Mode" | transloco }}</label>
+              <select [(ngModel)]="merchantDto.busyMode" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.busyMode === 1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.busyMode === 0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.orderPreparationTimeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Order Preparation Time (in minutes)"
+                | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.preparationTime" min="1" type="number" class="field"
+                placeholder="Order Preparation Time" (keypress)="preventzerovalue($event , 1)" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.orderDelayTimeDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Order Delay Time (in minutes)" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.orderDelayTime" type="number" min="0" class="field"
+                placeholder="Order Delay Time" (keypress)="preventzerovalue($event , 0)" />
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.allowGoogleReviewsReplyDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Allow Google Reviews Reply" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.googleReviewsReply" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.googleReviewsReply === 1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.googleReviewsReply === 0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.storefrontChargeCardFeesDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label class="pr-4">{{
+                "MerchantSettingTab.Storefront - Charge Card Fees to Customer"
+                | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.cardfeeType" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.cardfeeType === 1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.cardfeeType === 0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.pollingFrequencyDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Polling Frequency" | transloco
+                }}</label>
+              <input [(ngModel)]="merchantDto.polling_frequency" type="number" min="0" class="field"
+                placeholder="Polling Frequency" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.pollingEnabledDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Enable Polling" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.is_polling_enabled" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.is_polling_enabled === 1">
+                  {{ "reuseableWords.Enable" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.is_polling_enabled === 0">
+                  {{ "reuseableWords.Disable" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.bogoEnabledDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Enable Bogo" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.is_bogo" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.is_bogo === 1">
+                  {{ "reuseableWords.Enable" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.is_bogo === 0">
+                  {{ "reuseableWords.Disable" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.platformPriceEnabledDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Enable Platform Price" | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.platform_price_flag" style="height: 36px; width: -webkit-fill-available">
+                <option value="1" [selected]="merchantDto.platform_price_flag === 1">
+                  {{ "reuseableWords.Enable" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.platform_price_flag === 0">
+                  {{ "reuseableWords.Disable" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>{{ "MerchantSettingTab.Language" | transloco }}</label>
+              <select [(ngModel)]="merchantDto.language" style="height: 36px; width: -webkit-fill-available">
+                <option value="en" [selected]="merchantDto.language === 'en'">
+                  {{ "MerchantSettingTab.English" | transloco }}
+                </option>
+                <option value="es" [selected]="merchantDto.language === 'es'">
+                  {{ "MerchantSettingTab.Spanish" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>{{
+                "MerchantOnBoarding.Onboarding Date" | transloco
+                }}</label>
+              <input type="date" [(ngModel)]="merchantDto.onboardingdate" class="field" placeholder="Onboarding Date"
+                [min]="currentDate" />
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <div class="help-tip">
+                <i class="fas fa-info-circle information-icon"></i>
+
+                <p>
+                  {{
+                  "tooltips.MerchantSettingTooltips.merchantEmailDistributionListDescription"
+                  | transloco
+                  }}
+                </p>
+              </div>
+              <div class="tagChipWrapper">
+                <div class="tagChipContent">
+                  <label>{{
+                    "MerchantSettingTab.Merchant Email Distribution List"
+                    | transloco
+                    }}<span style="color: red"> *</span></label>
+                  <div class="tagChipUL">
+                    <ul class="tagChipliWrapper" *ngFor="let email of tagsEmailDistributionArray">
+                      <li class="tagChipLI" *ngIf="email != ''">
+                        <span>{{ email }}</span>
+                        <img (click)="removeTag(email)" class="tagChipI"
+                          src="https://img.icons8.com/material-rounded/24/FA5252/multiply--v1.png" />
+                      </li>
+                    </ul>
+                    <input class="tagChipInputFieldSettingTab" type="text" spellcheck="false" [(ngModel)]="inputText"
+                      (keyup.enter)="onEnterKeyPressed($event)" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="help-tip">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.MerchantSettingTooltips.notificationText"
+                | transloco
+                }}
+              </p>
+            </div>
+            <div class="form-group">
+              <label>{{
+                "MerchantSettingTab.Notification Text" | transloco
+                }}</label>
+              <textarea type="text" [(ngModel)]="merchantDto.notificationText" class="field form-control"
+                style="overflow:hidden;" placeholder="Enter Notification Text"></textarea>
+            </div>
+          </div>
+          <div class="col-md-4">
+
+            <div class="form-group">
+              <label class="pr-4">{{
+                "MerchantSettingTab.Send Text Notification to Android"
+                | transloco
+                }}</label>
+              <select [(ngModel)]="merchantDto.notificationTextToggle"
+                (change)="notificationToggle(merchantDto.notificationTextToggle)"
+                style="height: 36px; width: -webkit-fill-available"
+                [disabled]="merchantDto.notificationTextToggle == 0 && (merchantDto.notificationText == '' || merchantDto.notificationText == null)">
+                <option value="1" [selected]="merchantDto.notificationTextToggle === 1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="merchantDto.notificationTextToggle === 0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="d-flex w-100 justify-content-end align-items-center setting-tab-btn">
+  <button *ngIf="!merchantDto.esperDeviceId" class="btn button-theme" (click)="
+      esperDeviceIdLocal = '';
+      esperDetailObj.device_name = '';
+      EsperDevicePopup.show()
+    ">
+    {{ "reuseableWords.Connect Device" | transloco }}
+  </button>
+  <button
+    [disabled]="savingMerchant || tagsEmailDistributionArray.length == 0 || merchantDto.preparationTime == null || merchantDto.orderDelayTime == null
+    || (merchantDto.notificationTextToggle == 1 && (merchantDto.notificationText == '' || merchantDto.notificationText == null)) || (merchantDto.notificationTextToggle == 0 && (merchantDto.notificationText != '' && merchantDto.notificationText != null)) "
+    class="btn button-theme m-0 ml-2 px-4 save-button" (click)="SaveMerchantData()">
+    <span *ngIf="savingMerchant" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+    </span>
+    {{ "reuseableWords.Save Settings" | transloco }}
+  </button>
+</div>
+<div mdbModal #EsperDevicePopup="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="EsperDevicePopup.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          Assign Esper Device to {{ merchantDto.merchantName }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label>Enter Connected Device Id</label>
+          <input type="text" style="width: 100%" [(ngModel)]="esperDeviceIdLocal" />
+        </div>
+
+        <div *ngIf="esperDetailObj.device_name">
+          <b>Details of Device on Esper:</b><br />
+          <b>Connected Device Id:</b>{{ esperDetailObj.id }}<br />
+          <b>Esper Device Name:</b>{{ esperDetailObj.device_name }}<br />
+          <b>Esper Device Alias:</b> {{ esperDetailObj.alias_name }}<br />
+          <b>Esper Device Online Status:</b>
+          <ng-container *ngIf="esperDetailObj.status == 1">
+            Online</ng-container>
+          <ng-container *ngIf="esperDetailObj.status == 60">
+            Offline</ng-container>
+        </div>
+        <div class="modal-footer">
+          <button class="btn button-theme" *ngIf="!esperDetailObj.device_name" [disabled]="esperDeviceIdLocal == ''"
+            (click)="getEsperDetails()">
+            Get Information
+            <span *ngIf="gettingEsperInformation" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true">
+            </span>
+          </button>
+          <button class="btn button-theme" *ngIf="esperDetailObj.device_name" [disabled]="esperDeviceIdLocal == ''"
+            (click)="connectDisconnectEsper(0)">
+            Connect
+            <span *ngIf="AssigningDeviceToMerchant" class="spinner-border spinner-border-sm" role="status"
+              aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

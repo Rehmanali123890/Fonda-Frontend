@@ -1,0 +1,471 @@
+.row {
+  align-items: baseline;
+}
+
+table > tbody {
+  background-color: #fff;
+}
+
+#price-table {
+  width: max-content;
+}
+
+.payout-icons {
+  font-size: 25px;
+  color: #4285f4;
+  cursor: pointer;
+}
+
+.payout-icons2 {
+  font-size: 25px;
+  color: #00305a;
+  margin-left: 15px;
+  cursor: pointer;
+}
+
+.adjustments-input {
+  width: 170px;
+}
+
+.status-hint {
+  font-style: italic;
+  position: absolute;
+  top: -30px;
+  /* Adjust this value as per your preference */
+  left: 0;
+  background-color: #f1f1f1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+
+  /* To ensure the hint is displayed above other elements */
+}
+
+.status-hint1 {
+  width: 500px;
+  font-style: italic;
+  /* Adjust this value as per your preference */
+  left: 0;
+  background-color: #f1f1f1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-top: -5px;
+  margin-left: 3.2em;
+
+  /* To ensure the hint is displayed above other elements */
+}
+
+.adjustment-div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #dee2e6;
+}
+
+.button-div {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+::selection {
+  color: #fff;
+  background: #5372f0;
+}
+
+.tagChipWrapper {
+  width: 100%;
+}
+
+.wrapper :where(.title, li, li i, .details) {
+  display: flex;
+  align-items: center;
+}
+
+.title img {
+  max-width: 21px;
+}
+
+.title h2 {
+  font-size: 21px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.tagChipContent > p {
+  font-size: 15px;
+}
+
+.tagChipUL {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 3px;
+  border: 1px solid #000;
+}
+
+.tagChipLI {
+  color: #333;
+  margin: 4px 3px;
+  list-style: none;
+  border-radius: 30px;
+  background: #f2f2f2;
+  padding: 4px 10px;
+  border: 1px solid #e3e1e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tagChipI {
+  height: 20px;
+  width: 20px;
+  color: #808080;
+  margin-left: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.tagChipUL > input {
+  flex: 1;
+  padding: 5px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.tagChipDetails {
+  justify-content: space-between;
+}
+
+.tagChipDetails > button {
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 9px 15px;
+  border-radius: 5px;
+  background: #5372f0;
+  transition: background 0.3s ease;
+}
+
+.help-tip-payout {
+  position: absolute;
+  text-align: center;
+  border-radius: 50%;
+  font-size: 12px;
+  line-height: 25px;
+  cursor: default;
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+.help-tip-payout p {
+  visibility: hidden;
+  opacity: 0;
+  text-align: left;
+  background-color: #00305a;
+  padding: 20px;
+  width: 300px;
+  position: absolute;
+  border-radius: 4px;
+  right: -4px;
+  color: #fff;
+  font-size: 13px;
+  line-height: normal;
+  transform: scale(0.7);
+  transform-origin: 100% 0%;
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  z-index: 1000;
+}
+
+.help-tip-payout:hover p {
+  cursor: default;
+  visibility: visible;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.help-tip-payout p:before {
+  position: absolute;
+  content: "";
+  width: 0;
+  height: 0;
+  border: 6px solid transparent;
+  border-bottom-color: #00305a;
+  right: 10px;
+  top: -12px;
+}
+
+.help-tip-payout p:after {
+  width: 100%;
+  height: 40px;
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 0;
+}
+
+.help-tip-payout a {
+  color: #fff;
+  font-weight: 700;
+}
+
+.help-tip-payout a:hover,
+.help-tip-payout a:focus {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.tagChipDetails > button:hover {
+  background: #2c52ed;
+}
+
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: block;
+}
+
+.button-theme {
+  width: 100%;
+  font-size: 12.2px;
+}
+
+.wrap-column {
+  max-width: 750px;
+  /* Adjust the max-width as needed */
+  word-wrap: break-word;
+  white-space: normal;
+  /* Ensure text can wrap to the next line */
+}
+
+.terms-cards-main {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1.5em;
+  gap: 5px;
+}
+
+.term-card {
+  padding: 2.5em 1em;
+  border-radius: 20px;
+  height: 200px;
+  width: 20%;
+  position: relative;
+  margin-top: 8px;
+  background-color: #d9d9d94f;
+}
+
+.term-head {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 0.6em;
+}
+
+.term-head img {
+  height: 37px;
+  object-fit: contain;
+}
+
+.data-item {
+}
+
+.title {
+  font-size: 1.2em;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.title i {
+  font-size: 0.8em;
+  color: #565555;
+}
+
+.plateform-price {
+  font-size: 1.7em;
+  font-weight: 600;
+  text-indent: 5px;
+  margin-top: 0.2em;
+}
+
+.sub-title {
+  text-indent: 5px;
+  font-size: 0.7em;
+  font-weight: 500;
+}
+
+.divider {
+  margin: 0.5em 0em;
+  border: 0px;
+}
+
+.sub-title .up-value {
+  color: #07a216;
+  font-weight: 500;
+}
+
+.sub-title .down-value {
+  color: #ea5031;
+  font-weight: 500;
+}
+
+.report-link {
+  text-indent: 5px;
+}
+
+.report-link a {
+  display: flex;
+  align-items: center;
+  color: #000;
+}
+
+.main-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  margin-bottom: 0.7em;
+}
+
+.totals {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid;
+}
+
+/* media query */
+@media screen and (max-width: 768px) {
+  .terms-cards-main {
+    flex-direction: column;
+    margin-bottom: 0em;
+  }
+
+  .term-card {
+    width: 100%;
+    margin-bottom: 1em;
+  }
+}
+
+@media screen and (max-width: 575px) {
+  .adjust-wt-for-mobile {
+    width: 120px;
+    display: block;
+  }
+
+  .button-div {
+    flex-direction: column;
+  }
+
+  .adjustment-div {
+    justify-content: flex-start;
+    width: 100px;
+  }
+
+  .mobile-view {
+    display: block;
+  }
+
+  .desktop-view {
+    display: none;
+  }
+
+  .date-input-div {
+    flex-wrap: nowrap !important;
+  }
+
+  .date-input-div .date-input-start {
+    flex-basis: 50%;
+  }
+
+  .date-input-div .date-input-end {
+    flex-basis: 50%;
+    margin-left: -1em;
+  }
+
+  .button-for-mobile {
+    width: 100%;
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  .table-details {
+    margin-top: 0.7em !important;
+  }
+
+  .table-details h2 {
+    font-size: 1.3em;
+  }
+
+  .adjustments-input {
+    width: 100%;
+  }
+
+  .update-btn {
+    box-shadow: none;
+    font-size: 11px;
+    width: 100% !important;
+  }
+
+  .history-table {
+    margin-top: 0em !important;
+  }
+
+  .modal-heading {
+    font-size: 1.2em;
+  }
+
+  .modal-footer button {
+    font-size: 11px;
+  }
+
+  table tr {
+    border-style: solid;
+    border-width: unset !important;
+    border-color: #eeeeee !important;
+  }
+
+  table tr td {
+    border: 2px solid #eeeeee;
+  }
+
+  table thead th {
+    border: 2px solid #eeeeee;
+  }
+
+  .mobile-table-bg {
+    background-color: #00305a;
+    color: #fff;
+  }
+
+  table tbody {
+    background-color: #fff;
+    font-size: 15px;
+  }
+
+  .action-for-mobile {
+    width: 77%;
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  table thead {
+    font-size: 15px;
+  }
+}
+
+.btn_font {
+  font-size: 12px;
+}
+
+.modal-dialog-width {
+  max-width: 800px;
+  /* Adjust the width as per your requirement */
+}

@@ -1,0 +1,683 @@
+/*form styles*/
+#firstNameError,
+#lastNameError,
+#emailError,
+#phoneError,
+#passwordError,
+#confirmPasswordError,
+#merchantNameError,
+#businessWebsiteError,
+#businessAddressLineError,
+#businessAddressCityError,
+#zipError,
+#businessNumberError,
+#confirmPassError {
+  float: left !important;
+  font-size: 13px !important;
+  color: red !important;
+}
+.upload-media-img {
+  height: 200px;
+}
+.upload-media-img img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+.upload-media-img video {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+}
+.logo-delete {
+  font-size: 24px;
+  color: #ef4524;
+  cursor: pointer;
+  padding-left: 0.7em;
+}
+.upload-media-div {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.upload-btn {
+  margin-top: 1em;
+  border: 1px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 19px;
+}
+.tacbox {
+  display: flex;
+  justify-content: flex-start;
+}
+.messages {
+  text-align: left;
+  list-style: disc;
+}
+.messages li {
+  list-style: disc;
+  font-size: 15px;
+}
+.messages .info {
+  list-style: none !important;
+  display: flex;
+  flex-direction: column;
+}
+.messages .info span {
+  background-color: #eeeeee85;
+  padding: 0.3em 0.6em;
+}
+.move-next {
+  float: right;
+}
+.next-screen {
+  color: #fff !important;
+  background-color: #00305a !important;
+}
+.next_screen {
+  color: #00305a !important;
+}
+.previous-screen {
+  background-color: #686666 !important;
+}
+.ctrlqHeaderMast {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5em;
+}
+.ctrlqHeaderMast img {
+  height: 100%;
+  width: 270px;
+}
+.info-label {
+  font-weight: normal;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 0.4em;
+  float: left;
+}
+.main-info {
+  background: white;
+  border: 0 none;
+  border-radius: 0px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.01);
+  padding: 20px 30px;
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+  margin-bottom: 1.2em;
+}
+.fa-plus-circle {
+  color: #f6a035;
+}
+strong {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 0.5em;
+}
+.signup-heading {
+  text-decoration: underline;
+}
+.add-sclect-time {
+  background-color: aliceblue;
+  padding: 1em;
+  margin-right: 0.3em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.add-sclect-time:hover {
+  background-color: #c8d5e0a3;
+}
+.cross-sclect-time {
+  background-color: beige;
+  padding: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.cross-sclect-time:hover {
+  background-color: #e5e5d1;
+}
+.hours-desc {
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+}
+.day {
+  font-size: 20px;
+  font-weight: 600;
+  text-align: left;
+}
+.upload-media-main {
+  margin: 0em 6em;
+}
+#msform {
+  text-align: center;
+  position: relative;
+  margin-top: 1.5em;
+  width: 61%;
+  margin-bottom: 2em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#msform fieldset {
+  background: white;
+  border: 0 none;
+  border-radius: 0px;
+  box-shadow: 0 0 10px 1px rgba(0, 0, 0, 0.01);
+  padding: 20px 30px;
+  box-sizing: border-box;
+  width: 100%;
+  position: relative;
+}
+
+/*Hide all except first fieldset*/
+#msform fieldset:not(:first-of-type) {
+  display: none;
+}
+
+/*inputs*/
+#msform input,
+#msform textarea {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 100%;
+  color: #000;
+}
+#msform input[type="checkbox"] {
+  padding: 0px;
+  border: none;
+  border-radius: 0px;
+  margin-bottom: 0px;
+  width: unset;
+  box-sizing: unset;
+  font-family: unset;
+  color: unset;
+  font-size: unset;
+}
+.label {
+  margin-bottom: 0px !important;
+}
+
+#msform input:focus,
+#msform textarea:focus,
+#msform select:focus {
+  -moz-box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  border: 1px solid #00305a;
+  outline-width: 0;
+  transition: All 0.5s ease-in;
+  background: none !important;
+  -webkit-transition: All 0.5s ease-in;
+  -moz-transition: All 0.5s ease-in;
+  -o-transition: All 0.5s ease-in;
+}
+
+/*buttons*/
+#msform .action-button {
+  width: 100px;
+  background: #00305a;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+}
+
+#msform .action-button:hover,
+#msform .action-button:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #00305a;
+}
+
+#msform .action-button-previous {
+  width: 100px;
+  background: #c5c5f1;
+  font-weight: bold;
+  color: white;
+  border: 0 none;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 10px 5px;
+  margin: 10px 5px;
+}
+
+#msform .action-button-previous:hover,
+#msform .action-button-previous:focus {
+  box-shadow: 0 0 0 2px white, 0 0 0 3px #c5c5f1;
+}
+
+/*headings*/
+.fs-title {
+  font-size: 18px;
+  text-transform: uppercase;
+  color: #00305a;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+.fs-subtitle {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/*progressbar*/
+#progressbar {
+  margin-bottom: 30px;
+  overflow: hidden;
+  /*CSS counters to number the steps*/
+  counter-reset: step;
+  display: flex;
+  justify-content: center;
+}
+
+#progressbar li {
+  list-style-type: none;
+  text-transform: uppercase;
+  font-size: 9px;
+  width: 15%;
+  float: left;
+  position: relative;
+  letter-spacing: 1px;
+  margin: 0em 4.4em;
+}
+
+#progressbar li:before {
+  content: counter(step);
+  counter-increment: step;
+  width: unset;
+  height: 3px;
+  line-height: unset;
+  display: block;
+  font-size: unset;
+  color: #e1dede;
+  background: #e1dede;
+  border-radius: 4px;
+  margin: 0em 0.7em;
+}
+
+/*progressbar connectors*/
+#progressbar li:after {
+  content: "";
+  width: 100%;
+  height: 2px;
+  background: white;
+  position: absolute;
+  left: -50%;
+  top: 9px;
+  z-index: -1; /*put it behind the numbers*/
+}
+
+#progressbar li:first-child:after {
+  /*connector not needed before the first step*/
+  content: none;
+}
+
+/*marking active/completed steps green*/
+/*The number of the step and the connector before it = green*/
+#progressbar li.active:before,
+#progressbar li.active:after {
+  background: #00305a;
+  color: #00305a;
+}
+
+/* Not relevant to this form */
+.dme_link {
+  margin-top: 30px;
+  text-align: center;
+}
+.dme_link a {
+  background: #fff;
+  font-weight: bold;
+  color: #00305a;
+  border: 0 none;
+  border-radius: 25px;
+  cursor: pointer;
+  padding: 5px 25px;
+  font-size: 12px;
+}
+
+.dme_link a:hover,
+.dme_link a:focus {
+  background: #c5c5f1;
+  text-decoration: none;
+}
+
+// floating inputs
+
+:root {
+  --color__accent: #6200ee;
+
+  --field__background: #f5f5f5;
+  --field__background--hover: #e9e9e9;
+  --input__border: rgba(0, 0, 0, 0.42);
+  --input__border--hover: rgba(0, 0, 0, 0.62);
+  --label__color: #222;
+
+  --font__size: 16px;
+  --font__family: Roboto, Arial, sans-serif;
+}
+
+.floating {
+  margin-bottom: 1rem;
+  background-color: var(--field__background);
+  transition: background-color 0.2s ease;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.floating:hover,
+.floating:focus-within {
+  background-color: var(--field__background--hover);
+}
+
+.floating__input {
+  padding: 1.8rem 1rem 0.6rem;
+  font-size: 1rem;
+  border-bottom: 0.1rem solid var(--input__border);
+  transition: border-color 0.2s ease;
+  caret-color: var(--color__accent);
+}
+
+.floating:hover .floating__input {
+  border-color: var(--input__border--hover);
+}
+
+.floating__input::placeholder {
+  color: rgba(0, 0, 0, 0);
+}
+
+.floating__label {
+  display: block;
+  position: relative;
+  max-height: 0;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.floating__label::before {
+  color: var(--label__color);
+  content: attr(data-content);
+  display: inline-block;
+  filter: blur(0);
+  backface-visibility: hidden;
+  transform-origin: left top;
+  transition: transform 0.2s ease;
+  position: relative;
+  display: flex;
+  padding-left: 1em;
+}
+
+.floating__label::after {
+  bottom: 1rem;
+  content: "";
+  height: 0.1rem;
+  position: absolute;
+  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 180ms cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+  opacity: 0;
+  left: 0;
+  top: 100%;
+  margin-top: -0.1rem;
+  transform: scale3d(0, 1, 1);
+  width: 100%;
+  background-color: var(--color__accent);
+}
+
+.floating__input:focus + .floating__label::after {
+  transform: scale3d(1, 1, 1);
+  opacity: 1;
+}
+
+.floating__input:placeholder-shown + .floating__label::before {
+  transform: translate3d(0, -3rem, 0) scale3d(1, 1, 1);
+}
+
+.floating__label::before,
+.floating__input:focus + .floating__label::before {
+  transform: translate3d(0, -3.6rem, 0) scale3d(0.82, 0.82, 1);
+}
+
+.floating__input:focus + .floating__label::before {
+  color: var(--color__accent);
+}
+.hidden--visually {
+  border: 0;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.floating-select {
+  font-size: 14px;
+  padding: 4px 10px;
+  display: block;
+  width: 100%;
+  height: 61.6px;
+  background-color: transparent;
+  border: none;
+  border: 1px solid #ccc;
+  border-radius: 7px;
+}
+
+.floating-select:focus {
+  outline: none;
+}
+
+.select-label {
+  color: #000;
+  font-size: 14px;
+  position: absolute;
+  pointer-events: none;
+  background-color: #fff;
+  left: 2em;
+  top: 16px;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+.floating-select:focus ~ .select-label,
+.floating-select:not([value=""]):valid ~ .select-label {
+  top: -10px;
+  font-size: 14px;
+  padding: 0em 0.5em;
+}
+
+/* active state */
+.floating-select:focus ~ .bar:before,
+.floating-select:focus ~ .bar:after {
+  width: 50%;
+}
+
+.floating-select:focus ~ .highlight {
+  -webkit-animation: inputHighlighter 0.3s ease;
+  -moz-animation: inputHighlighter 0.3s ease;
+  animation: inputHighlighter 0.3s ease;
+}
+
+// upload image
+.inputDnD {
+  .form-control-file {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 9em;
+    outline: none;
+    visibility: hidden;
+    cursor: pointer;
+    background-color: #c61c23;
+    &:before {
+      content: attr(data-title);
+      position: absolute;
+      top: 0.5em;
+      left: 0;
+      width: 100%;
+      min-height: 6em;
+      line-height: 2em;
+      padding-top: 1.5em;
+      opacity: 1;
+      visibility: visible;
+      text-align: center;
+      border: 2px dashed #ccc;
+      overflow: hidden;
+    }
+  }
+}
+
+// media query
+@media screen and (max-width: 1350px) {
+  #progressbar li {
+    width: 25%;
+    margin: 0em 0em;
+  }
+}
+@media screen and (max-width: 768px) {
+  #msform {
+    width: 75%;
+  }
+  .floating {
+    margin-bottom: 0rem !important;
+  }
+  .upload-media-main {
+    margin: 0em 0em !important;
+  }
+}
+@media screen and (max-width: 600px) {
+  #msform {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 575px) {
+  .day {
+    font-size: 18px;
+  }
+  .select-label {
+    font-size: 12px;
+  }
+  #msform fieldset {
+    border-radius: 0px;
+    box-shadow: none !important;
+  }
+  .ctrlqHeaderMast img {
+    height: 100%;
+    width: 200px;
+  }
+  .signup-heading {
+    text-decoration: underline;
+    font-size: 25px;
+  }
+  .for-mobile {
+    width: 43%;
+    margin-left: -1.4em;
+  }
+  .for-mobile2 {
+    width: 43%;
+    margin-left: -1.7em;
+  }
+  .images-mobile {
+    margin-left: -1.2em;
+    width: 24%;
+  }
+  .add-sclect-time {
+    padding: 1em;
+  }
+  .cross-sclect-time {
+    padding: 1em;
+  }
+  .day-mobile {
+    margin-left: -1.1em;
+  }
+  .hours-desc {
+    margin-left: -1.1em;
+  }
+}
+@media screen and (max-width: 430px) {
+  .for-mobile {
+    width: 46%;
+  }
+  .for-mobile2 {
+    width: 46%;
+    margin-left: -1.5em;
+  }
+  .images-mobile {
+    margin-left: -1.8em;
+    // width: 63px;
+  }
+  .add-sclect-time {
+    padding: 1em 0.5em;
+  }
+  .cross-sclect-time {
+    padding: 1em 0.5em;
+  }
+  .day-mobile {
+    margin-left: -1.1em;
+  }
+  #msform input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    // margin-right: -1em;
+    margin-top: 0.2em;
+  }
+  floating-select:not([value=""]):valid ~ .select-label {
+    top: -10px;
+    font-size: 11px;
+    padding: 0em 0.5em;
+  }
+  .clock {
+    width: 21px;
+  }
+}
+.buttons-group {
+  gap: 25px;
+}
+@media screen and (max-width: 375px) {
+  .buttons-group {
+    justify-content: center !important;
+  }
+  .label {
+    padding-right: 0em !important;
+  }
+}
+@media screen and (max-width: 368px) {
+  .for-mobile2 {
+    // width: 47%;
+    margin-left: -1.5em;
+  }
+  .images-mobile {
+    margin-left: -1.9em;
+    // width: 63px;
+  }
+  .select-label {
+    font-size: 10px;
+  }
+  .add-sclect-time {
+    padding: 1em 0.3em;
+  }
+  .cross-sclect-time {
+    padding: 1em 0.3em;
+  }
+  floating-select:focus ~ .select-label,
+  .floating-select:not([value=""]):valid ~ .select-label {
+    top: -10px;
+    font-size: 10px;
+    padding: 0em 0.5em;
+  }
+  .clock {
+    width: 20px;
+  }
+}

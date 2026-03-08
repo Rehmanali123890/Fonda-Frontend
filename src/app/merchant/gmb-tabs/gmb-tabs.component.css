@@ -1,0 +1,24 @@
+.nav-item {
+  margin-bottom: 0px !important;
+  width: 25% !important;
+  text-align: center !important;
+}
+
+.main-screen {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.loader-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+@media screen and (max-width: 768px) {
+  .form-group {
+    margin-bottom: 0px;
+  }
+}

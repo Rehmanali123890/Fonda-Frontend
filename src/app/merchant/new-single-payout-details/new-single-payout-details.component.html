@@ -1,0 +1,397 @@
+<div class="container-fluid pb-4">
+  <div *ngIf="showmainloader" class="loader-main">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+    </span>
+  </div>
+</div>
+<div class="container-fluid margn-top-mobile-view" *ngIf="!showmainloader">
+  <div class="row">
+    <h2>Payout Details</h2>
+    <div class="terms-cards-main">
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/doordash-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Doordash
+                <span class="help-tip-payout" style="left: 105px"><img src="../../../assets/icons/Infogray.svg"
+                    alt="" />
+                  <p>Estimated earnings after deductions for DoorDash.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{
+                financepayoutcalculationObj.doordash_earning
+                | number : "1.2-2"
+                }}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_dd >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_dd
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_dd < 0">{{
+                  financepayoutcalculationObj.percentage_change_dd
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.doordash_earning != 0">
+                <a routerLink="/home/merchants/doordash-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'doordash',
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_dd,
+                    unlocked_only: 1,
+                    payout_id: payoutId,
+                    duration: financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 2nd card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/grubhub-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Grubhub
+                <span class="help-tip-payout" style="left: 95px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                  <p>Estimated earnings after deductions for Grubhub.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{ financepayoutcalculationObj.GH_earning | number : "1.2-2" }}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_gh >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_gh
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_gh < 0">{{
+                  financepayoutcalculationObj.percentage_change_gh
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.GH_earning != 0">
+                <a routerLink="/home/merchants/grubhub-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'grubhub',
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_gh,
+                    unlocked_only: 1,
+                    payout_id: payoutId,
+                    status: financepayoutcalculationObj.status,
+                    duration: financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 3rd card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/ubereats-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Ubereats
+                <span class="help-tip-payout" style="left: 99px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                  <p>Estimated earnings after deductions for Ubereats.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{
+                financepayoutcalculationObj.ubereats_earning
+                | number : "1.2-2"
+                }}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_ue >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_ue
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_ue < 0">{{
+                  financepayoutcalculationObj.percentage_change_ue
+                  | number : "1.2-2"
+                  }}%</span>
+
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.ubereats_earning != 0">
+                <a routerLink="/home/merchants/ubereats-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'ubereats',
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_ue,
+                    unlocked_only: 1,
+                    payout_id: payoutId,
+                    duration: financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 4th card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/storefront-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Store Front
+                <span class="help-tip-payout" style="left: 118px"><img src="../../../assets/icons/Infogray.svg"
+                    alt="" />
+                  <p>Estimated earnings after deductions for Storefront.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{
+                financepayoutcalculationObj.storefront_earning
+                | number : "1.2-2"
+                }}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_sf >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_sf
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_sf < 0">{{
+                  financepayoutcalculationObj.percentage_change_sf
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.storefront_earning != 0">
+                <a routerLink="/home/merchants/storefront-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'storefront',
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_sf,
+                    unlocked_only: 1,
+                    payout_id: payoutId,
+                    duration: financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 5th card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <!-- <img src="../../../assets/images/doordash-logo.png" alt="" /> -->
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Fonda Share
+                <span class="help-tip-payout" style="left: 131px"><img src="../../../assets/icons/Infogray.svg"
+                    alt="" />
+                  <p>
+                    This value represents the total estimated earning of Fonda
+                    from all platforms.
+                  </p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{
+                financepayoutcalculationObj.fonda_revenue_share
+                | number : "1.2-2"
+                }}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="
+                    financepayoutcalculationObj.percentage_change_fonda_share >=
+                    0
+                  ">+{{
+                  financepayoutcalculationObj.percentage_change_fonda_share
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="
+                    financepayoutcalculationObj.percentage_change_fonda_share <
+                    0
+                  ">{{
+                  financepayoutcalculationObj.percentage_change_fonda_share
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="!showDetails" class="alert alert-info" role="alert">
+      No payout deatils available.
+    </div>
+    <table class="table table-bordered table-hover" *ngIf="showDetails">
+      <tbody>
+        <tr>
+          <td class="col-md-6">Merchant Name</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.merchantName }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Status</td>
+
+          <td class="col-md-6 text-center">
+            {{ SubscriptionDescriptionEnum[PayoutCalculationsObj.status] }}
+          </td>
+        </tr>
+        <tr *ngIf="PayoutCalculationsObj.status == 2">
+          <td class="col-md-6">Reverted By</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.revertedByName }}
+          </td>
+        </tr>
+        <tr *ngIf="PayoutCalculationsObj.status == 2">
+          <td class="col-md-6">Reverted Date Time</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.revertedDateTime }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Start Date</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.startDate | date : "MM/dd/yyyy" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">End Date</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.endDate | date : "MM/dd/yyyy" }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Payout Created Date & Time</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.created_datetime }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Payout Done by</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.doneByUser }}
+          </td>
+        </tr>
+
+        <tr *ngIf="
+            querryparam &&
+            (PayoutCalculationsObj.remarks ||
+              PayoutCalculationsObj.transferredToBankBy)
+          ">
+          <td class="col-md-6">Paid out to Bank Account</td>
+          <td class="col-md-6 text-center">
+            <ng-container *ngIf="
+                PayoutCalculationsObj.transferType == 2 ||
+                PayoutCalculationsObj.transferType == 1
+              ">
+              Paid out to bank
+              {{ getBankInfoText() }}
+              by
+              {{ PayoutCalculationsObj.transferredToBankBy }} on
+              {{ PayoutCalculationsObj.transferredToBankTime }}</ng-container>
+            <ng-container *ngIf="PayoutCalculationsObj.transferType == 3">
+              Paid out to bank
+
+              {{ getBankInfoText() }}
+              by {{ PayoutCalculationsObj.remarks }} on
+              {{ PayoutCalculationsObj.created_datetime }}</ng-container>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-6">Payout Type</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutTypeDescription[PayoutCalculationsObj.payoutType] }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Payout Remarks</td>
+          <td class="col-md-6 text-center">
+            {{ PayoutCalculationsObj.remarks }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Internal Note</td>
+          <td class="col-md-6 text-center" style="word-wrap: break-word; white-space: normal;">
+            <div style="display: inline-block; max-width: 100%; word-break: break-word; text-align: center;">
+              {{ PayoutCalculationsObj.internalNote }}
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Total Earning</td>
+          <td class="col-md-6 text-center">
+            ${{ PayoutCalculationsObj.totalEarning }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Fonda Share</td>
+          <td class="col-md-6 text-center">
+            $-{{ PayoutCalculationsObj.FondaShare }}
+          </td>
+        </tr>
+        <tr>
+          <td class="col-md-6">Payout Adjustments</td>
+          <td class="col-md-6 text-center">
+            $ {{ PayoutCalculationsObj.payoutAdjustments | number : "1.2-2" }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-6">Subscription Adjustments</td>
+          <td class="col-md-6 text-center">
+            $
+            {{
+            PayoutCalculationsObj.subscriptionAdjustments | number : "1.2-2"
+            }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-6">Net Payout</td>
+          <td class="col-md-6 text-center">
+            $ {{ PayoutCalculationsObj.netPayout | number : "1.2-2" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <button (click)="redirectBack()" class="btn button-theme">Back</button>
+</div>

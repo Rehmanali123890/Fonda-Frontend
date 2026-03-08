@@ -1,0 +1,1620 @@
+<div class="container-fluid onBoarding-main-screen ">
+  <div class="ctrlqHeaderMast">
+    <img src="../../../assets/images/logo.svg" alt="" />
+  </div>
+  <div class="form-container">
+    <!-- <input id="step2" type="checkbox" />
+    <input id="step3" type="checkbox" />
+    <input id="step4" type="checkbox" /> -->
+
+    <!-- step1 -->
+    <div id="part1" class="form-group">
+      <div class="ctrlqCenteredContent mt-5 mb-4">
+        <div class="d-flex align-items-center">
+          <button
+            class="btn btn-info"
+            routerLink="/home/merchants/merchantsList"
+          >
+            <i class="fas fa-arrow-alt-circle-left text-white"></i>
+            <span class="text-white">   {{'MerchantOnBoarding.Back' | transloco}}</span>
+          </button>
+          <h3 class="merchant-heading ms-1">  {{'MerchantOnBoarding.Merchant OnBoarding' | transloco}}</h3>
+        </div>
+        <span
+          *ngIf="gettingMerchantDetail"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        >
+        </span>
+      </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading"></div>
+        <div class="ctrlqFormContentWrapper">
+          <div class="ctrlqCenteredContent">
+            <div class="ctrlqFormCard">
+              <div class="ctrlqAccent"></div>
+              <div class="ctrlqFormContent">
+                <div class="col-md-12">
+                  <div class="row">
+                    <div class="heading-div">
+                      <span
+                        ><i class="fa fa-info-circle" aria-hidden="true"></i
+                      ></span>
+                      <h4>{{'MerchantOnBoarding.Personal Information' | transloco}}</h4>
+                    </div>
+                  </div>
+                  <form [formGroup]="onBoardingForm">
+                    <div class="row mt-2">
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateEmail() }"
+                        >
+                          <label class="required">{{'reuseableWords.Email' | transloco}}</label>
+                          <input
+                            type="email"
+                            [(ngModel)]="merchantDto.email"
+                            formControlName="email"
+                            class="field"
+                            [placeholder]="'reuseableWords.Email' | transloco"
+                          />
+                          <small class="text-danger" *ngIf="!validateEmail()"
+                            >(Required)</small
+                          >
+                          <small
+                            class="text-danger"
+                            *ngIf="
+                              onBoardingForm.get('email').invalid &&
+                              onBoardingForm.get('email').dirty &&
+                              onBoardingForm.get('email').errors['email']
+                            "
+                          >
+                          {{'MerchantOnBoarding.Must be a valid email' | transloco}}</small
+                          >
+                        </div>
+                      </div>
+
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateFirstName() }"
+                        >
+                          <label class="required"
+                            >{{'AccountDetail.Point of contact first Name' | transloco}}</label
+                          >
+                          <input
+                            type="text"
+                            [(ngModel)]="merchantDto.firstName"
+                            formControlName="firstName"
+                            class="field"
+                            [placeholder]="'reuseableWords.First Name' | transloco"
+                          />
+                          <small
+                            class="text-danger"
+                            *ngIf="!validateFirstName()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateLasttName() }"
+                        >
+                          <label class="required"
+                            >{{'AccountDetail.Point of contact last Name' | transloco}}</label
+                          >
+                          <input
+                            type="text"
+                            [(ngModel)]="merchantDto.lastName"
+                            formControlName="lastName"
+                            class="field"
+                            [placeholder]="'reuseableWords.Last Name' | transloco"
+                          />
+                          <small
+                            class="text-danger"
+                            *ngIf="!validateLasttName()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateRestuName() }"
+                        >
+                          <label class="required">{{'MerchantOnBoarding.Name Of Restaurant' | transloco}}</label>
+                          <input
+                            type="text"
+                            class="field"
+                            [(ngModel)]="merchantDto.merchantName"
+                            formControlName="resturantName"
+                            [placeholder]="'MerchantOnBoarding.Name Of Restaurant' | transloco"
+                          />
+                          <small
+                            class="text-danger"
+                            *ngIf="!validateRestuName()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateDOB() }"
+                        >
+                          <label class="required">{{'AccountDetail.Point Of Contact DOB' | transloco}}</label>
+                          <input
+                            type="date"
+                            [(ngModel)]="merchantDto.pocdob"
+                            formControlName="dobContact"
+                            class="field"
+                            [placeholder]="'AccountDetail.Point Of Contact DOB' | transloco"
+                          />
+                          <small class="text-danger" *ngIf="!validateDOB()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateCity() }"
+                        >
+                          <label class="required">{{'AccountDetail.City' | transloco}}</label>
+                          <input
+                            type="text"
+                            [(ngModel)]="merchantDto.businessAddressCity"
+                            formControlName="city"
+                            class="field"
+                            [placeholder]="'AccountDetail.City' | transloco"
+                          />
+                          <small class="text-danger" *ngIf="!validateCity()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateState() }"
+                        >
+                          <label class="required">{{'MerchantOnBoarding.State' | transloco}}</label>
+                          <input
+                            type="text"
+                            [(ngModel)]="merchantDto.businessAddressState"
+                            formControlName="state"
+                            class="field"
+                            [placeholder]="'MerchantOnBoarding.State' | transloco"
+                          />
+                          <small class="text-danger" *ngIf="!validateState()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateZipCode() }"
+                        >
+                          <label class="required">{{'reuseableWords.zipcode' | transloco}}</label>
+                          <input
+                            type="text"
+                            [(ngModel)]="merchantDto.zip"
+                            formControlName="zipCode"
+                            class="field"
+                            [placeholder]="'reuseableWords.zipcode' | transloco"
+                          />
+                          <small class="text-danger" *ngIf="!validateZipCode()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateTimezone() }"
+                        >
+                          <label class="required">{{'reuseableWords.timezone' | transloco}}</label>
+                          <select
+                            [(ngModel)]="merchantDto.timezone"
+                            formControlName="timezone"
+                          >
+                            <option [value]="'Etc/GMT+12'">
+                              (GMT-12:00) International Date Line West
+                            </option>
+                            <option [value]="'Pacific/Midway'">
+                              (GMT-11:00) Midway Island, Samoa
+                            </option>
+                            <option [value]="'Pacific/Honolulu'">
+                              (GMT-10:00) Hawaii
+                            </option>
+                            <option [value]="'US/Alaska'">
+                              (GMT-09:00) Alaska
+                            </option>
+                            <option [value]="'US/Pacific'">
+                              (GMT-08:00) Pacific Time (US & Canada)
+                            </option>
+                            <option [value]="'America/Tijuana'">
+                              (GMT-08:00) Tijuana, Baja California
+                            </option>
+                            <option [value]="'US/Arizona'">
+                              (GMT-07:00) Arizona
+                            </option>
+                            <option [value]="'America/Chihuahua'">
+                              (GMT-07:00) Chihuahua, La Paz, Mazatlan
+                            </option>
+                            <option [value]="'US/Mountain'">
+                              (GMT-07:00) Mountain Time (US & Canada)
+                            </option>
+                            <option [value]="'America/Managua'">
+                              (GMT-06:00) Central America
+                            </option>
+                            <option [value]="'US/Central'">
+                              (GMT-06:00) Central Time (US & Canada)
+                            </option>
+                            <option [value]="'America/Mexico_City'">
+                              (GMT-06:00) Guadalajara, Mexico City, Monterrey
+                            </option>
+                            <option [value]="'Canada/Saskatchewan'">
+                              (GMT-06:00) Saskatchewan
+                            </option>
+                            <option [value]="'America/Bogota'">
+                              (GMT-05:00) Bogota, Lima, Quito, Rio Branco
+                            </option>
+                            <option [value]="'US/Eastern'">
+                              (GMT-05:00) Eastern Time (US & Canada)
+                            </option>
+                            <option [value]="'US/East-Indiana'">
+                              (GMT-05:00) Indiana (East)
+                            </option>
+                            <option [value]="'Canada/Atlantic'">
+                              (GMT-04:00) Atlantic Time (Canada)
+                            </option>
+                            <option [value]="'America/Caracas'">
+                              (GMT-04:00) Caracas, La Paz
+                            </option>
+                            <option [value]="'America/Manaus'">
+                              (GMT-04:00) Manaus
+                            </option>
+                            <option [value]="'America/Santiago'">
+                              (GMT-04:00) Santiago
+                            </option>
+                            <option [value]="'Canada/Newfoundland'">
+                              (GMT-03:30) Newfoundland
+                            </option>
+                            <option [value]="'America/Sao_Paulo'">
+                              (GMT-03:00) Brasilia
+                            </option>
+                            <option [value]="'America/Argentina/Buenos_Aires'">
+                              (GMT-03:00) Buenos Aires, Georgetown
+                            </option>
+                            <option [value]="'America/Godthab'">
+                              (GMT-03:00) Greenland
+                            </option>
+                            <option [value]="'America/Montevideo'">
+                              (GMT-03:00) Montevideo
+                            </option>
+                            <option [value]="'America/Noronha'">
+                              (GMT-02:00) Mid-Atlantic
+                            </option>
+                            <option [value]="'Atlantic/Cape_Verde'">
+                              (GMT-01:00) Cape Verde Is.
+                            </option>
+                            <option [value]="'Atlantic/Azores'">
+                              (GMT-01:00) Azores
+                            </option>
+                            <option [value]="'Africa/Casablanca'">
+                              (GMT+00:00) Casablanca, Monrovia, Reykjavik
+                            </option>
+                            <option [value]="'Etc/Greenwich'">
+                              (GMT+00:00) Greenwich Mean Time : Dublin,
+                              Edinburgh, Lisbon, London
+                            </option>
+                            <option [value]="'Europe/Amsterdam'">
+                              (GMT+01:00) Amsterdam, Berlin, Bern, Rome,
+                              Stockholm, Vienna
+                            </option>
+                            <option [value]="'Europe/Belgrade'">
+                              (GMT+01:00) Belgrade, Bratislava, Budapest,
+                              Ljubljana, Prague
+                            </option>
+                            <option [value]="'Europe/Brussels'">
+                              (GMT+01:00) Brussels, Copenhagen, Madrid, Paris
+                            </option>
+                            <option [value]="'Europe/Sarajevo'">
+                              (GMT+01:00) Sarajevo, Skopje, Warsaw, Zagreb
+                            </option>
+                            <option [value]="'Africa/Lagos'">
+                              (GMT+01:00) West Central Africa
+                            </option>
+                            <option [value]="'Asia/Amman'">
+                              (GMT+02:00) Amman
+                            </option>
+                            <option [value]="'Europe/Athens'">
+                              (GMT+02:00) Athens, Bucharest, Istanbul
+                            </option>
+                            <option [value]="'Asia/Beirut'">
+                              (GMT+02:00) Beirut
+                            </option>
+                            <option [value]="'Africa/Cairo'">
+                              (GMT+02:00) Cairo
+                            </option>
+                            <option [value]="'Africa/Harare'">
+                              (GMT+02:00) Harare, Pretoria
+                            </option>
+                            <option [value]="'Europe/Helsinki'">
+                              (GMT+02:00) Helsinki, Kyiv, Riga, Sofia, Tallinn,
+                              Vilnius
+                            </option>
+                            <option [value]="'Asia/Jerusalem'">
+                              (GMT+02:00) Jerusalem
+                            </option>
+                            <option [value]="'Europe/Minsk'">
+                              (GMT+02:00) Minsk
+                            </option>
+                            <option></option>
+                            <option [value]="'Africa/Windhoek'">
+                              (GMT+02:00) Windhoek
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Kuwait'">
+                              (GMT+03:00) Kuwait, Riyadh, Baghdad
+                            </option>
+                            <option></option>
+                            <option [value]="'Europe/Moscow'">
+                              (GMT+03:00) Moscow, St. Petersburg, Volgograd
+                            </option>
+                            <option></option>
+                            <option [value]="'Africa/Nairobi'">
+                              (GMT+03:00) Nairobi
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Tbilisi'">
+                              (GMT+03:00) Tbilisi
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Tehran'">
+                              (GMT+03:30) Tehran
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Muscat'">
+                              (GMT+04:00) Abu Dhabi, Muscat
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Baku'">
+                              (GMT+04:00) Baku
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Yerevan'">
+                              (GMT+04:00) Yerevan
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Kabul'">
+                              (GMT+04:30) Kabul
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Yekaterinburg'">
+                              (GMT+05:00) Yekaterinburg
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Karachi'">
+                              (GMT+05:00) Islamabad, Karachi, Tashkent
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Calcutta'">
+                              (GMT+05:30) Chennai, Kolkata, Mumbai, New Delhi
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Calcutta'">
+                              (GMT+05:30) Sri Jayawardenapura
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Katmandu'">
+                              (GMT+05:45) Kathmandu
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Almaty'">
+                              (GMT+06:00) Almaty, Novosibirsk
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Dhaka'">
+                              (GMT+06:00) Astana, Dhaka
+                            </option>
+                            <option [value]="'Asia/Rangoon'">
+                              (GMT+06:30) Yangon (Rangoon)
+                            </option>
+                            <option [value]="'Asia/Hong_Kong'">
+                              (GMT+08:00) Beijing, Chongqing, Hong Kong, Urumqi
+                            </option>
+                            <option [value]="'Asia/Kuala_Lumpur'">
+                              (GMT+08:00) Kuala Lumpur, Singapore
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Irkutsk'">
+                              (GMT+08:00) Irkutsk, Ulaan Bataar
+                            </option>
+                            <option></option>
+                            <option [value]="'Australia/Perth'">
+                              (GMT+08:00) Perth
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Taipei'">
+                              (GMT+08:00) Taipei
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Tokyo'">
+                              (GMT+09:00) Osaka, Sapporo, Tokyo
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Seoul'">
+                              (GMT+09:00) Seoul
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Yakutsk'">
+                              (GMT+09:00) Yakutsk
+                            </option>
+                            <option></option>
+                            <option [value]="'Australia/Adelaide'">
+                              (GMT+09:30) Adelaide
+                            </option>
+                            <option></option>
+                            <option [value]="'Australia/Darwin'">
+                              (GMT+09:30) Darwin
+                            </option>
+                            <option></option>
+                            <option [value]="'Australia/Brisbane'">
+                              (GMT+10:00) Brisbane
+                            </option>
+                            <option></option>
+                            <option [value]="'Australia/Canberra'">
+                              (GMT+10:00) Canberra, Melbourne, Sydney
+                            </option>
+                            <option></option>
+                            <option [value]="'Australia/Hobart'">
+                              (GMT+10:00) Hobart
+                            </option>
+                            <option></option>
+                            <option [value]="'Pacific/Guam'">
+                              (GMT+10:00) Guam, Port Moresby
+                            </option>
+                            <option [value]="'Asia/Vladivostok'">
+                              (GMT+10:00) Vladivostok
+                            </option>
+                            <option></option>
+                            <option [value]="'Asia/Magadan'">
+                              (GMT+11:00) Magadan, Solomon Is., New Caledonia
+                            </option>
+                            <option></option>
+                            <option [value]="'Pacific/Auckland'">
+                              (GMT+12:00) Auckland, Wellington
+                            </option>
+                            <option></option>
+                            <option [value]="'Pacific/Fiji'">
+                              (GMT+12:00) Fiji, Kamchatka, Marshall Is.
+                            </option>
+                          </select>
+                          <small class="text-danger" *ngIf="!validateZipCode()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <div
+                          class="form-group"
+                          [ngClass]="{ error: !validateSalesTax() }"
+                        >
+                          <label class="required">{{'MerchantOnBoarding.Sales Tax %' | transloco}}</label>
+                          <input
+                            type="number"
+                            [(ngModel)]="merchantDto.merchantTaxRate"
+                            formControlName="saleTax"
+                            class="field"
+                            [placeholder]="'MerchantOnBoarding.Sales Tax %' | transloco"
+                          />
+                          <small class="text-danger" *ngIf="!validateSalesTax()"
+                            >(Required)</small
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- -----------Business Information -->
+        <div class="ctrlqCenteredContent mt-4">
+          <div class="ctrlqFormCard">
+            <div class="ctrlqAccent"></div>
+            <div class="ctrlqFormContent">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="heading-div mt-2">
+                    <span
+                      ><i class="fa fa-info-circle" aria-hidden="true"></i
+                    ></span>
+                    <h4>{{'MerchantOnBoarding.Business Information' | transloco}}</h4>
+                  </div>
+                </div>
+                <form [formGroup]="onBoardingForm">
+                  <div class="row mt-2">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{'AccountDetail.Business Website' | transloco}}</label>
+                        <input
+                          type="url"
+                          [(ngModel)]="merchantDto.businessWebsite"
+                          formControlName="businessWebsite"
+                          class="field"
+                          placeholder="https://www.abc.com"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{'MerchantOnBoarding.Business Phone' | transloco}}</label>
+                        <input
+                          type="text"
+                          [(ngModel)]="merchantDto.businessNumber"
+                          formControlName="businessPhone"
+                          class="field"
+                          placeholder="+11234567891"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{'AccountDetail.Business Address' | transloco}}</label>
+                        <input
+                          type="text"
+                          [(ngModel)]="merchantDto.businessAddressLine"
+                          formControlName="businessAddress"
+                          class="field"
+                          [placeholder]="'reuseableWords.Address' | transloco"
+                        />
+                      </div>
+                    </div>
+
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{'AccountDetail.Legal Business Name' | transloco}}</label>
+                        <input
+                          type="text"
+                          [(ngModel)]="merchantDto.legalBusinessName"
+                          formControlName="legalBusinessName"
+                          class="field"
+                          [placeholder]="'AccountDetail.Legal Business Name' | transloco"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>{{'AccountDetail.EIN Number' | transloco}} </label>
+                        <input
+                          type="number"
+                          [(ngModel)]="merchantDto.businessTaxId"
+                          formControlName="einNumber"
+                          class="field"
+                          [placeholder]="'AccountDetail.EIN Number' | transloco"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>{{'AccountDetail.Bank Account Number' | transloco}}</label>
+                        <input
+                          type="text"
+                          [(ngModel)]="merchantDto.bankAccountNumber"
+                          formControlName="bankAccountNum"
+                          class="field"
+                          [placeholder]="'AccountDetail.Bank Account Number' | transloco"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label>{{'MerchantOnBoarding.Bank Routing Number' | transloco}}</label>
+                        <input
+                          type="text"
+                          [(ngModel)]="merchantDto.bankAccountRoutingNumber"
+                          formControlName="bankRoutingNum"
+                          class="field"
+                          [placeholder]="'MerchantOnBoarding.Bank Routing Number' | transloco"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- -----------Subscriptions & Fonda Share -->
+        <div class="ctrlqCenteredContent mt-4">
+          <div class="ctrlqFormCard">
+            <div class="ctrlqAccent"></div>
+            <div class="ctrlqFormContent">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="heading-div mt-2">
+                    <span
+                      ><i class="fa fa-info-circle" aria-hidden="true"></i
+                    ></span>
+                    <h4>{{ 'MerchantOnBoarding.Subscriptions & Fonda Share' | transloco }}</h4>
+                  </div>
+                </div>
+                <form [formGroup]="onBoardingForm">
+                  <div class="row mt-2">
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{ 'FinanceSetting.Automatic Revenue Processing Fee Threshold' | transloco }}</label>
+                        <input
+                          [(ngModel)]="merchantDto.RevenueProcessingThreshold"
+                          formControlName="RevenueProcessingThreshold"
+                          min="0"
+                          type="number"
+                          class="field"
+                          [placeholder]="'FinanceSetting.Automatic Revenue Processing Fee Threshold' | transloco"
+                          (input)="preventNegativeInput($event)"
+                          aria-describedby="RevenueProcessingThreshold"
+                        />
+                       
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{ 'FinanceSetting.Revenue Processing Fee Percentage' | transloco }}</label>
+                        <input
+                          [(ngModel)]="merchantDto.RevenueProcessingFeePercent"
+                          formControlName="RevenueProcessingFeePercent"
+                          min="0"
+                          type="number"
+                          class="field"
+                          [placeholder]="'FinanceSetting.Revenue Processing Fee Percentage' | transloco"
+                          (input)="preventNegativeAndLessThanHunderedInput($event)"
+                          aria-describedby="RevenueProcessingFeePercent"
+                        />
+
+                      </div>
+                    </div>
+                   
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label class="required">{{ 'MerchantOnBoarding.Subscription Amount' | transloco }}</label>
+                        <input [(ngModel)]="merchantDto.subscriptionAmount"  formControlName="subscriptionAmount" type="number" class="field"
+                          [placeholder]="'MerchantOnBoarding.Subscription Amount' | transloco"  (input)="preventNegativeInput($event)"/>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div
+                          class="form-group"
+                       
+                        >
+                          <label class="required">{{ 'MerchantOnBoarding.Onboarding Date' | transloco }}</label>
+                          <input
+                            type="date"
+                            [(ngModel)]="merchantDto.onboardingdate"
+                            formControlName="onboardingdate"
+                            class="field"
+                            [placeholder]="'MerchantOnBoarding.Onboarding Date' | transloco"
+                            [min]="currentonboardingdate"
+                          />
+   
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div
+                          class="form-group"
+                     
+                        >
+                          <label>{{ 'MerchantOnBoarding.Subscription Start Date' | transloco }}</label>
+                          <input
+                            type="date"
+                            [(ngModel)]="merchantDto.subscriptionStartDate"
+                            formControlName="subscriptionStartDate"
+                            class="field"
+                            [placeholder]="'MerchantOnBoarding.Subscription Start Date' | transloco"
+                            [min]="currentDate"
+                          />
+   
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="form-group">
+                        <label >{{ 'MerchantOnBoarding.Subscription Trial Period' | transloco }}</label>
+                        <select 
+                          [(ngModel)]="merchantDto.subscriptionTrialPeriod"  formControlName="subscriptionTrialPeriod" style="height: 36px; width: -webkit-fill-available">
+                          <!-- <option>Select Trail Period</option> -->
+                          <option value="0">{{ 'MerchantOnBoarding.No Trial' | transloco }}</option>
+                          <option value="1">{{ 'MerchantOnBoarding.One Month' | transloco }}</option>
+                          <option value="2">{{ 'MerchantOnBoarding.Two Months' | transloco }}</option>
+                          <option value="3">{{ 'MerchantOnBoarding.Three Months' | transloco }}</option>
+                          <option value="6">{{ 'MerchantOnBoarding.Six Months' | transloco }}</option>
+                          <option value="12">{{ 'MerchantOnBoarding.One Year' | transloco }}</option>
+                          <option value="360">{{ 'MerchantOnBoarding.Lifetime Free' | transloco }}</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="row mt-3">
+                      <h4>{{ 'FinanceSetting.Auto-Subscription Charges Waiver Settings' | transloco }}</h4>
+                      <label class="toggle mt-3">
+                        <input
+                          [(ngModel)]="merchantDto.AutoWaivedStatus"
+                          (ngModelChange)="onToggleChange($event)"
+                          class="toggle-checkbox"
+                          type="checkbox"
+                          formControlName="Fonda_Share"
+                        />
+                        <div class="toggle-switch"></div>
+                      </label>
+                      <span style="font-size: 14px; color: #716A6A" class="">
+                        ( {{ 'FinanceSetting.Enable or Disable auto-subscription waived off' | transloco }} )</span
+                      >
+                        <div class="col-md-4 mt-3">
+                          <div class="form-group">
+                            <label [ngClass]="{'required': merchantDto.AutoWaivedStatus}">{{ 'FinanceSetting.Minimum Revenue for Subscription Calculation' | transloco }}</label>
+                            <input
+                              [(ngModel)]="merchantDto.minimumLifetimeRevenue"
+                              formControlName="minimumLifetimeRevenue"
+                              min="0"
+                              type="number"
+                              class="field"
+                              [placeholder]="'FinanceSetting.Minimum Revenue for Subscription Calculation' | transloco"
+                              (input)="preventNegativeInput($event, 'minimumLifetimeRevenue')"
+                            />
+                          </div>
+                        </div>
+                        <div class="col-md-4 mt-3">
+                          <div class="form-group">
+                            <label [ngClass]="{'required': merchantDto.AutoWaivedStatus}">{{ 'FinanceSetting.Downtime Percentage' | transloco }} </label>
+                            <input
+                              [(ngModel)]="merchantDto.DownTimeThreshold"
+                              formControlName="DownTimeThreshold"
+                              min="0"
+                              type="number"
+                              class="field"
+                              placeholder="3"
+                              (input)="preventNegativeAndLessThanHunderedInput($event,'DownTimeThreshold')"
+                              aria-describedby="downtimePercentage"
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+
+                  </div>
+                  
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- ============time management -->
+        <div class="ctrlqCenteredContent mt-3">
+          <div class="ctrlqFormCard">
+            <div class="ctrlqAccent"></div>
+            <div class="ctrlqFormContent">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="heading-div mt-2">
+                    <span><i class="fas fa-stopwatch clock"></i></span>
+                    <h4>{{'MerchantOnBoarding.Set Business Hours' | transloco}}</h4>
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-md-12" mdbCollapse #test="bs-collapse">
+                    <div class="card p-3 mb-3">
+                      <div
+                        class="d-flex mb-3 justify-content-between align-items-center"
+                      >
+                        <h4 class="mb-0">Filter</h4>
+                        <span
+                          class="cursor-pointer"
+                          appDebounceClick
+                          (debounceClick)="test.toggle()"
+                          [debounceTime]="350"
+                          >&times;</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="pb-4">
+                  <div
+                    class="row align-items-center mb-4"
+                    *ngFor="let day of merchantsDefaultData; let i = index"
+                  >
+                    <div class="col-lg-2 col-md-2 col-12">
+                      <div class="weekdays">
+                        <h5 class="mb-2">
+                          <span *ngIf="day.main"> {{ getdayTranslation(day.day) }}</span>
+                        </h5>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-6">
+                      <div class="time-select-week">
+                        <select
+                          [(ngModel)]="day.openTime"
+                          class="field mb-2"
+                          [disabled]="day.closeForBusinessFlag"
+                        >
+                          <option [value]="''">{{'Hours.Select' | transloco}}</option>
+                          <option
+                            [value]="time2"
+                            *ngFor="let time2 of timeArry2"
+                          >
+                            {{ time2 }}
+                          </option>
+                          <option [value]="time" *ngFor="let time of timeArr">
+                            {{ time }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-4 col-md-3 col-6">
+                      <div class="time-select-week">
+                        <select
+                          [(ngModel)]="day.closeTime"
+                          class="field mb-2"
+                          [disabled]="day.closeForBusinessFlag"
+                        >
+                          <option [value]="''">{{'Hours.Select' | transloco}}</option>
+                          <option
+                            [value]="time2"
+                            *ngFor="let time2 of timeArry2"
+                          >
+                            {{ time2 }}
+                          </option>
+                          <option [value]="time" *ngFor="let time of timeArr">
+                            {{ time }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-lg-1 col-md-2 col-6">
+                      <div class="plus-icon mb-2" *ngIf="day.main">
+                        <button
+                          [disabled]="day.closeForBusinessFlag"
+                          class="text-dark"
+                          (click)="AddAnotherValue(i, day, true)"
+                        >
+                          <span class="fa fa-plus-circle fa-2x"></span>
+                        </button>
+                      </div>
+                      <div class="plus-icon mb-2" *ngIf="!day.main">
+                        <button
+                          [disabled]="day.closeForBusinessFlag"
+                          class="text-dark"
+                          (click)="Removealue(i, day)"
+                        >
+                          <span class="fa fa-minus-circle fa-2x"></span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="col-lg-1 col-md-2 col-6">
+                      <div class="checkbox-weekly mb-2">
+                        <mdb-checkbox
+                          [(ngModel)]="day.closeForBusinessFlag"
+                          [default]="true"
+                          >{{'Hours.Close' |
+                          transloco}}</mdb-checkbox
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="search-button">
+            <button
+              class="btn button-theme"
+              [disabled]="onBoardingForm.invalid"
+              (click)="merchantBoardingInfo()"
+            >
+            {{'MerchantOnBoarding.Save Information' | transloco}}
+              <span
+                *ngIf="savingData"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </button>
+          </div>
+
+          <div style="height: auto"></div>
+        </div>
+        <div
+          class="btn-group btn-group-lg next-btn mt-3"
+          role="group"
+          aria-label="..."
+          style="width: 90%; display: none"
+        >
+          <label for="step2" id="continue-step2" class="continue">
+            <div class="btn btn-default button-theme btn-lg">
+              {{'MerchantOnBoarding.Continue' | transloco}} <span><i class="fas fa-arrow-right"></i></span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- step2 -->
+    <div id="part2" class="form-group">
+      <div class="panel panel-primary fee-div">
+        <div class="container">
+          <div id="generic_price_table">
+            <section>
+              <div class="container">
+                <div class="panel-heading">
+                  <h3 class="panel-title">Payment Detail</h3>
+                </div>
+                <!-- payment details -->
+                <div class="ctrlqFormCard" style="height: 19em">
+                  <div class="ctrlqAccent"></div>
+                  <div class="ctrlqFormContent">
+                    <div class="col-md-12">
+                      <div class="row">
+                        <!-- <div class="heading-div mt-2 mb-4">
+                                <h4>Payment Detail</h4>
+                              </div> -->
+                        <section>
+                          <div class="inner" style="margin-top: 2em">
+                            <div class="form-row table-responsive">
+                              <table class="table">
+                                <tbody>
+                                  <tr class="space-row">
+                                    <th class="fee-table">
+                                      One Time Setup Fee
+                                    </th>
+                                    <td class="fee-table" id="fullname-val">
+                                      $750
+                                    </td>
+                                  </tr>
+                                  <tr class="space-row">
+                                    <th class="fee-table">Monthly Fee</th>
+                                    <td class="fee-table" id="phone-val">
+                                      $299
+                                    </td>
+                                  </tr>
+                                  <tr class="space-row">
+                                    <th class="fee-table">Total</th>
+                                    <td class="fee-table" id="gender-val">
+                                      $1049
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </section>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+          <div
+            class="btn-group mt-3 btn-group-lg btn-group-justified next2-btn"
+            role="group"
+            aria-label="..."
+          >
+            <label for="step2" id="back-step2" class="back">
+              <div class="btn btn-default button-theme btn-lg" role="button">
+                <i class="fas fa-arrow-left"></i> Back
+              </div>
+            </label>
+            <label for="step3" id="continue-step3" class="continue">
+              <div class="btn btn-default button-theme btn-lg" role="button">
+                Continue <i class="fas fa-arrow-right"></i>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- step3 -->
+    <div id="part3" class="form-group">
+      <div class="panel panel-primary">
+        <div class="ctrlqCenteredContent">
+          <div class="panel-heading">
+            <h3 class="panel-title">Terms & Conditions</h3>
+          </div>
+          <div class="ctrlqFormCard scroll-bar pb-2">
+            <div class="ctrlqAccent"></div>
+            <div
+              class="ctrlqFormContent"
+              style="height: 23em; overflow: auto; scrollbar-width: 2px"
+            >
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="heading-div mt-2">
+                    <h5>FONDA TECHNOLOGIES, INC TERMS & CONDITIONS</h5>
+                  </div>
+                </div>
+                <div class="content">
+                  <p>
+                    This Agreement (“Agreement”) is effective as of the last
+                    date set forth below (“Effective Date”) and is between Fonda
+                    Technologies, Inc, (“Fonda”) a Delaware company and the
+                    party that has signed below (“Merchant”). By signing below,
+                    the parties agree to the terms and conditions of this
+                    Agreement (as defined below) and Merchant hereby
+                    acknowledges that usage of the proprietary Fonda Services
+                    (“Services”) or proprietary Fonda Tools (“Tools”) by
+                    Merchant prior to the Effective Date was conducted under
+                    mutually agreed to services upon terms between Fonda and
+                    Merchant. This Agreement shall apply to all Merchant
+                    Locations and any other use of Fonda by Merchant.
+                  </p>
+                </div>
+                <ul>
+                  <li>
+                    <span class="bold-text">GENERAL TERMS</span>: Merchant may
+                    request from Fonda access to any available Sales Channel
+                    and, if Merchant is eligible and onboarded for such Sales
+                    Channel. Merchants will be able to access and use such Sales
+                    Channels subject to the terms and conditions of each Sales
+                    Channel. Capitalized terms not otherwise defined in this
+                    Agreement will have the meanings assigned to such terms in
+                    the other parts of the Agreement.
+                  </li>
+                  <li>
+                    <span class="bold-text">II. SALES CHANNELS:</span> Fonda
+                    makes available a suite of service offerings that Merchant
+                    may choose to access and use to sell Items to Merchant
+                    customers (each, a “Sales Channel”), including Doordash
+                    Marketplace, Uber Marketplace, Grubhub Marketplace,
+                    Postmates Marketplace, Caviar Marketplace, Direct
+                    Non-Delivery Ordering, Direct Delivery Ordering, as well as
+                    any new sales channels that become available during the term
+                    of this Agreement. The Merchant has the ability to choose
+                    which Sales Channels they prefer in the initial setup.
+                    Additional Sales Channels may be added or deactivated from
+                    time to time for a fee stated later in this Agreement.
+                  </li>
+                  <li>
+                    <span class="bold-text">III. DATA ACCESS:</span> Subject to
+                    Merchant’s compliance with this Agreement, Merchant will
+                    provide, and hereby grants Fonda a revocable non-exclusive,
+                    non-transferable, limited license to access and manage the
+                    Merchant existing Sales Channels along with all the data
+                    available through such Sales Channels, including but not
+                    limited to customer details, revenue, performance data, menu
+                    listing, business information, banking details, login
+                    credentials. Fonda will retain Merchant’s historical data
+                    (“Merchant Data”) for the Term of the service, unless
+                    Merchant requests or implements specific retention policies
+                    within the Fonda Platform. Following termination or
+                    expiration of this Agreement, Fonda will retain the Merchant
+                    Data for a minimum of six (6) months to allow time for
+                    Merchant to make alternative arrangements for transfer of
+                    data. Fonda may delete Merchant Data at its sole discretion.
+                  </li>
+                </ul>
+                <li>
+                  <span class="bold-text">III. DATA ACCESS:</span> Subject to
+                  Merchant’s compliance with this Agreement, Merchant will
+                  provide, and hereby grants Fonda a revocable non-exclusive,
+                  non-transferable, limited license to access and manage the
+                  Merchant existing Sales Channels along with all the data
+                  available through such Sales Channels, including but not
+                  limited to customer details, revenue, performance data, menu
+                  listing, business information, banking details, login
+                  credentials. Fonda will retain Merchant’s historical data
+                  (“Merchant Data”) for the Term of the service, unless Merchant
+                  requests or implements specific retention policies within the
+                  Fonda Platform. Following termination or expiration of this
+                  Agreement, Fonda will retain the Merchant Data for a minimum
+                  of six (6) months to allow time for Merchant to make
+                  alternative arrangements for transfer of data. Fonda may
+                  delete Merchant Data at its sole discretion.
+                </li>
+
+                <li>
+                  <span class="bold-text">IV. AGREEMENT TERM:</span> The term of
+                  the Agreement will be month to month and requires a 30 day
+                  notice of termination by either party. Notice of Termination
+                  of the Agreement must be made in writing by the terminating
+                  party.
+                </li>
+                <li>
+                  <span class="bold-text">V. SUPPORT:</span> Fonda agrees to
+                  provide Merchant with a PRINTER and TABLET if necessary. Note
+                  that these accessories are the property of Fonda and are to be
+                  returned in working order to Fonda upon the termination of
+                  Fonda’s services. In the event the Merchant cannot provide the
+                  accessories the Merchant will be responsible for reimbursement
+                  to Fonda
+                </li>
+                <li>
+                  <span class="bold-text">VI. SOFTWARE SUPPORT:</span> Fonda is
+                  willing to support Merchant with specialized hardware and or
+                  software requests. Fonda will separately assess and provide a
+                  proposal to the Merchant.
+                </li>
+                <li>
+                  <span class="bold-text"
+                    >VII. INTELLECTUAL PROPERTY OWNERSHIP:</span
+                  >
+                  Fonda alone (and its licensors, where applicable) shall own
+                  all right, title and interest, including all related
+                  intellectual property rights, in and to the Platform and
+                  Tools. This Agreement is not a sale and does not convey to
+                  Merchant any rights of ownership in or related to the Platform
+                  and Tools, or any intellectual property rights owned by Fonda.
+                  Fonda names, Fonda logos, and the product names associated
+                  with the Platform and Tools are trademarks of Fonda or third
+                  parties, and no right or license is granted to use them.
+                  Merchant agrees that they will not remove, alter or obscure
+                  any copyright, trademark, service mark or other proprietary
+                  rights notices incorporated in or accompanying the Platform or
+                  the Tools.
+                </li>
+                <li>
+                  <span class="bold-text">VIII. MODIFICATIONS:</span> : Fonda
+                  reserves the right to modify the terms and conditions of this
+                  Agreement or its policies relating to the Platform. Tools and
+                  other services provided, at any time, effective upon posting
+                  of an updated version of this Agreement through the Services.
+                  Merchant should regularly review this Agreement, as your
+                  continued use of the Services after any such changes
+                  constitutes your agreement to such changes.
+                </li>
+                <li>
+                  <span class="bold-text">IX. THIRD-PARTY INTERACTIONS:</span>
+                  (a) Third-Party Websites, Applications and Advertisements. The
+                  Services may contain links to third-party websites
+                  (“Third-Party Websites”) and applications (“Third-Party
+                  Applications”) and advertisements (“Third-Party
+                  Advertisements”) (collectively, “Third-Party Websites &
+                  Advertisements”). When you click on a link to a Third-Party
+                  Website, Third-Party Application or Third-Party Advertisement,
+                  Fonda will not warn you that you have left Fonda’s website or
+                  Services and will not warn you that you are subject to the
+                  terms and conditions (including privacy policies) of another
+                  website or destination. Such Third-Party Websites &
+                  Advertisements are not under the control of Fonda. Fonda is
+                  not responsible for any Third-Party Websites, Third-Party
+                  Applications or any Third-Party Advertisements. Fonda does not
+                  review, approve, monitor, endorse, warrant, or make any
+                  representations with respect to such Third-Party Websites &
+                  Advertisements, or their products or services. You use all
+                  links in Third-Party Websites & Advertisements at your own
+                  risk. You should review applicable terms and policies,
+                  including privacy and data gathering practices of any
+                  Third-Party Websites or Third-Party Applications, and make
+                  whatever investigation you feel necessary or appropriate
+                  before proceeding with any transaction with any third party.
+                </li>
+                <li>
+                  <span class="bold-text">X. INDEMNIFICATION:</span> Merchant
+                  agrees to indemnify and hold harmless Fonda and its officers,
+                  directors, employees, agents and affiliates (each, an
+                  “Indemnified Party”), from and against any losses, claims,
+                  actions, costs, damages, penalties, fines and expenses,
+                  including without limitation, attorneys’ fees and expenses,
+                  that may be incurred by an Indemnified Party arising out of,
+                  relating to or resulting from (a) your User Content; (b) your
+                  misuse of the Platform or Tools; (c) your breach of this
+                  Agreement or any representation, warranty or covenant in this
+                  Agreement; or (d) your violation of any applicable laws, rules
+                  or regulations through or related to the use of the Platform
+                  or Tools. In the event of any claim, allegation, suit or
+                  proceeding alleging any matter potentially covered by the
+                  agreements in this Section, you agree to pay for the defense
+                  of the Indemnified Party, including reasonable costs and
+                  attorneys’ fees incurred by the Indemnified Party. Fonda
+                  reserves the right, at its own cost, to assume the exclusive
+                  defense and control of any matter otherwise subject to
+                  indemnification by you, in which event you will fully
+                  cooperate with Fonda in asserting any available defenses. This
+                  provision does not require you to indemnify any Indemnified
+                  Party for any unconscionable commercial practice by such
+                  party, or for such party’s negligence, fraud, deception, false
+                  promise, misrepresentation or concealment, suppression or
+                  omission of any material fact in connection with the Platform
+                  or Tools. You agree that the provisions in this section will
+                  survive any termination of your account, this Agreement, or
+                  your access to the Platform and/or Tools
+                </li>
+                <li>
+                  <span class="bold-text">XI. GENERAL:</span> (a) No Joint
+                  Venture or Partnership. No joint venture, partnership,
+                  employment, or agency relationship exists between Fonda, and
+                  the Merchant, or any third-party provider as a result of this
+                  Agreement or use of the Platform or Tools. (b) Choice of Law.
+                  This Agreement is governed by the laws of the State of
+                  California consistent with the Federal Arbitration Act,
+                  without giving effect to any principles that provide for the
+                  application of the law of any other jurisdiction. (c)
+                  Severability. Except as otherwise provided in this Agreement,
+                  if any provision of this Agreement is found to be invalid, the
+                  invalidity of such provision shall not affect the validity of
+                  the remaining provisions of this Agreement, which shall remain
+                  in full force and effect. (d) Consumer Complaints. In
+                  accordance with California Civil Code § 1789.3, you may report
+                  complaints to the Complaint Assistance Unit of the Division of
+                  Consumer Services of the California Department of Consumer
+                  Affairs by contacting them in writing at 400 R Street,
+                  Sacramento, CA 95814, or by telephone at (800) 952-5210. (e)
+                  Notice. Where Fonda requires that you provide an email
+                  address, you are responsible for providing Fonda with your
+                  most current email address. In the event that the last e-mail
+                  address you provided to Fonda is not valid, or for any reason
+                  is not capable of delivering to you any notices required or
+                  permitted by this Agreement, Fonda’s dispatch of the e-mail
+                  containing such notice will nonetheless constitute effective
+                  notice. (f) Electronic Communications. For contractual
+                  purposes, Merchant (1) consents to receive communications from
+                  Fonda in an electronic form; and (2) agree that all terms and
+                  conditions, agreements, notices, disclosures, and other
+                  communications that Fonda provides to you electronically
+                  satisfy any legal requirement that such communications would
+                  satisfy if they were in writing. You agree to keep your
+                  contact information, including email address, current. This
+                  subparagraph does not affect your statutory rights. (g)
+                  Transfer and Assignment. This Agreement, and any rights and
+                  licenses granted hereunder, may not be transferred or assigned
+                  by Merchant, but may be assigned by Fonda without restriction.
+                  Any attempted transfer or assignment in violation hereof shall
+                  be null and void. This Agreement binds and ensures to the
+                  benefit of each party and the party’s successors and permitted
+                  assignments. (h) Entire Agreement. This Agreement is the
+                  final, complete and exclusive agreement of the parties with
+                  respect to the subject matter hereof and supersedes and merges
+                  all prior discussions between the parties with respect to such
+                  subject matter
+                </li>
+                <li>
+                  <span class="bold-text">XII. SIGNATURES:</span> Each of the
+                  persons signing below on behalf of the respective party hereby
+                  represents and warrants that he or she is signing with full
+                  and complete authority to bind the party on whose behalf of
+                  whom he or she is signing, to each and every term of this
+                  Agreement. This Agreement supersedes and replaces any prior
+                  agreement between Merchant and Fonda
+                </li>
+                <h6 style="text-align: center; font-weight: bold">
+                  SECURITY DEPOSIT AND MONTHLY FEE
+                </h6>
+                <ul>
+                  <li>
+                    <span class="bold-text">MONTHLY RECURRING FEE:</span> : In
+                    consideration of Fonda’s ongoing efforts to manage and
+                    maintain the Merchant online business on all Sales Channels,
+                    Merchant will pay Fonda a monthly recurring fee of $_______
+                    ("Monthly Fee"). Merchant agrees that Fonda may deduct the
+                    Monthly Recurring Fee from merchant's item revenue unless
+                    prior payment arrangements have been made.
+                  </li>
+                  <li>
+                    <span class="bold-text">SECURITY DEPOSIT:</span> In
+                    consideration of Fonda’s work to activate Merchant chosen
+                    channels, on the Fonda Platform and the use of hardware to
+                    operate the service. Merchant will pay Fonda a one time
+                    security deposit stated below ("Security Deposit"). Merchant
+                    agrees that Fonda may deduct the Security Deposit from
+                    Merchant's items revenue unless prior payment arrangements
+                    have been made. Deduction will continue until all fees are
+                    paid to Fonda. Fonda may apply any of the Security Deposit
+                    to cure merchant’s default or breach of this agreement, or
+                    to cover operational or maintenance expenses the Merchant
+                    would otherwise be required to pay. Within [14] days after
+                    the termination or expiration of the service, if the
+                    Merchant timely returns the hardware Fonda shall return to
+                    Merchant any remaining balance of the Security Deposit.
+                  </li>
+                  <li>
+                    <span class="bold-text"
+                      >MONTHLY RECURRING PAYMENT TERMS:</span
+                    >
+                    Merchant agrees to make payment monthly on the same day of
+                    the month as the Effective Date per this agreement and
+                    monthly thereafter on the same date, effectively payment is
+                    made the end of the prior month (a month in arrears).
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div
+            class="btn-group btn-group-lg mt-3"
+            style="width: 100%; display: flex; flex-direction: column"
+            role="group"
+            aria-label="..."
+          >
+            <div class="tacbox">
+              <div class="check-box-div">
+                <input
+                  id="checkbox"
+                  [(ngModel)]="checkbox"
+                  type="checkbox"
+                  class="term"
+                />
+                <label for="checkbox" class="condition">
+                  I Accept Your Terms and Conditions</label
+                >
+              </div>
+            </div>
+            <div class="next3-btn">
+              <label for="step3" id="back-step3" class="back">
+                <div class="btn btn-default button-theme btn-lg">
+                  <i class="fas fa-arrow-left"></i> Back
+                </div>
+              </label>
+              <label
+                for="step4"
+                id="continue-step4"
+                class="continue"
+                *ngIf="checkbox"
+                (click)="loadPaymentIntent()"
+              >
+                <div class="btn btn-default button-theme btn-lg" role="button">
+                  Continue <i class="fas fa-arrow-right"></i>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- step4 -->
+    <div id="part4" class="form-group">
+      <div class="panel panel-primary">
+        <div class="ctrlqCenteredContent">
+          <div class="panel-heading">
+            <h3 class="panel-title">Summary</h3>
+          </div>
+          <div class="ctrlqFormCard">
+            <div class="ctrlqAccent"></div>
+            <div class="ctrlqFormContent">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="heading-div mt-2">
+                    <h4>Information Overview</h4>
+                  </div>
+                  <section>
+                    <div class="inner">
+                      <div class="form-row table-responsive">
+                        <table class="table">
+                          <tbody>
+                            <tr class="space-row">
+                              <th>Email</th>
+                              <td id="fullname-val">{{ merchantDto.email }}</td>
+                              <th>Point Of Contact First Name</th>
+                              <td id="email-val">
+                                {{ merchantDto.firstName }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Point Of Contact Last Name</th>
+                              <td id="phone-val">{{ merchantDto.lastName }}</td>
+                              <th>Name Of Restaurant</th>
+                              <td id="address-val">
+                                {{ merchantDto.merchantName }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Point Of Contact DOB</th>
+                              <td id="gender-val">{{ merchantDto.pocdob }}</td>
+                              <th>City</th>
+                              <td id="account-name-val">
+                                {{ merchantDto.businessAddressCity }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>State</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.businessAddressState }}
+                              </td>
+                              <th>Zip Code</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.zip }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Timezone</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.timezone }}
+                              </td>
+                              <th>Sales Tax %</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.merchantTaxRate }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Business Website</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.businessWebsite }}
+                              </td>
+                              <th>Business Phone</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.businessNumber }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Business Address</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.businessAddressLine }}
+                              </td>
+                              <th>Legal Business Name</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.legalBusinessName }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>EIN Number</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.businessTaxId }}
+                              </td>
+                              <th>Bank Account Number</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.bankAccountNumber }}
+                              </td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Bank Routing Number</th>
+                              <td id="account-number-val">
+                                {{ merchantDto.bankAccountRoutingNumber }}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="ctrlqFormCard mt-4">
+            <div class="ctrlqAccent"></div>
+            <div class="ctrlqFormContent">
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="heading-div mt-2">
+                    <h4>Payment Overview</h4>
+                  </div>
+                  <section>
+                    <div class="inner">
+                      <div class="form-row table-responsive">
+                        <table class="table">
+                          <tbody>
+                            <tr class="space-row">
+                              <th>One Time Setup Fee</th>
+                              <td id="fullname-val">$750</td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Monthly Fee</th>
+                              <td id="phone-val">$299</td>
+                            </tr>
+                            <tr class="space-row">
+                              <th>Total</th>
+                              <td id="gender-val">$1049</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- =========Stripe card -->
+          <div class="ctrlqCenteredContent mt-4" style="width: 100%">
+            <div class="panel-heading">
+              <h3 class="panel-title">Payment Method Information</h3>
+            </div>
+            <div class="cell example example1" id="example-1">
+              <div class="cards-logo">
+                <img
+                  src="../../../assets/images/shape_footer.png"
+                  alt="Cards"
+                />
+              </div>
+              <div id="link-authentication-element"></div>
+              <div id="payment-element"></div>
+              <!-- <div class="row">
+                <label for="example1-name" data-tid="elements_examples.form.name_label">Name on Credit/Debit card</label>
+                <input id="example1-name" data-tid="elements_examples.form.name_placeholder" type="text" placeholder="John Doe"
+                  [(ngModel)]="nameOnCreditCard" autocomplete="name">
+              </div> -->
+
+              <!-- <div class="row">
+                <label for="example1-name" style="width: 100%;" data-tid="elements_examples.form.name_label">Credit/Debit card
+                  details</label>
+                <div id="card"></div>
+              </div> -->
+              <div
+                id="card-errors"
+                style="display: none"
+                class="alert alert-danger"
+                role="alert"
+              ></div>
+              <!-- <button type="submit" data-tid="elements_examples.form.pay_button">Pay $25</button> -->
+            </div>
+          </div>
+          <br />
+          <div class="alert alert-success" role="alert" *ngIf="showMessage">
+            Thank you for completing your signup. Kindly check your email for
+            login details. Our customer success team will contact you shortly to
+            continue your setup. You can close this browser window
+          </div>
+          <div
+            class="btn-group btn-group-lg next3-btn mt-3"
+            style="width: 100%"
+            role="group"
+            aria-label="..."
+          >
+            <label for="step4" id="back-step4" class="back">
+              <div
+                *ngIf="!hideBackButton"
+                class="btn btn-default button-theme btn-lg"
+              >
+                <i class="fas fa-arrow-left"></i> Back
+              </div>
+            </label>
+            <label class="continue">
+              <button
+                type="submit"
+                [disabled]="processingPayment"
+                (click)="submitPaymant()"
+                class="btn btn-default button-theme btn-lg"
+              >
+                Finish
+                <span
+                  *ngIf="processingPaymentSpinner"
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                >
+                </span>
+              </button>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  mdbModal
+  class="modal fade"
+  #AlreadyModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  tabindex="-1"
+  aria-labelledby="AlreadyModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="AlreadyModalLabel">
+          Merchant Onboarding is already completed!
+        </h5>
+        <!-- <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button> -->
+      </div>
+      <div class="modal-body">
+        Merchant Onboarding is already completed! No further action can be
+        performed.
+      </div>
+      <div class="modal-footer">
+        <!-- <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+        <button type="button" class="btn button-theme">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>

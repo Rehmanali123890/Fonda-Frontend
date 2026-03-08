@@ -1,0 +1,43 @@
+<div class="sidebar menu-side-nav-for-desktop" id="sidebar">
+  <h4 class="head">{{ "Sidenav.Food" | transloco }}</h4>
+  <ul>
+    <!-- <li routerLink="/home/menus/menu-templates" routerLinkActive="active-link">
+      <a>Menu Templates</a>
+    </li> -->
+    <li routerLink="/home/menus/menu" routerLinkActive="active-link">
+      <a>{{ "Menus.Menus" | transloco }}</a>
+    </li>
+    <li routerLink="/home/menus/categories" routerLinkActive="active-link">
+      <a> {{ "Menus.Categories" | transloco }}</a>
+    </li>
+    <li routerLink="/home/menus/items" routerLinkActive="active-link">
+      <a> {{ "Menus.Items" | transloco }}</a>
+    </li>
+    <li routerLink="/home/menus/modifiers" routerLinkActive="active-link">
+      <a>{{ "Menus.Modifiers" | transloco }}</a>
+    </li>
+  </ul>
+</div>
+
+<div class="did-floating-label-content menu-side-nav-for-mobile">
+  <select class="did-floating-select" (change)="onSelect($event)">
+    <option value="/home/menus/menu">
+      {{ "Menus.Menus" | transloco }}
+    </option>
+
+    <option value="/home/menus/categories">
+      {{ "Menus.Categories" | transloco }}
+    </option>
+
+    <option value="/home/menus/items">
+      {{ "Menus.Items" | transloco }}
+    </option>
+
+    <option value="/home/menus/modifiers">
+      {{ "Menus.Modifiers" | transloco }}
+    </option>
+  </select>
+  <label class="did-floating-label">{{
+    "Menus.Cuisine Type" | transloco
+  }}</label>
+</div>

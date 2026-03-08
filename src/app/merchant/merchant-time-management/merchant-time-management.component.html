@@ -1,0 +1,149 @@
+<div class="row">
+  <div class="col-12">
+    <div class="d-flex justify-content-end">
+      <div>
+        <!-- <button type="button" class="btn orange-bt text-white btn-md px-5" style="margin-top: -65px;">Pause Order</button> -->
+        <!-- <button type="button" class="btn orange-bt text-white btn-md px-5"  appDebounceClick (debounceClick)="test.toggle()" [debounceTime]="350" style="margin-top: -65px;">Filter</button> -->
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12" mdbCollapse #test="bs-collapse">
+        <div class="card p-3 mb-3">
+          <div class="d-flex mb-3 justify-content-between align-items-center">
+            <h4 class="mb-0">Filter</h4>
+            <span class="cursor-pointer" appDebounceClick (debounceClick)="test.toggle()"
+              [debounceTime]="350">&times;</span>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Merchant Name</label>
+                <select type="text" [(ngModel)]="merchantId" (change)="GetMerchantHoursInfo()" class="field"
+                  placeholder="Merchant">
+                  <option [value]="item.id" *ngFor="let item of MerchantsList">
+                    {{ item.merchantName }}
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hours-main-div">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="hours-heading-mobile">{{'Hours.Weekly Hours' | transloco}}</h4>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center mb-4 main-for-mobile"
+            *ngFor="let day of merchantsDefaultData; let i = index">
+            <div class="col-lg-2 col-md-2 col-12 week-days-mobile">
+              <div class="weekdays">
+                <h5 class="mb-2">
+                  <span *ngIf="day.main">{{ getdayTranslation(day.day) }}</span>
+                </h5>
+              </div>
+            </div>
+            
+            <!-- Start Time -->
+            <div class="col-lg-2 col-md-3 col-6 for-mobile-30">
+              <div class="time-select-week">
+                <select [(ngModel)]="day.openTime"
+                        class="field mb-2" 
+                        [disabled]="day.closeForBusinessFlag">
+                  <option [value]="''">{{'Hours.Select' | transloco}}</option>
+                  <option [value]="time2" *ngFor="let time2 of timeArry2">
+                    {{ time2 }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <!-- End Time -->
+            <div class="col-lg-2 col-md-3 col-6 for-mobile-30">
+              <div class="time-select-week">
+                <select [(ngModel)]="day.closeTime" 
+                        class="field mb-2" 
+                        [disabled]="day.closeForBusinessFlag || !day.openTime">
+                  <option [value]="''">{{'Hours.Select' | transloco}}</option>
+                  <option [value]="time2" *ngFor="let time2 of getEndTimeOptions(day)">
+                    {{ getEndTimeDisplayText(time2, day) }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            
+            <div class="col-lg-1 col-md-2 col-6 for-mobile-0" *ngIf="userRoleType === 1">
+              <div class="plus-icon mb-2" *ngIf="day.main">
+                <button [disabled]="day.closeForBusinessFlag" class="text-dark" (click)="AddAnotherValue(i, day, true)">
+                  <span class="fa fa-plus-circle text-primary fa-2x"></span>
+                </button>
+              </div>
+              <div class="plus-icon mb-2" *ngIf="!day.main">
+                <button [disabled]="day.closeForBusinessFlag" class="text-dark" (click)="Removealue(i, day)">
+                  <span class="fa fa-minus-circle text-danger fa-2x"></span>
+                </button>
+              </div>
+            </div>
+
+            <div class="col-lg-1 col-md-2 col-6 for-mobile-0" *ngIf="userRoleType === 1">
+              <div class="checkbox-weekly mb-2">
+                <mdb-checkbox [(ngModel)]="day.closeForBusinessFlag" [default]="true">{{'Hours.Close' |
+                  transloco}}</mdb-checkbox>
+              </div>
+            </div>
+
+            <div class="col-lg-1 col-md-2 col-6 for-mobile-0" *ngIf="userRoleType === 1">
+              <div class="plus-icon mb-2">
+                <ng-container *ngIf="!day.id">
+                  <!-- for desktop -->
+                  <button [ngClass]="{'disabled': !day.openTime || !day.closeTime || savingHoursInfo }" 
+                          (click)="AddHourForMerchant(day)" 
+                          class="btn-sm save-btn-desktop" 
+                          mdbBtn type="button"
+                          color="default" 
+                          rounded="true" 
+                          mdbWavesEffect 
+                          style="font-size: 1.3em; font-weight: 600">
+                    <span *ngIf="!savingHoursInfo">{{'Hours.SAVE' | transloco}}</span>
+                    <span *ngIf="savingHoursInfo" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  </button>
+                  <!-- for mobile-->
+                  <a class="save-btn-mobile" 
+                     [ngClass]="{'disabled': !day.openTime || !day.closeTime || savingHoursInfo }" 
+                     (click)="AddHourForMerchant(day)">
+                    <span *ngIf="!savingHoursInfo" class="fa fa-save fa-2x"></span>
+                    <span *ngIf="savingHoursInfo" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  </a>
+                </ng-container>
+                <ng-container *ngIf="day.id">
+                  <!-- for desktop -->
+                  <button [ngClass]="{'disabled': !day.openTime || !day.closeTime || savingHoursInfo }"  
+                          (click)="EditHourForMerchant(day)" 
+                          class="btn-sm save-btn-desktop" 
+                          mdbBtn type="button"
+                          color="default" 
+                          rounded="true" 
+                          mdbWavesEffect 
+                          style="font-size: 1.3em; font-weight: 600">
+                    <span *ngIf="!savingHoursInfo">Save</span>
+                    <span *ngIf="savingHoursInfo" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  </button>
+                  <!-- for mobile -->
+                  <a class="save-btn-mobile" 
+                     [ngClass]="{'disabled': !day.openTime || !day.closeTime || savingHoursInfo }" 
+                     (click)="EditHourForMerchant(day)">
+                    <span *ngIf="!savingHoursInfo" class="fa fa-save fa-2x"></span>
+                    <span *ngIf="savingHoursInfo" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                  </a>
+                </ng-container>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

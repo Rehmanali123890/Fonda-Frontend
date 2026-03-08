@@ -1,0 +1,154 @@
+.main {
+  border-top: 2px solid #cccccc4a;
+  border-bottom: 2px solid #cccccc4a;
+  padding: 0.5em 0em;
+}
+
+.details-main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.loader-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.head-left h4 {
+  font-weight: 600;
+}
+
+.down-per {
+  color: #ee582a;
+  font-weight: 600;
+}
+
+.head-right .doordash-logo {
+  height: 80px;
+  object-fit: contain;
+  float: inline-end;
+}
+
+.csv-btn-div {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
+}
+
+.csv-btn-div button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+}
+
+.total-div {
+  margin-top: 2em;
+}
+
+.values-div {
+  display: flex;
+  gap: 10px;
+}
+
+.status-label {
+  font-weight: 600;
+}
+
+.status-paid {
+  background-color: #07a216;
+  color: #fff;
+  padding: 0.3em;
+  border-radius: 4px;
+  font-size: 0.7em;
+}
+
+.status-unpaid {
+  background-color: #d82b2b;
+  color: #fff;
+  padding: 0.3em;
+  border-radius: 4px;
+  font-size: 0.7em;
+}
+
+.status-transfered {
+  background-color: #5540b2;
+  color: #fff;
+  padding: 0.3em;
+  border-radius: 4px;
+  font-size: 0.7em;
+}
+
+
+.price {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.up-per {
+  color: #07a216;
+  font-weight: 600;
+}
+
+.table-responsive {
+  margin-top: 2em;
+}
+
+.main-data-total {
+  margin-top: -23px;
+  text-indent: 10px;
+  font-weight: 600;
+  font-size: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.main-data {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #cccccc5e;
+  margin-bottom: 0.7em;
+}
+
+.table-head {
+  border: none;
+}
+
+.table thead .table-head {
+  border-bottom: none;
+  font-size: 1em;
+  font-weight: 500;
+}
+
+.table .table-td {
+  border-top: 0px;
+  border-right: 1px solid #cccccc5e;
+  border-bottom: 0px;
+  border-left: 1px solid #cccccc5e;
+}
+
+.table thead th {
+  border-bottom: none;
+}
+
+.transaction-table {
+  width: max-content;
+}
+
+/* media query */
+@media screen and (max-width: 600px) {
+  .head-left h4 {
+    font-weight: 500;
+    font-size: 1em;
+  }
+
+  .head-right .doordash-logo {
+    height: 50px;
+  }
+
+  .head-left p {
+    font-size: 0.8em;
+  }
+}

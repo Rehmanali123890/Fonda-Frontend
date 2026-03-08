@@ -1,0 +1,215 @@
+<!-- <div class="main-page">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 mx-auto">
+        <div class="d-flex height-100 justify-content-center align-items-center">
+          <div class="signup-blk">
+            <div class="text-center">
+              <a href="#"><img src="assets/images/logo.svg" height="78%" width="78%" /></a>
+            </div>
+            <h2 class="text-center login-hed mb-4">Login</h2>
+            <div class="form-group">
+              <input [(ngModel)]="loginUserObj.email" class="field" type="email" placeholder="Email" />
+            </div>
+            <div class="form-group">
+              <input [(ngModel)]="loginUserObj.password" class="field" type="password" placeholder="Password" />
+            </div>
+            <button [disabled]="
+                processing || !loginUserObj.email || !loginUserObj.password
+              "
+              (click)="Login()"
+              class="orange-bt btn-block"
+            >
+              <span
+                *ngIf="processing"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+               Login
+            </button>
+
+
+            <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+              <h2>Welcome, {{ (auth.user$ | async)?.name }}!</h2>
+              <p>Email: {{ (auth.user$ | async)?.email }}</p>
+              <button class="orange-bt btn-block" (click)=" this.auth.logout()">Log out</button>
+            </ng-container>
+            <ng-template #loggedOut>
+              <button class="orange-bt btn-block" (click)="login_with_sso()">Login With SSO</button>
+            </ng-template>
+
+
+
+            <button (click)="login_with_sso()" class="orange-bt btn-block">
+              <span
+                *ngIf="processingwithsso"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+               Login With SSO
+            </button>
+
+            <!-- <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+              <h2>Welcome, {{ (auth.user$ | async)?.name }}!</h2>
+              <p>Email: {{ (auth.user$ | async)?.email }}</p>
+              <button class="orange-bt btn-block" (click)=" this.auth.logout()">Log out</button>
+            </ng-container>
+            <ng-template #loggedOut>
+              <button class="orange-bt btn-block" (click)="login_with_sso()">Login With SSO</button>
+            </ng-template> -->
+<!-- <button (click)="login_with_sso()" class="orange-bt btn-block">
+              <span *ngIf="processingwithsso" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+              &nbsp; Login With SSO
+            </button>
+            <a routerLink="/accounts/forget-password" routerLinkActive mdbWavesEffect>
+              Forgot password
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> -->
+<!-- </div>  -->
+
+<!-- new code -->
+
+<div class="container" id="container">
+  <div class="form-container sign-in-container">
+    <img
+      class="dashboard-logo-for-mobile"
+      src="../../../assets/images/logo.svg
+    "
+      alt=""
+    />
+    <div class="form">
+      <ng-container *ngIf="initialStep">
+        <h4 class="fonda-head">Fonda Dashboard</h4>
+        <button class="outline-button" (click)="login_with_sso()">
+          <img class="logo" src="../../../assets/icons/google.svg" alt="" />
+          Log in with Google SSO
+          <span
+            *ngIf="processingwithsso"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+        <div class="or or-for-initial">OR</div>
+        <button class="outline-button mb-3" (click)="changeStep()">
+          Log in with Your Credentials
+        </button>
+      </ng-container>
+
+      <ng-container *ngIf="withCredentials">
+        <h4 class="fonda-head mb-0">Fonda Log In</h4>
+        <span class="description">Log in with your username and password</span>
+        <div class="did-floating-label-content">
+          <input
+            type="text"
+            class="did-floating-input"
+            placeholder="Type here"
+            [(ngModel)]="loginUserObj.email"
+          />
+          <label class="did-floating-label">Username</label>
+        </div>
+        <div class="did-floating-label-content">
+          <input
+            [type]="isPasswordVisible ? 'text' : 'password'"
+            type="password"
+            class="did-floating-input"
+            placeholder="Type here"
+            [(ngModel)]="loginUserObj.password"
+          />
+          <label class="did-floating-label">Password</label>
+          <i
+            [ngClass]="isPasswordVisible ? ' fas fa-eye ' : 'fas fa-eye-slash'"
+            class="toggle-password-visibility"
+            (click)="togglePasswordVisibility()"
+          ></i>
+        </div>
+        <a routerLink="/accounts/forget-password">Forgot password?</a>
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="checkbox"
+            value=""
+            id="flexCheckChecked"
+            (change)="onRememberMeChange($event)"
+          />
+          <label class="form-check-label" for="flexCheckChecked">
+            Remember my login
+          </label>
+        </div>
+        <button
+          (click)="Login()"
+          [disabled]="
+            processing || !loginUserObj.email || !loginUserObj.password
+          "
+        >
+          Log In to Fonda
+          <span
+            id="sppiner"
+            *ngIf="processing"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+        </button>
+        <div *ngIf="!email_redirection" class="or">OR</div>
+        <div *ngIf="!email_redirection" class="google-btn-sec">
+          <button class="outline-button" (click)="login_with_sso()">
+            <img class="logo" src="../../../assets/icons/google.svg" alt="" />
+            Log in with Google SSO
+            <span
+              *ngIf="processingwithsso"
+              class="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+            ></span>
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- <ng-container *ngIf="forgotPasswordStep">
+        <h4 class="fonda-head mb-0">Forgot Password</h4>
+        <span class="description">Having trouble logging in?</span>
+        <ul>
+          <li>Username are typically your email address.</li>
+          <li>Password are case sensitive.</li>
+          <li>Check the web address for the correct environment.</li>
+        </ul>
+        <span class="description mb-3"
+          >To reset your password,enter your fonda username.</span
+        >
+        <div class="did-floating-label-content">
+          <input
+            type="text"
+            class="did-floating-input"
+            placeholder="Type here"
+          />
+          <label class="did-floating-label">Username</label>
+        </div>
+        <div class="btn-group w-100 gap-3 mb-3 mt-1">
+          <button class="outline-button" (click)="cancel()">Cancel</button>
+          <button>Continue</button>
+        </div>
+      </ng-container> -->
+    </div>
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-right">
+        <iframe
+          [src]="iframeUrl"
+          width="100%"
+          height="100%"
+          frameborder="0"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+  </div>
+</div>

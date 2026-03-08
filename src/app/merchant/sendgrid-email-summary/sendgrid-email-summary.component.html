@@ -1,0 +1,128 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="exampleFormControlTextarea1">{{ 'EmailSummary.Filter Email' | transloco }}</label>
+          <ng-select [(ngModel)]="to_email" [searchable]="true" type="text" class="" placeholder="Select Email">
+            <ng-container *ngFor="let email of uniqueEmails">
+              <ng-option [value]="email">{{ email }}</ng-option>
+            </ng-container>
+          </ng-select>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mt-4">
+  <div class="card-header">
+    <h4>Email Summary Report</h4>
+  </div>
+  <!-- table for desktop view -->
+  <div class="table-responsive history-table desktop-view">
+    <div *ngIf="SendGridEmailObjLength == 0">
+      <div class="alert alert-info" role="alert">
+        No email history available.
+      </div>
+    </div>
+    <table *ngIf="SendGridEmailObjLength > 0" class="table table-bordered table-hover" id="price-table">
+      <thead class="bg-theme white-text sorting">
+        <tr>
+          <th style="width: 290px">{{ 'EmailSummary.To Email' | transloco }}</th>
+          <th style="width: 156px">{{ 'EmailSummary.Event' | transloco }}</th>
+          <th style="width: 625px">{{ 'EmailSummary.Subject' | transloco }}</th>
+          <th style="width: 265px">{{ 'EmailSummary.Event Time' | transloco }}</th>
+          <th style="width: 265px">{{ 'EmailSummary.Email Sent At' | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let item of SendGridEmailObj">
+          <tr *ngIf="to_email == 'All Emails' || item.to_email == to_email">
+            <td>{{ item.to_email }}</td>
+            <td>{{ item.event }}</td>
+            <td>{{ item.subject }}</td>
+            <td>{{ item.datetime | date : "yyyy-MM-dd HH:mm:ss" }}</td>
+            <td>
+              {{ item.processed_datetime | date : "yyyy-MM-dd HH:mm:ss" }}
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+  </div>
+</div>
+<!--table for Mobile view -->
+<div class="mobile-view">
+  <div class="table-responsive">
+    <div *ngIf="expandtable.length == 0">
+      <div class="alert alert-info" role="alert">
+        No transfer history available.
+      </div>
+    </div>
+    <table class="table" *ngIf="expandtable.length > 0">
+      <thead>
+        <tr class="mobile-table-bg">
+          <th scope="col"></th>
+          <th scope="col">To Email</th>
+          <th scope="col">Event</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of expandtable">
+        <tr class="" (click)="onChangeExpandtable(item.idx)">
+          <td>
+            <!-- Add Icon -->
+            <div *ngIf="!item.expandtable">
+              <i class="fas fa-caret-down"></i>
+            </div>
+            <!-- Minus Icon -->
+            <div *ngIf="item.expandtable">
+              <i class="fas fa-sort-up"></i>
+            </div>
+          </td>
+          <td>{{ SendGridEmailObj[item.idx].to_email }}</td>
+          <td>{{ SendGridEmailObj[item.idx].event }}</td>
+        </tr>
+
+        <!-- Expandable Area -->
+        <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+          <td></td>
+          <td colspan="3">
+            <div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Subject
+                </div>
+                <div style="font-size: 15px">
+                  {{ SendGridEmailObj[item.idx].subject }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Event Time
+                </div>
+                <div style="font-size: 15px">
+                  {{
+                  SendGridEmailObj[item.idx].datetime
+                  | date : "yyyy-MM-dd HH:mm:ss"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Email Sent At
+                </div>
+                <div class="">
+                  {{
+                  SendGridEmailObj[item.idx].processed_datetime
+                  | date : "yyyy-MM-dd HH:mm:ss"
+                  }}
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

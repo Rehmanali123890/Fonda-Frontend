@@ -1,0 +1,101 @@
+<!-- src/app/bank-reconciliation/bank-reconciliation.component.html -->
+<main class="container">
+  <div class="frame">
+    <div class="heading">UPLOAD PAYOUT REPORT</div>
+
+    <section class="grid" aria-label="Upload Sources">
+      <!-- Bank Deposits -->
+      <form class="card tile" aria-label="Upload Bank Deposits" (ngSubmit)="uploadFile('fonda')">
+        <h3>Upload Bank Deposits</h3>
+        <div class="dropzone">
+          <span *ngIf="!FondaFile">Drag &amp; Drop or <strong>Choose CSV</strong></span>
+          <span *ngIf="FondaFile" class="file-name"><strong>Selected:</strong> {{ FondaFile.name }}</span>
+          <input
+            id="bank-csv"
+            name="bank-csv"
+            type="file"
+            accept=".csv,text/csv"
+            aria-label="Bank deposits CSV file"
+            (change)="onFileChange($event, 'fonda')"
+          />
+        </div>
+        <button class="btn" type="submit" [disabled]="!FondaFile">Upload</button>
+      </form>
+
+      <!-- Doordash Payouts -->
+      <form class="card tile" aria-label="Upload Doordash Payouts" (ngSubmit)="uploadFile('doordash')">
+        <h3>Upload Doordash Payouts</h3>
+        <div class="dropzone">
+          <span *ngIf="!doordashFile">Drag &amp; Drop or <strong>Choose CSV</strong></span>
+          <span *ngIf="doordashFile" class="file-name"><strong>Selected:</strong> {{ doordashFile.name }}</span>
+          <input
+            id="doordash-csv"
+            name="doordash-csv"
+            type="file"
+            accept=".csv,text/csv"
+            aria-label="Doordash payouts CSV file"
+            (change)="onFileChange($event, 'doordash')"
+          />
+        </div>
+        <button class="btn" type="submit" [disabled]="!doordashFile">Upload</button>
+      </form>
+
+      <!-- Grubhub Payouts -->
+      <form class="card tile" aria-label="Upload Grubhub Payouts" (ngSubmit)="uploadFile('grubhub')">
+        <h3>Upload Grubhub Payouts</h3>
+        <div class="dropzone">
+          <span *ngIf="!grubhubFile">Drag &amp; Drop or <strong>Choose CSV</strong></span>
+          <span *ngIf="grubhubFile" class="file-name"><strong>Selected:</strong> {{ grubhubFile.name }}</span>
+          <input
+            id="grubhub-csv"
+            name="grubhub-csv"
+            type="file"
+            accept=".csv,text/csv"
+            aria-label="Grubhub payouts CSV file"
+            (change)="onFileChange($event, 'grubhub')"
+          />
+        </div>
+        <button class="btn" type="submit" [disabled]="!grubhubFile">Upload</button>
+      </form>
+
+      <!-- UberEats Payouts -->
+      <form class="card tile" aria-label="Upload UberEats Payouts" (ngSubmit)="uploadFile('ubereats')">
+        <h3>Upload UberEats Payouts</h3>
+        <div class="dropzone">
+          <span *ngIf="!ubereatsFile">Drag &amp; Drop or <strong>Choose CSV</strong></span>
+          <span *ngIf="ubereatsFile" class="file-name"><strong>Selected:</strong> {{ ubereatsFile.name }}</span>
+          <input
+            id="ubereats-csv"
+            name="ubereats-csv"
+            type="file"
+            accept=".csv,text/csv"
+            aria-label="UberEats payouts CSV file"
+            (change)="onFileChange($event, 'ubereats')"
+          />
+        </div>
+        <button class="btn" type="submit" [disabled]="!ubereatsFile">Upload</button>
+      </form>
+    </section>
+
+    <section class="card recon" aria-label="Payout Report Reconciliation">
+      <div class="section-title">Payout Report Reconciliation</div>
+      <form [formGroup]="reconciliationForm" (ngSubmit)="reconcile()">
+        <div class="recon-grid">
+          <div class="field">
+            <label class="label" for="from-date">From Date</label>
+            <input class="input" id="from-date" name="from-date" type="date" formControlName="fromDate" />
+          </div>
+          <div class="field">
+            <label class="label" for="to-date">To Date</label>
+            <input class="input" id="to-date" name="to-date" type="date" formControlName="toDate" />
+          </div>
+          <div class="field" style="align-self: end;">
+            <!-- <label class="label" for="to-date">Reconcile</label>
+            <label class="sr-only" for="reconcile">Reconcile</label> -->
+            <button id="reconcile" class="btn" style=" margin-top: 38px" type="submit" [disabled]="!canReconcile">Reconcile</button>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+</main>

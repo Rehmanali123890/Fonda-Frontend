@@ -1,0 +1,138 @@
+hr {
+  height: 0px !important;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5em;
+}
+.price-div {
+  text-align: end;
+  margin-right: 2em;
+  margin-left: auto;
+}
+.item-name {
+  width: max-content;
+  margin-right: auto;
+}
+
+.did-floating-label-content-for-platform {
+  margin-bottom: 30px !important;
+}
+
+.did-floating-input-for-platform {
+  color: #43474e;
+  border-bottom: 2px solid #97999f !important;
+  border-radius: 0px !important;
+  height: 55px;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.04);
+  padding-top: 1em;
+}
+.did-floating-label-for-platform {
+  left: 15px;
+  top: 6px !important;
+  padding: 0 5px;
+  background: none;
+  font-size: 12px !important;
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.custom-toggle::after {
+  display: none; /* Hide the default dropdown arrow */
+}
+
+.custom-button {
+  background-color: red; /* Red background */
+  color: white; /* White text */
+}
+
+.disabled-button {
+  background-color: #a0b5d8;
+  cursor: not-allowed;
+}
+.modal-header {
+  background: none !important;
+  color: #000 !important;
+  border-bottom: 0px;
+}
+.dropdown-toggle::after {
+  display: none !important;
+}
+
+.dropdown-toggle {
+  padding: 0px !important;
+}
+
+.dropdown-item:hover {
+  background: none;
+}
+
+.dropdown-item:active {
+  background: none;
+}
+
+.dropdown-item {
+  text-decoration: none;
+}
+
+.user-dropdown {
+  padding: 0.2em 0em !important;
+}
+
+.user_dropdown {
+  padding: 1.5em 1em;
+  border-radius: 10px;
+  box-shadow: 0px 0px 6px 6px rgba(0, 0, 0, 0.07);
+  border: none;
+}
+
+table.table td,
+table.table th {
+  padding: 12px 8px !important;
+  width: 20px;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 10px;
+}
+
+.did-floating-label-textarea {
+  color: #43474e;
+  font-size: 13px;
+  font-weight: normal;
+  position: absolute;
+  pointer-events: none;
+  left: 15px;
+  top: -15px;
+  padding: 0 5px;
+  background: #fff;
+  transition: 0.2s ease all;
+  -moz-transition: 0.2s ease all;
+  -webkit-transition: 0.2s ease all;
+}
+
+
+
+.ng-select .ng-select-container {
+  width: 102% !important;
+  border: none !important;
+  height: 49px !important;
+}
+@media screen and (max-width: 768px) {
+  .table-responsive {
+    overflow-x: auto !important;
+    margin-left: 0em;
+    width: 100%;
+    margin-bottom: 1em;
+  }
+  .price-div {
+    margin-right: 0em;
+  }
+}
+.menu-time-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

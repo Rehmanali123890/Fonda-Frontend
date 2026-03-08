@@ -1,0 +1,913 @@
+<div class="card">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "reuseableWords.From Date" | transloco }}</label>
+          <input type="date" class="form-control" [(ngModel)]="startDate" placeholder="Start Date" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "reuseableWords.To Date" | transloco }}</label>
+          <input type="date" class="form-control" [(ngModel)]="endDate" placeholder="End Date" />
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "reuseableWords.Subscriptions" | transloco }}</label>
+          <select style="height: 40px" type="text" [(ngModel)]="payoutType" class="field" placeholder="Select type">
+            <option value="1">
+              {{
+              "MerchantPayoutDetail.Include all the unpaid subscriptions"
+              | transloco
+              }}
+            </option>
+            <option value="2">
+              {{
+              "MerchantPayoutDetail.Include subscriptions within the specified date range"
+              | transloco
+              }}
+            </option>
+            <option value="3">
+              {{
+              "MerchantPayoutDetail.Do not include subscription in payout"
+              | transloco
+              }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button (click)="
+            transferType = 1;
+            payoutAdjustments = 0;
+            TotalRevenue = 0;
+            payoutAdjustmentsBackup = 0;
+            remarks = '';
+            calculatePayout(0)
+          " [disabled]="gettingCalculations" class="btn button-theme button-for-mobile">
+          {{ "MerchantPayoutDetail.CALCULATE TRANSFERS" | transloco }}
+          <span *ngIf="gettingCalculations" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+      </div>
+      <!-- <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button class="btn button-theme button-for-mobile" (click)="financeReportSummary(); financeReportData()">
+          {{ "MerchantPayoutDetail.DOWNLOAD REVENUE DETAILS" | transloco }}
+          <span *ngIf="gettingSummaryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+        <button class="btn button-theme button-for-mobile" (click)="financeReportSummaryNewFormat()">
+          Email summary report
+          <span *ngIf="gettingSummaryReportNew" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button> -->
+      <!-- </div> -->
+      <!--<div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button class="btn button-theme button-for-mobile" (click)="
+            emailbtn = 2;
+            openModalforCreatePoints(
+              'MerchantPayoutDetail.TRANSACTION SUMMARY REPORT'
+            )
+          ">
+          {{ "MerchantPayoutDetail.TRANSACTION SUMMARY REPORT" | transloco }}
+          <span *ngIf="gettingSummaryReportNew" class="spinner-border spinner-border-sm" role="status"
+            aria-hidden="true">
+          </span>
+        </button>
+      </div>-->
+      <!-- <div class="col-md-4">
+        <label style="margin-bottom: 0px; visibility: hidden; display: block">Button</label>
+        <button class="btn button-theme button-for-mobile" (click)="
+            emailbtn = 1;
+            openModalforCreatePoints(
+              'MerchantPayoutDetail.Transfer Summary Report'
+            )
+          ">
+          {{
+          "MerchantPayoutDetail.DOWNLOAD TRANSFER HISTORY REPORT" | transloco
+          }}
+        </button>
+      </div> -->
+    </div>
+  </div>
+</div>
+
+<div class="row" *ngIf="showDetails">
+  <div class="mt-3 table-details">
+    <h4>{{ "MerchantPayoutDetail.Net Payout Calculations" | transloco }}</h4>
+
+    <div class="terms-cards-main">
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/doordash-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Doordash
+                <span class="help-tip-payout" style="left: 105px"><img src="../../../assets/icons/Infogray.svg"
+                    alt="" />
+                  <p>Estimated earnings after deductions for DoorDash.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{ financepayoutcalculationObj.doordash_earning |number : "1.2-2" }}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_dd >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_dd
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_dd < 0">{{
+                  financepayoutcalculationObj.percentage_change_dd
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.doordash_earning != 0">
+                <a routerLink="/home/merchants/doordash-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'doordash',
+                    type: 'new-payout',
+                    index:3,
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_dd,
+                    unlocked_only:0,
+                    status:0,
+                    duration:financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 2nd card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/grubhub-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Grubhub
+                <span class="help-tip-payout" style="left: 95px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                  <p>Estimated earnings after deductions for Grubhub.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{ financepayoutcalculationObj.GH_earning |number : "1.2-2"}}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_gh >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_gh
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_gh < 0">{{
+                  financepayoutcalculationObj.percentage_change_gh
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.GH_earning != 0">
+                <a routerLink="/home/merchants/grubhub-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'grubhub',
+                    type: 'new-payout',
+                    index:3,
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_gh,
+                      unlocked_only:0,
+                    status:0,
+                    duration:financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 3rd card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/ubereats-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Ubereats
+                <span class="help-tip-payout" style="left: 99px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                  <p>Estimated earnings after deductions for Ubereats.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{ financepayoutcalculationObj.ubereats_earning |number : "1.2-2"}}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_ue >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_ue
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_ue < 0">{{
+                  financepayoutcalculationObj.percentage_change_ue
+                  | number : "1.2-2"
+                  }}%</span>
+
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.ubereats_earning != 0">
+                <a routerLink="/home/merchants/ubereats-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    source: 'ubereats',
+                    type: 'new-payout',
+                    index:3,
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_ue,
+                      unlocked_only:0,
+                    status:0,
+                    duration:financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 4th card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <img src="../../../assets/images/storefront-logo.png" alt="" />
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Store Front
+                <span class="help-tip-payout" style="left: 118px"><img src="../../../assets/icons/Infogray.svg"
+                    alt="" />
+                  <p>Estimated earnings after deductions for Storefront.</p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{ financepayoutcalculationObj.storefront_earning |number : "1.2-2"}}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_sf >= 0">+{{
+                  financepayoutcalculationObj.percentage_change_sf
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_sf < 0">{{
+                  financepayoutcalculationObj.percentage_change_sf
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+              <div class="report-link" *ngIf="financepayoutcalculationObj.storefront_earning != 0">
+                <a routerLink="/home/merchants/storefront-details" [queryParams]="{
+                    startdate: startDate,
+                    enddate: endDate,
+                    type: 'new-payout',
+                    index:3,
+                    source: 'storefront',
+                    merchantId: merchantId,
+                    lasttransaction:
+                      financepayoutcalculationObj.percentage_change_sf,
+                      unlocked_only:0,
+                    status:0,
+                    duration:financepayoutcalculationObj.duration
+                  }">View Report
+                  <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 5th card -->
+      <div class="term-card">
+        <div class="term-head-main">
+          <div class="term-head">
+            <!-- <img src="../../../assets/images/doordash-logo.png" alt="" /> -->
+          </div>
+          <div class="data-div">
+            <div class="data-item">
+              <div class="title">
+                Fonda Share
+                <span class="help-tip-payout" style="left: 131px"><img src="../../../assets/icons/Infogray.svg"
+                    alt="" />
+                  <p>
+                    This value represents the total estimated earning of Fonda from all platforms
+                  </p>
+                </span>
+              </div>
+              <div class="plateform-price">
+                ${{ financepayoutcalculationObj.fonda_revenue_share |number : "1.2-2"}}
+              </div>
+              <div class="sub-title" *ngIf="financepayoutcalculationObj.duration != 'Empty'">
+                <span class="up-value" *ngIf="
+                    financepayoutcalculationObj.percentage_change_fonda_share >=
+                    0
+                  ">+{{
+                  financepayoutcalculationObj.percentage_change_fonda_share
+                  | number : "1.2-2"
+                  }}%</span>
+                <span class="down-value" *ngIf="
+                    financepayoutcalculationObj.percentage_change_fonda_share <
+                    0
+                  ">{{
+                  financepayoutcalculationObj.percentage_change_fonda_share
+                  | number : "1.2-2"
+                  }}%</span>
+                from previous {{ financepayoutcalculationObj.duration }}
+              </div>
+              <hr class="divider" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <table class="table table-bordered table-hover">
+      <tbody>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile"> Total Earning </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                Total Earnings from all Platforms
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ financepayoutcalculationObj.total_all_earning | number : "1.2-2"}}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile"> Fonda Share </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                This value represents the total estimated earning of Fonda from all platforms.
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            <span class="up-value" *ngIf="
+                    financepayoutcalculationObj.fonda_revenue_share ==
+                    0
+                  ">
+              ${{ financepayoutcalculationObj.fonda_revenue_share | number : "1.2-2" }}
+            </span>
+            <span class="up-value" *ngIf="
+                    financepayoutcalculationObj.fonda_revenue_share !=
+                    0
+                  ">
+              $-{{ financepayoutcalculationObj.fonda_revenue_share | number : "1.2-2" }}
+            </span>
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Subscription Adjustments" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.subscriptionAdjustmentsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $
+            {{
+            financepayoutcalculationObj.subscriptionAdjustments
+            | number : "1.2-2"
+            }}
+          </td>
+        </tr>
+
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Payout Adjustments" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.payoutAdjustmentsDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <span class="adjustment-div">$
+            <input type="number" class="form-control" [(ngModel)]="payoutAdjustments" placeholder="+ve or -ve value"
+              (ngModelChange)="reCalculatePayout(1)" appPreventE />
+          </span>
+        </tr>
+        <tr>
+          <td class="col-md-9">
+            <span class="adjust-wt-for-mobile">
+              {{ "MerchantPayoutDetail.Net Payout" | transloco }}
+            </span>
+            <div class="help-tip" style="top: 0; z-index: unset">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.PayoutScreenTooltips.netPayoutDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+          </td>
+          <td class="col-md-3 text-center">
+            $ {{ netPayout | number : "1.2-2" }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="form-group">
+    <label>{{ "reuseableWords.Remarks" | transloco }}</label>
+    <textarea class="form-control" [(ngModel)]="remarks"
+      [placeholder]="'reuseableWords.Remarks' | transloco"></textarea>
+  </div>
+  <div class="button-div">
+    <!-- <button *ngIf="netPayout > 0 && not_connect_to_finacc" [disabled]="disableTransferBtn || !merchantDto.stripeAccountId"
+      (click)="swarlText='';transferType=1;calculatePayout(1);payoutAdjustments=0" class="btn btn-success" >Transfer to Merchat's Connected Account
+      <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+    </button> -->
+    <button *ngIf="netPayout > 0" (click)="
+        disableTransferPopupBtn = false;
+        transfer.show();
+        showRemarks = false;
+        getstripeaccountdetail()
+      " class="btn button-theme button-for-mobile">
+      {{ "MerchantPayoutDetail.TRANSFER" | transloco }}
+      <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+      </span>
+    </button>
+    <button *ngIf="netPayout > 0" (click)="payoutDraft()" class="btn button-theme button-for-mobile">
+      {{ "MerchantPayoutDetail.SAVE AS DRAFT" | transloco }}
+    </button>
+  </div>
+</div>
+<br />
+<!-- table for desktop view -->
+<div class="card">
+  <div class="card-header">
+    <h4 class="transfer-heading">
+      {{ "MerchantPayoutDetail.Transfer History" | transloco }}
+    </h4>
+  </div>
+  <div class="table-responsive history-table desktop-view">
+    <div *ngIf="PayoutCalculationsListObj.length == 0">
+      <div class="alert alert-info" role="alert">
+        <th>
+          {{
+          "MerchantPayoutDetail.No transfer history available." | transloco
+          }}
+        </th>
+      </div>
+    </div>
+    <table *ngIf="PayoutCalculationsListObj.length > 0" class="table table-bordered table-hover" id="price-table">
+      <thead class="bg-theme white-text sorting">
+        <tr>
+          <th>{{ "reuseableWords.From Date" | transloco }}</th>
+          <th>{{ "reuseableWords.To Date" | transloco }}</th>
+          <th>
+            {{ "MerchantPayoutDetail.Payout Created Date & Time" | transloco }}
+          </th>
+          <th>{{ "MerchantPayoutDetail.Payout Done By" | transloco }}</th>
+
+          <th>{{ "MerchantPayoutDetail.Payout Type" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Payout Remarks" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Internal Note" | transloco }}</th>
+          <th>{{ "MerchantPayoutDetail.Net Payout" | transloco }}</th>
+          <th class="wrap-column">{{ "reuseableWords.Status" | transloco }}</th>
+          <th>{{ "reuseableWords.Actions" | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of PayoutCalculationsListObj; let i = index">
+          <td>{{ item.startDate | date:'MM/dd/yyyy' }}</td>
+          <td>{{ item.endDate | date:"MM/dd/yyyy" }}</td>
+          <td>{{ item.created_datetime }}</td>
+          <td>{{ item.doneByUser }}</td>
+
+          <td>{{ PayoutTypeDescription[item.payoutType] }}</td>
+          <td>{{ item.remarks }}</td>
+          <td>{{ item.internalNote }}</td>
+
+          <td>$ {{ item.netPayout }}</td>
+
+          <td class="wrap-column">
+            <ng-container *ngIf="item.status == '1' || item.status == '0'">{{
+              SubscriptionDescription[item.status]
+              }}</ng-container>
+            <ng-container *ngIf="item.status == '2'">{{ SubscriptionDescription[item.status] }} (by
+              {{ item.revertedByName }} on
+              {{ item.revertedDateTime }})</ng-container>
+            <ng-container *ngIf="item.status == '3' && item.transferType == 1">Paid out from stripe balance to bank
+              {{ getBankInfoText(item) }}
+              by
+              {{ item.transferredToBankBy }} on
+              {{ item.transferredToBankTime }}</ng-container>
+            <ng-container *ngIf="item.status == '3' && item.transferType == 2">Paid out from stripe treasury to bank
+              {{
+              item.bankName !== ""
+              ? "( Bank Name: " +
+              item.bankName +
+              ", Account Holder Name: " +
+              item.accountHolderName +
+              ", Account
+              Number:
+              ********" +
+              item.last4 +
+              " )"
+              : ""
+              }}
+              by
+              {{ item.transferredToBankBy }} on
+              {{ item.transferredToBankTime }}</ng-container>
+            <ng-container *ngIf="item.status == '3' && item.transferType == 3">Paid out ( {{ item.remarks }} ) on
+              {{ item.created_datetime }}</ng-container>
+          </td>
+
+          <td>
+            <a routerLink="/home/merchants/new-transfer-details/{{ item.id }}"
+              [queryParams]="{ startdate: item.startDate, enddate: item.endDate, referrer: 'settings' }">
+              <button class="btn button-theme" style="width: fit-content">
+                {{ "MerchantPayoutDetail.ViEW DETAILS" | transloco }}
+              </button>
+            </a>
+            <!-- <button class="btn btn-primary" *ngIf="item.status==1 || item.status==3"
+              (click)="sendEmailPayout(item.id)">Email Report
+            </button> -->
+            <button class="btn button-theme" style="width: fit-content" *ngIf="item.status == 1 || item.status == 3"
+              (click)="
+                payoutiD = item.id;
+                emailbtn = 3;
+                openModalforCreatePoints('MerchantPayoutDetail.PAYOUT REPORT')
+              ">
+              {{ "MerchantPayoutDetail.PAYOUT REPORT" | transloco }}
+            </button>
+            <ng-container *ngIf="item.transferType != 2">
+              <button class="btn button-theme" style="width: fit-content"
+                *ngIf="item.status == 1 && item.transferredToBankBy == null" [disabled]="gettingTransfers"
+                (click)="revertTransfer(item.id)">
+                {{ "MerchantPayoutDetail.REVERT TRANSFER" | transloco }}
+              </button>
+              <button class="btn button-theme" style="width: fit-content"
+                *ngIf="item.status == 1 && item.transferredToBankBy == null" [disabled]="transferringBank"
+                (click)="getBankAccountDetails(item.id)">
+                {{ "MerchantPayoutDetail.PAYOUT TO BANK" | transloco }}
+
+                <span *ngIf="gettingTransfertoBank" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true">
+                </span>
+              </button></ng-container>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!--table for Mobile view -->
+<div class="mobile-view">
+  <div class="table-responsive">
+    <div *ngIf="expandtable.length == 0">
+      <div class="alert alert-info" role="alert">
+        <th>
+          {{
+          "MerchantPayoutDetail.No transfer history available." | transloco
+          }}
+        </th>
+      </div>
+    </div>
+    <table class="table" *ngIf="expandtable.length > 0">
+      <thead>
+        <tr class="mobile-table-bg">
+          <th scope="col"></th>
+          <th scope="col">Datetime</th>
+          <th scope="col">Status</th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let item of expandtable">
+        <tr class="" (click)="onChangeExpandtable(item.idx)">
+          <td>
+            <!-- Add Icon -->
+            <div *ngIf="!item.expandtable">
+              <i class="fas fa-caret-down"></i>
+            </div>
+            <!-- Minus Icon -->
+            <div *ngIf="item.expandtable">
+              <i class="fas fa-sort-up"></i>
+            </div>
+          </td>
+          <td>{{ PayoutCalculationsListObj[item.idx].created_datetime }}</td>
+          <td>
+            <ng-container *ngIf="
+                PayoutCalculationsListObj[item.idx].status == '1' ||
+                PayoutCalculationsListObj[item.idx].status == '0'
+              ">
+              {{
+              SubscriptionDescription[
+              PayoutCalculationsListObj[item.idx].status
+              ]
+              }}</ng-container>
+            <ng-container *ngIf="PayoutCalculationsListObj[item.idx].status == '2'">
+              {{
+              SubscriptionDescription[
+              PayoutCalculationsListObj[item.idx].status
+              ]
+              }}
+              (by {{ PayoutCalculationsListObj[item.idx].revertedByName }} on
+              {{
+              PayoutCalculationsListObj[item.idx].revertedDateTime
+              }})</ng-container>
+            <ng-container *ngIf="PayoutCalculationsListObj[item.idx].status == '3'">Paid out to bank by
+              {{ PayoutCalculationsListObj[item.idx].transferredToBankBy }} on
+              {{
+              PayoutCalculationsListObj[item.idx].transferredToBankTime
+              }}</ng-container>
+          </td>
+        </tr>
+
+        <!-- Expandable Area -->
+        <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+          <td></td>
+          <td colspan="3">
+            <div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  From Date
+                </div>
+                <div style="font-size: 15px">
+                  {{
+                  PayoutCalculationsListObj[item.idx].startDate
+                  | date : "MM-dd-yyyy"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  To Date
+                </div>
+                <div style="font-size: 15px">
+                  {{
+                  PayoutCalculationsListObj[item.idx].endDate
+                  | date : "MM-dd-yyyy"
+                  }}
+                </div>
+              </div>
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Done By
+                </div>
+                <div class="">
+                  {{ PayoutCalculationsListObj[item.idx].doneByUser }}
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Net Payout
+                </div>
+                <div style="font-size: 15px">
+                  $ {{ PayoutCalculationsListObj[item.idx].netPayout }}
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Type
+                </div>
+                <div style="font-size: 15px; text-align: end">
+                  {{
+                  PayoutTypeDescription[
+                  PayoutCalculationsListObj[item.idx].payoutType
+                  ]
+                  }}
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between mt-3">
+                <div style="font-weight: 600; margin-left: -1.8em; font-size: 15px">
+                  Payout Remarks
+                </div>
+                <div style="font-size: 15px">
+                  $ {{ PayoutCalculationsListObj[item.idx].remarks }}
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <div style="font-size: 15px">
+                  <a routerLink="/home/merchants/new-transfer-details/{{
+                      PayoutCalculationsListObj[item.idx].id
+                    }}"
+                    [queryParams]="{ startdate: PayoutCalculationsListObj[item.idx].startDate, enddate: PayoutCalculationsListObj[item.idx].endDate, referrer: 'settings' }">
+                    <button class="btn button-theme action-for-mobile">
+                      View Details
+                    </button>
+                  </a>
+                  <button class="btn button-theme action-for-mobile"
+                    *ngIf="PayoutCalculationsListObj[item.idx].status == '1'" (click)="
+                      sendEmailPayout(PayoutCalculationsListObj[item.idx].id)
+                    ">
+                    Payout Report
+                  </button>
+                  <button class="btn button-theme action-for-mobile" *ngIf="
+                      PayoutCalculationsListObj[item.idx].status == '1' &&
+                      PayoutCalculationsListObj[item.idx].transferredToBankBy ==
+                        null
+                    " [disabled]="gettingTransfers" (click)="
+                      revertTransfer(PayoutCalculationsListObj[item.idx].id)
+                    ">
+                    Revert Transfer
+                  </button>
+                  <button class="btn button-theme action-for-mobile" *ngIf="
+                      PayoutCalculationsListObj[item.idx].status == '1' &&
+                      PayoutCalculationsListObj[item.idx].transferredToBankBy ==
+                        null
+                    " [disabled]="transferringBank" (click)="
+                      transferToBank(PayoutCalculationsListObj[item.idx].id)
+                    ">
+                    Payout to bank
+                  </button>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Email list modal -->
+<div mdbModal #createOurPoints="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="createOurPoints.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">{{ popupheadeing }}</h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="tagChipWrapper">
+          <div class="tagChipContent">
+            <label> {{ "reuseableWords.Email" | transloco }}</label>
+            <div class="tagChipUL">
+              <ul class="tagChipliWrapper" *ngFor="let email of tagsEmailDistributionArray">
+                <li class="tagChipLI" *ngIf="email != ''">
+                  <span>{{ email }}</span>
+                  <img (click)="removeTag(email)" class="tagChipI"
+                    src="https://img.icons8.com/material-rounded/24/FA5252/multiply--v1.png" />
+                </li>
+              </ul>
+              <input class="tagChipInputField" [(ngModel)]="inputText" (keyup.enter)="onEnterKeyPressed($event)"
+                type="text" spellcheck="false" />
+            </div>
+          </div>
+          <!-- <div class="tagChipDetails"> -->
+          <!-- <button>Remove All</button> -->
+          <!-- </div> -->
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <!-- <button type="button" class="btn orange-bt text-white" (click)="transferHistoryReport()">
+          Send
+          <span *ngIf="gettingHistoryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button> -->
+        <button type="button" class="btn orange-bt text-white" (click)="emailsSend()"
+          [disabled]="tagsEmailDistributionArray.length === 0">
+          {{ "reuseableWords.Send" | transloco }}
+          <span *ngIf="gettingHistoryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #transfer="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document"
+    [ngClass]="{ 'modal-dialog-width': connect_to_finacc }">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button (click)="transfer.hide()" type="button" class="close pull-right text-white" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">
+          {{ "reuseableWords.Transfer" | transloco }}
+        </h4>
+      </div>
+      <div class="modal-body px-3 row">
+        <div class="col-md-6">
+          <button [disabled]="disableTransferPopupBtn" (click)="
+              popup_remarks = '';
+              disableTransferPopupBtn = true;
+              showRemarks = true;
+              transferType = 3
+            " class="btn btn-danger btn_font ms-2" style="width: 100%">
+            {{ "MerchantPayoutDetail.SETTLE OUT SIDE BY FONDA" | transloco }}
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+          </button>
+        </div>
+        <div class="col-md-6" *ngIf="check_stripe_connected_id">
+          <button [disabled]="disableTransferPopupBtn" (click)="
+              popup_remarks = '';
+              transferType = 1;
+              calculatePayout(
+                1,
+                'MerchantPayoutDetail.finance account to merchant connected account'
+              );
+              transfer.hide()
+            " class="btn btn-danger btn_font ms-2" style="width: 100%">
+            {{
+            "MerchantPayoutDetail.TRANSFER FUNDS FROM CONNECT A/C" | transloco
+            }}
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+            <p> Fonda Stripe Balance : ${{StripeBalance}}</p>
+          </button>
+
+        </div>
+        <div class="col-md-6" *ngIf="connect_to_finacc">
+          <button [disabled]="disableTransferPopupBtn" (click)="
+              popup_remarks = '';
+              transferType = 2;
+              calculatePayout(
+                1,
+                'MerchantPayoutDetail.merchant’s treasury account to default recipient bank account'
+              );
+              transfer.hide()
+            " class="btn btn-danger mt-2 btn_font" style="width: 100%">
+            {{
+            "MerchantPayoutDetail.TRANSFER FUNDS FROM TREASURY A/C"
+            | transloco
+            }}
+            <span *ngIf="disableTransferBtn" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+            <p> Merchant Treasury Balance : ${{TreasuryBalance}}</p>
+          </button>
+
+        </div>
+        <span *ngIf="showRemarks" class="mt-4 ms-2">
+          <div class="ms-1">
+            {{ "reuseableWords.Remarks" | transloco }} :
+            <textarea class="form-control" [(ngModel)]="popup_remarks" (input)="onInputChange()"
+              [placeholder]="'reuseableWords.Remarks' | transloco"></textarea>
+          </div>
+          <button class="btn btn-success mt-5 float-right" (click)="calculatePayout(1); remarks = ''; transfer.hide()"
+            [disabled]="popup_remarks == ''">
+            {{ "reuseableWords.SAVE" | transloco }}
+          </button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

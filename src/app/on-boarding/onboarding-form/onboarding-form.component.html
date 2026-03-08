@@ -1,0 +1,731 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="ctrlqHeaderMast">
+        <img src="../../../assets/images/logo.svg" alt="" />
+      </div>
+      <!-- <div class="signup-heading d-flex justify-content-center">
+				<h3>Sign up</h3>
+			</div> -->
+      <div id="msform">
+        <!-- progressbar -->
+        <ul id="progressbar">
+          <li
+            *ngIf="
+              personal ||
+              social ||
+              account ||
+              message ||
+              businessInfo ||
+              hours ||
+              profile ||
+              setting
+            "
+            class="active"
+          ></li>
+          <li
+            *ngIf="
+              !personal &&
+              !social &&
+              !account &&
+              !message &&
+              !businessInfo &&
+              !hours &&
+              !profile &&
+              !setting
+            "
+            class=""
+          ></li>
+          <li
+            *ngIf="
+              social ||
+              account ||
+              message ||
+              businessInfo ||
+              hours ||
+              profile ||
+              setting
+            "
+            class="active"
+          ></li>
+          <li
+            *ngIf="
+              !social &&
+              !account &&
+              !message &&
+              !businessInfo &&
+              !hours &&
+              !profile &&
+              !setting
+            "
+            class=""
+          ></li>
+          <li
+            *ngIf="
+              account || message || businessInfo || hours || profile || setting
+            "
+            class="active"
+          ></li>
+          <li
+            *ngIf="
+              !account &&
+              !message &&
+              !businessInfo &&
+              !hours &&
+              !profile &&
+              !setting
+            "
+            class=""
+          ></li>
+          <li *ngIf="message" class="active"></li>
+          <li *ngIf="!message" class=""></li>
+        </ul>
+        <!-- fieldsets -->
+        <fieldset *ngIf="personal">
+          <h3 class="mb-4 signup-heading">Sign up</h3>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.firstName"
+                  (focusout)="validate('firstNameError', merchantDto.firstName)"
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="First Name"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="First Name*"
+                >
+                  <span class="hidden--visually"> First Name*</span></label
+                >
+                <div id="firstNameError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.lastName"
+                  (focusout)="validate('lastNameError', merchantDto.lastName)"
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="Last Name"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Last Name*"
+                >
+                  <span class="hidden--visually"> Last Name*</span></label
+                >
+                <div id="lastNameError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.email"
+                  (focusout)="
+                    step1Check = true;
+                    validate('emailError', merchantDto.email, (type = 'email'))
+                  "
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="email"
+                  placeholder="Email"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Email*"
+                >
+                  <span class="hidden--visually"> Email*</span></label
+                >
+                <div id="emailError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.businessNumber"
+                  (focusout)="
+                    validate('phoneError', merchantDto.businessNumber)
+                  "
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="Phone"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Phone*"
+                >
+                  <span class="hidden--visually"> Phone*</span></label
+                >
+                <div id="phoneError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.password"
+                  (focusout)="
+                    validate(
+                      'passwordError',
+                      merchantDto.password,
+                      (type = 'password')
+                    )
+                  "
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="password"
+                  placeholder="Password"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Password*"
+                >
+                  <span class="hidden--visually"> Password*</span></label
+                >
+                <div id="passwordError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.confirmPassword"
+                  (focusout)="
+                    validate(
+                      'confirmPasswordError',
+                      merchantDto.confirmPassword,
+                      (type = 'password')
+                    )
+                  "
+                  class="floating__input"
+                  name="username"
+                  type="password"
+                  placeholder="Password"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Confirm Password*"
+                >
+                  <span class="hidden--visually">
+                    Confirm Password*</span
+                  ></label
+                >
+                <div id="confirmPasswordError" style="display: none">
+                  This field is required
+                </div>
+                <div id="confirmPasswordError" style="display: none">
+                  This field is required
+                </div>
+                <div id="confirmPassError" style="display: none">
+                  Password and confirm password fields should match.
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="tacbox">
+            <mdb-checkbox [(ngModel)]="terms" [default]="true">
+              <label for="checkbox" class="label">
+                I agree to the Fonda's
+                <a href="https://mifonda.io/terms-of-service/" target="_blank">
+                  Terms & Conditions </a
+                >.
+              </label>
+            </mdb-checkbox>
+          </div>
+          <button
+            [disabled]="
+              !step1Check ||
+              !merchantDto.firstName ||
+              !merchantDto.lastName ||
+              !merchantDto.email ||
+              !merchantDto.businessNumber ||
+              !merchantDto.password ||
+              !merchantDto.confirmPassword ||
+              !terms ||
+              merchantDto.password !== merchantDto.confirmPassword
+            "
+            (click)="next()"
+            class="move-next mt-5 next-screen btn button-theme"
+            value="Next"
+          >
+            Next
+          </button>
+        </fieldset>
+        <fieldset *ngIf="social">
+          <h3 class="mb-4 signup-heading">Sign up</h3>
+          <div class="row">
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.merchantName"
+                  (focusout)="
+                    validate('merchantNameError', merchantDto.merchantName)
+                  "
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="First Name"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Restaurant Name*"
+                >
+                  <span class="hidden--visually"> Restaurant Name*</span></label
+                >
+                <div id="merchantNameError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.businessWebsite"
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="Last Name"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Website"
+                >
+                  <span class="hidden--visually"> Website</span></label
+                >
+                <!-- <div id="businessWebsiteError"  style="display: none">This field is required</div> -->
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.businessAddressLine"
+                  (focusout)="
+                    validate(
+                      'businessAddressLineError',
+                      merchantDto.businessAddressLine
+                    )
+                  "
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="Email"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Address*"
+                >
+                  <span class="hidden--visually"> Address</span></label
+                >
+                <div id="businessAddressLineError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  id="input__username"
+                  (focusout)="
+                    validate(
+                      'businessAddressCityError',
+                      merchantDto.businessAddressCity
+                    )
+                  "
+                  class="floating__input"
+                  [(ngModel)]="merchantDto.businessAddressCity"
+                  name="username"
+                  type="text"
+                  placeholder="Phone"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="City/town*"
+                >
+                  <span class="hidden--visually"> City/town</span></label
+                >
+                <div id="businessAddressCityError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.zip"
+                  (focusout)="validate('zipError', merchantDto.zip)"
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="Password"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Zip Code*"
+                >
+                  <span class="hidden--visually"> Zip Code</span></label
+                >
+                <div id="zipError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mb-2">
+              <div class="floating">
+                <input
+                  [(ngModel)]="merchantDto.businessNumber"
+                  (focusout)="
+                    validate('businessNumberError', merchantDto.businessNumber)
+                  "
+                  id="input__username"
+                  class="floating__input"
+                  name="username"
+                  type="text"
+                  placeholder="Password"
+                />
+                <label
+                  for="input__username"
+                  class="floating__label"
+                  data-content="Business Phone Number*"
+                >
+                  <span class="hidden--visually">
+                    Business Phone Number</span
+                  ></label
+                >
+                <div id="businessNumberError" style="display: none">
+                  This field is required
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end buttons-group mt-5">
+            <button
+              (click)="previous1()"
+              class="pr-3 previous-screen btn button-theme"
+            >
+              Previous
+            </button>
+            <button
+              [disabled]="
+                !merchantDto.merchantName ||
+                !merchantDto.businessAddressLine ||
+                !merchantDto.businessAddressCity ||
+                !merchantDto.zip ||
+                !merchantDto.businessNumber
+              "
+              (click)="next2()"
+              value="Next"
+              class="next-screen btn button-theme"
+            >
+              Next
+            </button>
+          </div>
+        </fieldset>
+        <fieldset *ngIf="account">
+          <h3 class="mb-4 signup-heading">Sign up</h3>
+          <div class="hours-desc">
+            <h4>Restaurant Hours</h4>
+            <p>Let people know your hours of operations</p>
+          </div>
+          <div
+            class="row align-items-center mt-3 mb-4"
+            *ngFor="let day of merchantsDefaultData; let i = index"
+          >
+            <div class="col-md-2 mb-2 day-mobile">
+              <h3 class="day">
+                <span *ngIf="day.main">{{ day.day }}</span>
+              </h3>
+            </div>
+
+            <div class="col-md-4 mb-2 for-mobile">
+              <div class="floating-label">
+                <select
+                  [(ngModel)]="day.openTime"
+                  class="floating-select"
+                  [disabled]="day.closeForBusinessFlag"
+                >
+                  <option [value]="''">Select</option>
+                  <option [value]="time2" *ngFor="let time2 of timeArry2">
+                    {{ time2 }}
+                  </option>
+                  <option [value]="time" *ngFor="let time of timeArr">
+                    {{ time }}
+                  </option>
+                </select>
+                <span class="highlight"></span>
+                <label class="select-label d-flex align-items-center">
+                  <span
+                    ><img
+                      src="https://img.icons8.com/material-outlined/24/737373/clock--v1.png"
+                      class="mr-2 clock"
+                  /></span>
+                  Opening
+                </label>
+                <!-- for closed -->
+                <label
+                  class="select-label d-flex align-items-center"
+                  *ngIf="day.closeForBusinessFlag"
+                >
+                  <span
+                    ><img
+                      src="https://img.icons8.com/material-outlined/24/737373/clock--v1.png"
+                      class="mr-2 clock"
+                  /></span>
+                  Not Open
+                </label>
+              </div>
+            </div>
+            <div class="col-md-4 mb-2 for-mobile2">
+              <div class="floating-label">
+                <select
+                  [(ngModel)]="day.closeTime"
+                  class="floating-select"
+                  [disabled]="day.closeForBusinessFlag"
+                >
+                  <option [value]="''">Select</option>
+                  <option [value]="time2" *ngFor="let time2 of timeArry2">
+                    {{ time2 }}
+                  </option>
+                  <option [value]="time" *ngFor="let time of timeArr">
+                    {{ time }}
+                  </option>
+                </select>
+                <span class="highlight"></span>
+                <label class="select-label d-flex align-items-center">
+                  <span
+                    ><img
+                      src="https://img.icons8.com/material-outlined/24/737373/clock--v1.png"
+                      class="mr-2 clock"
+                  /></span>
+                  Closing
+                </label>
+                <!-- for closed -->
+                <label
+                  class="select-label d-flex align-items-center"
+                  *ngIf="day.closeForBusinessFlag"
+                >
+                  <span
+                    ><img
+                      src="https://img.icons8.com/material-outlined/24/737373/clock--v1.png"
+                      class="mr-2 clock"
+                  /></span>
+                  Not Open
+                </label>
+              </div>
+            </div>
+
+            <div class="col-md-2 mb-2 d-flex images-mobile">
+              <div class="plus-icon mb-2" *ngIf="day.main">
+                <button
+                  [disabled]="day.closeForBusinessFlag"
+                  class="text-dark"
+                  (click)="AddAnotherValue(i, day, true)"
+                >
+                  <span class="fa fa-plus-circle fa-2x"></span>
+                </button>
+              </div>
+              <div class="plus-icon mb-2" *ngIf="!day.main">
+                <button
+                  [disabled]="day.closeForBusinessFlag"
+                  class="text-dark"
+                  (click)="Removealue(i, day)"
+                >
+                  <span class="fa fa-minus-circle fa-2x"></span>
+                </button>
+              </div>
+
+              <div class="checkbox-weekly mb-2">
+                <mdb-checkbox
+                  [(ngModel)]="day.closeForBusinessFlag"
+                  [default]="true"
+                  >Closed</mdb-checkbox
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-end buttons-group mt-5">
+            <buttton
+              (click)="previous2()"
+              class="pr-3 previous-screen btn button-theme"
+              >Previous</buttton
+            >
+            <!-- <a class="pr-4 pl-4 next_screen">Skip For Now</a> -->
+            <button
+              (click)="next3()"
+              value="Next"
+              class="next-screen btn button-theme"
+            >
+              Next
+            </button>
+          </div>
+        </fieldset>
+        <fieldset *ngIf="message">
+          <h3 class="mb-4 signup-heading">Sign up</h3>
+          <div class="hours-desc">
+            <h4>Your Media</h4>
+          </div>
+          <div class="container p-y-1">
+            <div class="row">
+              <div class="col-md-6 mt-4">
+                <h5>Store Front Logo</h5>
+                <div class="upload-media-img" *ngIf="merchantDto.logo">
+                  <img src="{{ merchantDto.logo }}" />
+                </div>
+                <span class="upload-media-div">
+                  <button
+                    class="upload-btn"
+                    onclick="document.getElementById('takeInputLogo').click()"
+                  >
+                    Upload Logo
+                    <span
+                      *ngIf="uploadingLogo"
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  </button>
+
+                  <input
+                    type="file"
+                    #takeInput
+                    id="takeInputLogo"
+                    style="display: none"
+                    accept="image/*"
+                    (change)="handleFileInputForLogo($event.target.files)"
+                  />
+                  <i
+                    class="fas fa-trash logo-delete"
+                    *ngIf="merchantDto.logo"
+                    (click)="deleteMediaLogo()"
+                  ></i>
+                </span>
+                <label class="mt-2">Maximum size of logo (640x389)</label>
+              </div>
+
+              <div class="col-md-6 mt-4">
+                <h5>Store Front Banner Image/Video</h5>
+                <div
+                  *ngIf="merchantDto.banner && showBanner"
+                  class="upload-media-img"
+                >
+                  <video
+                    style="height: inherit"
+                    controls
+                    *ngIf="
+                      merchantDto.banner &&
+                      merchantDto.banner
+                        .split('.')
+                        .pop()
+                        .toLowerCase()
+                        .includes('mp4')
+                    "
+                  >
+                    <source src="{{ merchantDto.banner }}" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                  <img
+                    *ngIf="
+                      merchantDto.banner &&
+                      merchantDto.banner.split('.').pop().toLowerCase() !==
+                        'mp4'
+                    "
+                    src="{{ merchantDto.banner }}"
+                  />
+                </div>
+                <span class="upload-media-div">
+                  <button
+                    onclick="document.getElementById('takeInputBanner').click()"
+                    class="upload-btn"
+                  >
+                    Upload Banner
+                    <span
+                      *ngIf="uploadingBanner"
+                      class="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                  </button>
+                  <input
+                    type="file"
+                    #takeInput2
+                    id="takeInputBanner"
+                    style="display: none"
+                    accept="video/mp4,image/*"
+                    (change)="handleFileInputForBanner($event.target.files)"
+                  />
+                  <i
+                    class="fas fa-trash logo-delete"
+                    *ngIf="merchantDto.banner && showBanner"
+                    (click)="deleteMediaBanner()"
+                  ></i>
+                </span>
+                <label class="mt-2"
+                  >Maximun size of banner(2880x1063) and video(640x360)</label
+                >
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end buttons-group mt-5">
+            <button
+              (click)="previous3()"
+              class="previous-screen btn button-theme pr-3"
+            >
+              Previous
+            </button>
+            <!-- <a class="pr-0 pl-0 next-screen" style="visibility:hidden">Skip For Now</a> -->
+            <button
+              (click)="signup()"
+              value="Next"
+              class="next-screen btn button-theme"
+            >
+              Finish
+              <span
+                *ngIf="savingMerchant"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          </div>
+          <!-- <button type="button" name="previous" (click)="previous3()" class="previous action-button-previous" value="Previous">Previous</button>
+						<a  type="button" class="previous action-button-previous pr-4 pl-4">Skip For Now</a>
+					   <button type="submit"  class="submit action-button">Save</button> -->
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>

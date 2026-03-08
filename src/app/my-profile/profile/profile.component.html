@@ -1,0 +1,133 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <div class="mb-3 d-flex justify-content-between align-items-center">
+        <h4>{{ "myprofileheading" | transloco }}</h4>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>{{ "reuseableWords.First Name" | transloco }}</label>
+            <input
+              type="text"
+              [(ngModel)]="UserDtoObj.firstName"
+              class="field"
+              [placeholder]="'reuseableWords.First Name' | transloco"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>{{ "reuseableWords.Last Name" | transloco }}</label>
+            <input
+              type="text"
+              [(ngModel)]="UserDtoObj.lastName"
+              class="field"
+              [placeholder]="'reuseableWords.Last Name' | transloco"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>{{ "reuseableWords.Email" | transloco }}</label>
+            <input
+              [readOnly]="UserDtoObj.id"
+              type="text"
+              [(ngModel)]="UserDtoObj.email"
+              class="field"
+              [placeholder]="'reuseableWords.Email' | transloco"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label> {{ "reuseableWords.Address" | transloco }}</label>
+            <input
+              type="text"
+              [(ngModel)]="UserDtoObj.address"
+              class="field"
+              [placeholder]="'reuseableWords.Address' | transloco"
+            />
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>{{ "reuseableWords.Phone" | transloco }}</label>
+            <input
+              type="text"
+              [(ngModel)]="UserDtoObj.phone"
+              class="field"
+              [placeholder]="'reuseableWords.Phone' | transloco"
+            />
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>Role</label>
+            <select
+              type="text"
+              [(ngModel)]="UserDtoObj.role"
+              [disabled]="userRoleType != 1"
+              class="field"
+              placeholder="Role"
+            >
+              <option [value]="item.value" *ngFor="let item of userRoleEnumArr">
+                {{ getStatusTranslation(item.name) }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="form-group" *ngIf="UserDtoObj.id">
+          <label>Password</label>
+          <input type="password" [(ngModel)]="UserDtoObj['password']" class="field" placeholder="Password">
+        </div> -->
+      <div class="form-group">
+        <mdb-checkbox class="mb-2" [(ngModel)]="changePassword" default="true">
+          {{ "reuseableWords.Change password" | transloco }}
+        </mdb-checkbox>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group" *ngIf="UserDtoObj.id && changePassword">
+            <label>{{ "reuseableWords.Password" | transloco }}</label>
+            <input
+              type="password"
+              [(ngModel)]="UserDtoObj['password']"
+              class="field"
+              placeholder="Password"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-12 mt-2">
+    <div class="row">
+      <button
+        *ngIf="UserDtoObj.id"
+        type="button"
+        [disabled]="
+          savingUser ||
+          !UserDtoObj.firstName ||
+          !UserDtoObj.lastName ||
+          !UserDtoObj.email
+        "
+        class="btn orange-bt text-white ml-auto profileupdateBtn ms-4"
+        (click)="UpdateUserData()"
+      >
+        <span
+          *ngIf="savingUser"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        {{ "reuseableWords.Update" | transloco }}
+      </button>
+    </div>
+  </div>
+</div>

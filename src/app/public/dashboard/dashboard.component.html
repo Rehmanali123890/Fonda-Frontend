@@ -1,0 +1,708 @@
+<div class="container-fluid pb-4">
+  <div *ngIf="showmainloader" class="loader-main">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+    </span>
+  </div>
+</div>
+
+<div *ngIf="!showmainloader" class="container-fluid mb-3">
+  <div *ngIf="gettingMerchantReportData" class="d-flex justify-content-center text-center">
+    <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+  </div>
+  <div id="top-form-div">
+    <div style="width: fit-content">
+      <!-- <h2 id="form-div-heading">{{ selectedMerchant?.merchantName || "" }}</h2> -->
+      <!-- <small>123 Main St,Canta Cruze CA 95062</small> -->
+    </div>
+    <!-- <button (click)="login_google()">Google Login</button> -->
+    <!-- <button (click)="logout_google()">Google logout</button> -->
+    <!-- <ng-container *ngIf="auth.isAuthenticated$ | async; else loggedOut">
+      <h2>Welcome, {{ (auth.user$ | async)?.name }}!</h2>
+      <p>Email: {{ (auth.user$ | async)?.email }}</p>
+      <button (click)="logout_google()">Log out</button>
+    </ng-container>
+
+    <ng-template #loggedOut>
+      <button (click)="auth.loginWithRedirect()">Log in</button>
+    </ng-template> -->
+    <div>
+      <div class="form-inline">
+        <div class="form-group">
+          <input [readonly]="filterType != 5" [(ngModel)]="startDate" type="date" class="form-control"
+            placeholder="Start Date" />
+        </div>
+        <div class="form-group">
+          <input [readonly]="filterType != 5" [(ngModel)]="endDate" type="date" class="form-control"
+            placeholder="End Date" />
+        </div>
+        <div class="form-group">
+          <!-- <label for="printCopies"></label> -->
+          <select [(ngModel)]="filterType" id="printCopies" (change)="changeDateAccordinglyAndSearch()"
+            class="form-control" id="drop-form">
+            <!-- <option [value]="1">Today</option> -->
+            <option [value]="2">
+              {{ "reuseableWords.Last 7 days" | transloco }}
+            </option>
+            <option [value]="3">
+              {{ "reuseableWords.Last week" | transloco }}
+            </option>
+            <option [value]="4">
+              {{ "reuseableWords.Last Month" | transloco }}
+            </option>
+            <option [value]="5">
+              {{ "reuseableWords.Custom" | transloco }}
+            </option>
+          </select>
+          <div></div>
+        </div>
+        <div class="button-div">
+          <button type="submit" [disabled]="gettingMerchantReportData" class="btn button-theme"
+            (click)="changeDateAccordinglyAndSearch(1)">
+            {{ "reuseableWords.APPLY" | transloco }}
+          </button>
+
+
+        </div>
+        <div class="button-div transaction-mobile-btn">
+          <!-- transactuib summary report -->
+          <button class="btn button-theme button-for-mobile dropdown-toggle" type="button" id="exportButton"
+            data-bs-toggle="dropdown" aria-expanded="false">
+            {{ "TRANSACTION REPORT" | transloco }}
+            <span *ngIf="gettingSummaryReportNew || exporting" class="spinner-border spinner-border-sm"
+              style="width: 1rem; height: 1rem;" role="status" aria-hidden="true">
+            </span>
+          </button>
+          <!-- Dropdown Menu with Bootstrap Classes -->
+          <ul class="dropdown-menu" aria-labelledby="exportButton">
+            <li class="py-2"><a class="dropdown-item" (click)="openModalforCreatePoints(
+                    'TRANSACTION REPORT'
+                  )
+                "><img src="../../../assets/icons/send-svgrepo-com.svg" alt=""
+                  style="filter: invert(100%) brightness(0%); height: 22px;" />&nbsp;&nbsp;Email </a></li>
+            <li class="py-2"><a class="dropdown-item" (click)="downloadTransactionReport('excel')"><img
+                  src="../../../assets/icons/export.svg" alt=""
+                  style="filter: invert(100%) brightness(0%); height: 20px;" />&nbsp;&nbsp;Excel</a></li>
+            <li class="py-2"><a class="dropdown-item" (click)="downloadTransactionReport('csv')"><img
+                  src="../../../assets/icons/export.svg" alt=""
+                  style="filter: invert(100%) brightness(0%);height: 20px;" />&nbsp;&nbsp;CSV</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h4 class="plat-heading">{{ "dashboard.Platforms Details" | transloco }}</h4>
+
+  <div class="terms-cards-main">
+    <div class="term-card">
+      <div class="term-head-main">
+        <div class="term-head">
+          <img src="../../../assets/images/doordash-logo.png" alt="" />
+        </div>
+        <div *ngIf="cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!cardloader" class="data-div">
+          <div class="data-item">
+            <div class="title">
+              DoorDash
+              <span class="help-tip-payout" style="left: 105px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                <p style="width: 210px">
+                  {{ "dashboard.Tooltip for DoorDash" | transloco }}
+                </p>
+              </span>
+            </div>
+            <div class="plateform-price">
+              ${{
+              financepayoutcalculationObj.doordash_earning | number : "1.2-2"
+              }}
+            </div>
+            <div class="sub-title" *ngIf="
+                financepayoutcalculationObj.duration != 'Empty' &&
+                financepayoutcalculationObj.doordash_earning != 0
+              ">
+              <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_dd >= 0">+{{
+                financepayoutcalculationObj.percentage_change_dd
+                | number : "1.2-2"
+                }}%</span>
+              <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_dd < 0">{{
+                financepayoutcalculationObj.percentage_change_dd
+                | number : "1.2-2"
+                }}%</span>
+              from Previous
+              {{ financepayoutcalculationObj.duration | titlecase }}
+            </div>
+            <hr class="divider" />
+            <div class="report-link" *ngIf="financepayoutcalculationObj.doordash_earning != 0">
+              <a routerLink="/home/merchants/doordash-details" [queryParams]="{
+                  startdate: ApplystartDate,
+                  enddate: ApplyendDate,
+                  source: 'doordash',
+                  type: 'dashboard',
+                  merchantId: selectedMerchantId,
+                  lasttransaction:
+                    financepayoutcalculationObj.percentage_change_dd,
+                  unlocked_only: 2,
+                  duration: financepayoutcalculationObj.duration
+                }">
+                {{ "dashboard.View Report" | transloco }}
+                <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 2nd card -->
+    <div class="term-card">
+      <div class="term-head-main">
+        <div class="term-head">
+          <img src="../../../assets/images/grubhub-logo.png" alt="" />
+        </div>
+        <div *ngIf="cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!cardloader" class="data-div">
+          <div class="data-item">
+            <div class="title">
+              Grubhub
+              <span class="help-tip-payout" style="left: 95px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                <p>{{ "dashboard.Tooltip for Grubhub" | transloco }}</p>
+              </span>
+            </div>
+            <div class="plateform-price">
+              ${{ financepayoutcalculationObj.GH_earning | number : "1.2-2" }}
+            </div>
+            <div class="sub-title" *ngIf="
+                financepayoutcalculationObj.duration != 'Empty' &&
+                financepayoutcalculationObj.GH_earning != 0
+              ">
+              <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_gh >= 0">+{{
+                financepayoutcalculationObj.percentage_change_gh
+                | number : "1.2-2"
+                }}%</span>
+              <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_gh < 0">{{
+                financepayoutcalculationObj.percentage_change_gh
+                | number : "1.2-2"
+                }}%</span>
+              from Previous
+              {{ financepayoutcalculationObj.duration | titlecase }}
+            </div>
+            <hr class="divider" />
+            <div class="report-link" *ngIf="financepayoutcalculationObj.GH_earning != 0">
+              <a routerLink="/home/merchants/grubhub-details" [queryParams]="{
+                  startdate: ApplystartDate,
+                  enddate: ApplyendDate,
+                  source: 'grubhub',
+                  type: 'dashboard',
+                  merchantId: selectedMerchantId,
+                  lasttransaction:
+                    financepayoutcalculationObj.percentage_change_gh,
+                  unlocked_only: 2,
+                  duration: financepayoutcalculationObj.duration
+                }">
+                {{ "dashboard.View Report" | transloco }}
+                <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 3rd card -->
+    <div class="term-card">
+      <div class="term-head-main">
+        <div class="term-head">
+          <img src="../../../assets/images/ubereats-logo.png" alt="" />
+        </div>
+        <div *ngIf="cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!cardloader" class="data-div">
+          <div class="data-item">
+            <div class="title">
+              Uber Eats
+              <span class="help-tip-payout" style="left: 106px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                <p>{{ "dashboard.Tooltip for Ubereats" | transloco }}</p>
+              </span>
+            </div>
+            <div class="plateform-price">
+              ${{
+              financepayoutcalculationObj.ubereats_earning | number : "1.2-2"
+              }}
+            </div>
+            <div class="sub-title" *ngIf="
+                financepayoutcalculationObj.duration != 'Empty' &&
+                financepayoutcalculationObj.ubereats_earning != 0
+              ">
+              <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_ue >= 0">+{{
+                financepayoutcalculationObj.percentage_change_ue
+                | number : "1.2-2"
+                }}%</span>
+              <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_ue < 0">{{
+                financepayoutcalculationObj.percentage_change_ue
+                | number : "1.2-2"
+                }}%</span>
+
+              from Previous
+              {{ financepayoutcalculationObj.duration | titlecase }}
+            </div>
+            <hr class="divider" />
+            <div class="report-link" *ngIf="financepayoutcalculationObj.ubereats_earning != 0">
+              <a routerLink="/home/merchants/ubereats-details" [queryParams]="{
+                  startdate: ApplystartDate,
+                  enddate: ApplyendDate,
+                  source: 'ubereats',
+                  type: 'dashboard',
+                  merchantId: selectedMerchantId,
+                  lasttransaction:
+                    financepayoutcalculationObj.percentage_change_ue,
+                  unlocked_only: 2,
+                  duration: financepayoutcalculationObj.duration
+                }">
+                {{ "dashboard.View Report" | transloco }}
+                <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 4th card -->
+    <div class="term-card">
+      <div class="term-head-main">
+        <div class="term-head">
+          <img src="../../../assets/images/storefront-logo.png" alt="" />
+        </div>
+        <div *ngIf="cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!cardloader" class="data-div">
+          <div class="data-item">
+            <div class="title">
+              Storefront
+              <span class="help-tip-payout" style="left: 108px"><img src="../../../assets/icons/Infogray.svg" alt="" />
+                <p>
+                  {{ "dashboard.Tooltip for Storefront" | transloco }}
+                </p>
+              </span>
+            </div>
+            <div class="plateform-price">
+              ${{
+              financepayoutcalculationObj.storefront_earning
+              | number : "1.2-2"
+              }}
+            </div>
+            <div class="sub-title" *ngIf="
+                financepayoutcalculationObj.duration != 'Empty' &&
+                financepayoutcalculationObj.storefront_earning != 0
+              ">
+              <span class="up-value" *ngIf="financepayoutcalculationObj.percentage_change_sf >= 0">+{{
+                financepayoutcalculationObj.percentage_change_sf
+                | number : "1.2-2"
+                }}%</span>
+              <span class="down-value" *ngIf="financepayoutcalculationObj.percentage_change_sf < 0">{{
+                financepayoutcalculationObj.percentage_change_sf
+                | number : "1.2-2"
+                }}%</span>
+              from Previous
+              {{ financepayoutcalculationObj.duration | titlecase }}
+            </div>
+            <hr class="divider" />
+
+            <div class="report-link" *ngIf="financepayoutcalculationObj.storefront_earning != 0">
+              <a routerLink="/home/merchants/storefront-details" [queryParams]="{
+                   startdate: ApplystartDate,
+                   enddate: ApplyendDate,
+                  source: 'storefront',
+                  type: 'dashboard',
+                  merchantId: selectedMerchantId,
+                  lasttransaction:
+                    financepayoutcalculationObj.percentage_change_sf,
+                  unlocked_only: 2,
+                  duration: financepayoutcalculationObj.duration
+                }">
+                {{ "dashboard.View Report" | transloco }}
+                <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="payout-card-main mb-5">
+    <div class="card card-hover-effect payout-card">
+      <div class="card-body text-center">
+        <img src="../../../assets/icons/Estimate.svg" class="payout-icon" alt="" />
+        <div *ngIf="cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!cardloader">
+          <h3 class="payout-label">
+            {{ "dashboard.Estimated Earnings" | transloco }}
+          </h3>
+          <h5 class="payout-price">
+            {{
+            financepayoutcalculationObj.total_all_earning
+            ? "$" + financepayoutcalculationObj.total_all_earning
+            : ""
+            }}
+          </h5>
+          <hr class="divider-estimated" />
+          <span class="payout-report-link" *ngIf="financepayoutcalculationObj.total_all_earning != 0"
+            [routerLink]="['/home/merchants/estimate-payout-details']" [queryParams]="{
+              startdate: startDate,
+              enddate: endDate,
+              merchantId: selectedMerchantId
+            }" [ngClass]="{
+              'disabled-link': financepayoutcalculationObj.total_all_earning === 0
+            }">
+            {{ "dashboard.View Report" | transloco }}
+            <span><img src="../../../assets/icons/Right Arrow.svg" alt="" /></span>
+          </span>
+        </div>
+      </div>
+    </div>
+    <div class="card card-hover-effect payout-card">
+      <div class="card-body text-center">
+        <img src="../../../assets/icons/Add Shopping Cart.svg" class="payout-icon" alt="" />
+        <div *ngIf="orderloader || cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!orderloader && !cardloader">
+          <h3 class="payout-label">
+            {{ "dashboard.Total Order" | transloco }}
+          </h3>
+          <h5 class="payout-price">{{ merchantReportData.totalOrders }}</h5>
+        </div>
+      </div>
+    </div>
+    <div class="card card-hover-effect payout-card">
+      <div class="card-body text-center">
+        <img src="../../../assets/icons/Purchase Order.svg" class="payout-icon" alt="" />
+        <div *ngIf="orderloader || cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!orderloader && !cardloader">
+          <h3 class="payout-label">
+            {{ "dashboard.Average Order Size" | transloco }}
+          </h3>
+          <h5 class="payout-price">${{ merchantReportData.averageOrderSize }}</h5>
+        </div>
+      </div>
+    </div>
+    <!-- DownTime -->
+    <div class="card card-hover-effect payout-card" *ngFor="let item of time">
+      <div class="card-body text-center">
+        <img src="../../../assets/icons/Clock.svg" class="payout-icon" alt="" />
+        <div *ngIf="orderloader || cardloader" class="loader-card">
+          <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+          </span>
+        </div>
+        <div *ngIf="!orderloader && !cardloader">
+          <h3 class="payout-label">{{ "dashboard.Downtime" | transloco }}</h3>
+          <h5 class="payout-price">{{ merchantReportData.downtime }}%</h5>
+        </div>
+        <!-- <h5>
+            <span *ngIf="item.days > 0">{{ item.days }}d </span>
+            <span *ngIf="item.hours > 0">{{ item.hours }}h </span>
+            <span *ngIf="item.minutes > 0">{{ item.minutes }}m</span>
+            <span *ngIf="item.days == 0 && item.minutes == 0 && item.hours == 0"><img
+                src="https://img.icons8.com/ios-glyphs/30/1A1A1A/dashed-line.png" /></span>
+          </h5> -->
+      </div>
+    </div>
+    <!-- Total Points -->
+    <div class="card card-hover-effect payout-card">
+      <div class="card-body text-center">
+        <img src="../../../assets/icons/List View.svg" class="payout-icon" alt="" />
+        <h3 class="payout-label">
+          {{ "dashboard.Loyalty Points" | transloco }}
+        </h3>
+        <h5 class="payout-price">{{ loaltyPoints.currentPointa }}</h5>
+      </div>
+    </div>
+    <!-- <div class="col-md-4 mt-4">
+      <div class="card card-hover-effect">
+        <div class="card-body text-center">
+          <h3>Fonda Revenue</h3>
+          <h5>${{ fonda_revenue }}</h5>
+        </div>
+      </div>
+    </div> -->
+  </div>
+  <div class="">
+    <div class="">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card card-hover-effect map-card" style="min-height: 320px">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                  <a (click)=" isOrdersTab = false; isRevenueTab = true; createRevenueReportChart()
+                    " [class.active]="  isRevenueTab === true" class="nav-link chart-tab">{{ "dashboard.Revenue Trend"
+                    | transloco }}</a>
+                </li>
+                <li class="nav-item">
+                  <a (click)="
+                      isOrdersTab = true; isRevenueTab = false; createMerchantReportChart()
+                    " class="nav-link chart-tab" [class.active]="  isOrdersTab === true">{{ "Orders.Orders" | transloco
+                    }}</a>
+                </li>
+
+              </ul>
+            </div>
+            <div *ngIf="(chartloader && isRevenueTab) || (chartloader && isOrdersTab)" class="loader-card">
+              <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+              </span>
+            </div>
+            <div *ngIf="!chartloader" class="card-body" style="height: 535px;">
+              <div class="chart-filter-toggles" *ngIf="isRevenueTab">
+                <div class="toggle-group">
+                  <div class="toggle-item">
+                    <label class="toggle-switch">
+                      <input type="checkbox" [(ngModel)]="showGMV">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">{{ "dashboard.GMV" | transloco }}</span>
+                  </div>
+                  <div class="toggle-item">
+                    <label class="toggle-switch">
+                      <input type="checkbox" [(ngModel)]="showNetEarning">
+                      <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">{{ "dashboard.Net Earning" | transloco }}</span>
+                  </div>
+                  <!-- Add Apply Button -->
+                  <div class="toggle-item">
+                    <button type="button" class="btn btn-sm apply-btn" (click)="applyChartFilters()"
+                      [disabled]="chartloader">
+                      {{ "reuseableWords.APPLY" | transloco }}
+
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <span *ngIf="isRevenueTab" class="revenue-text">*{{"dashboard.All figures are estimated and subject to
+                deductions or applicable marketing fees from DoorDash, UberEats, or Grubhub."| transloco }}</span>
+              <div style="display: block" [ngStyle]="{ cursor: isRevenueTab ? 'pointer' : 'default' }"
+                (click)="onRevenueChartClick($event)">
+
+                <div *ngIf="isRevenueTab">
+                  <div #chartContainer></div>
+                </div>
+                <div *ngIf="!isRevenueTab">
+                  <canvas class="revenue-chart" mdbChart [chartType]="'line'" [datasets]="reportsChartData"
+                    [labels]="reportChartLabels" [colors]="chartColors" [options]="chartOptions"
+                    (chartHover)="chartHovered($event)">
+                  </canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card card-hover-effect map-card" style="min-height: 320px">
+            <div class="card-header">
+              <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                  <a class="nav-link chart-tab">{{
+                    "dashboard.Avg Revenue By Day" | transloco
+                    }}</a>
+                </li>
+              </ul>
+            </div>
+            <div class="card-body" style="height: 535px;">
+
+              <div style="display: block">
+                <div class="chart-filter-toggles" *ngIf="isRevenueTab" style="visibility: hidden">
+                  <div class="toggle-group">
+                    <div class="toggle-item">
+                      <label class="toggle-switch">
+                        <input type="checkbox" [(ngModel)]="showGMV">
+                        <span class="toggle-slider"></span>
+                      </label>
+                      <span class="toggle-label">{{ "dashboard.GMV" | transloco }}</span>
+                    </div>
+                    <div class="toggle-item">
+                      <label class="toggle-switch">
+                        <input type="checkbox" [(ngModel)]="showNetEarning">
+                        <span class="toggle-slider"></span>
+                      </label>
+                      <span class="toggle-label">{{ "dashboard.Net Earning" | transloco }}</span>
+                    </div>
+                    <!-- Add Apply Button -->
+                    <div class="toggle-item">
+                      <button type="button" class="btn btn-sm apply-btn" (click)="applyChartFilters()"
+                        [disabled]="chartloader">
+                        {{ "reuseableWords.APPLY" | transloco }}
+
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <span *ngIf="isRevenueTab" class="revenue-text" style="visibility: hidden">*{{"dashboard.All figures are
+                  estimated and subject to deductions or applicable marketing fees from DoorDash, UberEats, or
+                  Grubhub."| transloco }}</span>
+                <canvas mdbChart [chartType]="'bar'" [datasets]="revenueChartData" [labels]="revenueChartLabels"
+                  [colors]="rvenueCHartColors" [options]="chartOptions" (chartHover)="chartHovered($event)"
+                  (chartClick)="chartClicked($event)">
+                </canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Revenue Chart Modal -->
+        <div class="custom-modal-overlay" *ngIf="showRevenueModal" (click)="closeRevenueModal()">
+          <div class="modal-dialog modal-xl modal-dialog-centered" role="document" (click)="$event.stopPropagation()">
+            <div class="modal-content">
+              <div class="modal-header bg-theme">
+                <h4 class="modal-heading">{{ "dashboard.Revenue Trend" | transloco }}</h4>
+                <button type="button" class="close text-white" aria-label="Close" (click)="closeRevenueModal()">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <span class="revenue-text d-block">
+                  *{{"dashboard.All figures are estimated and subject to deductions or applicable marketing fees from
+                  DoorDash, UberEats, or Grubhub."| transloco }}
+                </span>
+                <div class="chart-wrapper">
+                  <!-- dashboard.component.html -->
+                  <div #chartContainer2 style="width: 100%; max-width: 900px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Financial analytics of Virtual restaurant -->
+        <div class="col-md-12" *ngIf="analyticsOfVRList.length">
+          <div class="mt-4">
+            <h2>
+              {{
+              "dashboard.Financial Analytics Of Virtual Restaurants"
+              | transloco
+              }}
+            </h2>
+            <div class="card p-3">
+              <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <!-- <th>vmerchantId</th> -->
+                      <th>
+                        {{ "dashboard.Virtual Merchant Name" | transloco }}
+                      </th>
+                      <th>{{ "dashboard.Completed Orders" | transloco }}</th>
+                      <th>{{ "dashboard.Average Order Size" | transloco }}</th>
+                      <th>Total {{ "dashboard.Revenue" | transloco }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of analyticsOfVRList">
+                      <!-- <td>{{item.vmerchantId}}</td> -->
+                      <td>{{ item.virtualMerchantName }}</td>
+                      <td>{{ item.completedOrders }}</td>
+                      <td>${{ item.averageOrderSize }}</td>
+                      <td>${{ item.totalRevenue }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12">
+          <div class="mt-4">
+            <h4>{{ "dashboard.Products Overview" | transloco }}</h4>
+            <div class="card p-3">
+              <div class="table-responsive">
+                <table datatable [dtOptions]="dtOptions" class="row-border hover" [dtTrigger]="dtTrigger">
+                  <thead>
+                    <tr>
+                      <th>{{ "dashboard.Product Name" | transloco }}</th>
+                      <th>{{ "dashboard.Product Price" | transloco }}</th>
+                      <th>{{ "dashboard.Quantity Sold" | transloco }}</th>
+                      <th>{{ "dashboard.Sales Revenue" | transloco }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let item of productPreviewData.products">
+                      <td>{{ item.productName }}</td>
+                      <td>${{ item.productPrice.toFixed(2) }}</td>
+                      <td>{{ item.quantitySold }}</td>
+                      <td>${{ item.salesRevenue.toFixed(2) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- email list popup for transaction summary report -->
+
+  <!-- Email list modal -->
+  <div mdbModal #createOurPoints="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-theme">
+          <button type="button" class="close pull-right text-white" aria-label="Close" (click)="createOurPoints.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-heading">{{ popupheadeing }}</h4>
+        </div>
+        <div class="modal-body px-3">
+          <div class="tagChipWrapper">
+            <div class="tagChipContent">
+              <label> {{ "reuseableWords.Email" | transloco }}</label>
+              <div class="tagChipUL">
+                <ul class="tagChipliWrapper" *ngFor="let email of tagsEmailDistributionArray">
+                  <li class="tagChipLI" *ngIf="email != ''">
+                    <span>{{ email }}</span>
+                    <img (click)="removeTag(email)" class="tagChipI"
+                      src="https://img.icons8.com/material-rounded/24/FA5252/multiply--v1.png" />
+                  </li>
+                </ul>
+                <input class="tagChipInputField" [(ngModel)]="inputText" (keyup.enter)="onEnterKeyPressed($event)"
+                  type="text" spellcheck="false" />
+              </div>
+            </div>
+            <!-- <div class="tagChipDetails"> -->
+            <!-- <button>Remove All</button> -->
+            <!-- </div> -->
+          </div>
+        </div>
+        <div class="modal-footer px-3">
+          <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+            aria-label="Close" (click)="closeModal()" mdbWavesEffect>
+            {{ "reuseableWords.Close" | transloco }}
+          </button>
+          <!-- <button type="button" class="btn orange-bt text-white" (click)="transferHistoryReport()">
+          Send
+          <span *ngIf="gettingHistoryReport" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+          </span>
+        </button> -->
+          <button type="button" class="btn orange-bt text-white" (click)="financeReportSummaryNewFormat()"
+            [disabled]="tagsEmailDistributionArray.length === 0">
+            {{ "reuseableWords.Send" | transloco }}
+            <span *ngIf="gettingSummaryReportNew" class="spinner-border spinner-border-sm"
+              style="width: 1rem; height: 1rem;" role="status" aria-hidden="true">
+            </span>
+
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>

@@ -1,0 +1,922 @@
+<div class="container-fluid pb-4" *ngIf="showloader">
+  <div class="loader-main">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+    </span>
+  </div>
+</div>
+<div class="container-fluid" *ngIf="!showloader">
+  <span *ngIf="savingMerchant" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+  </span>
+  <div class="card mb-3">
+    <div class="card-header">
+      <div class="d-flex justify-content-between store-head-main">
+        <div class="d-flex align-items-baseline store-head-main" style="gap: 2em">
+          <div class="">
+            <h4 class="store-heading" style="font-size: 20px">
+              {{ "StoreFront.Store Front On/Off" | transloco }}
+            </h4>
+
+            <div class="form-group">
+              <label class="toggle">
+                <input [(ngModel)]="merchantDto.storefrontStatus" (change)="storefrontStatusChange()"
+                  class="toggle-checkbox" type="checkbox" />
+                <div class="toggle-switch"></div>
+              </label>
+            </div>
+          </div>
+          <div class="width-for-mobile">
+            <div class="slug-div">
+              <div class="width-for-mobile">
+                <h4 style="font-size: 20px">
+                  {{ "StoreFront.Url Slug" | transloco }}
+                  <div class="help-tip" id="tooltip-main" style="top: 13px; left: 560px; width: fit-content">
+                    <i class="fas fa-info-circle information-icon"></i>
+
+                    <p class="tooltip-desc">
+                      {{
+                      "tooltips.StoreFrontTooltips.uRLSlugDescription"
+                      | transloco
+                      }}
+                    </p>
+                  </div>
+                </h4>
+                <input [(ngModel)]="storefrontSlug" type="text" class="field" placeholder="Slug" />
+              </div>
+              <div class="width-for-mobile">
+                <h4 style="font-size: 20px; visibility: hidden">
+                  {{ "StoreFront.Change" | transloco }}
+                </h4>
+                <button [disabled]="merchantDto.slug === storefrontSlug" class="btn button-theme width-for-mobile" (click)="storefrontSlugChange()">
+                  {{ "StoreFront.Change" | transloco }}
+                  <!-- <span *ngIf="detachingDeviceToMerchant" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> -->
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-flex align-items-center store-head-main">
+          <div class="store-button-div">
+            <span *ngIf="merchantDto.slug">
+              <label style="display: block; margin-bottom: 0px; visibility: hidden">{{ "StoreFront.Button" | transloco
+                }}</label>
+
+              <!-- <button class="btn button-theme" *ngIf="merchantDto.slug" (click)="DownloadQRCode()">
+                {{ "StoreFront.Download QR Code" | transloco }}
+                <span *ngIf="gettingPDF" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+              </button> -->
+            </span>
+          </div>
+          <div class="store-button-div">
+            <label style="display: block; margin-bottom: 0px; visibility: hidden">{{ "StoreFront.Button" | transloco
+              }}</label>
+            <button class="btn button-theme m-0" type="button" (click)="createStoreFrontQR.show()">
+              {{ "StoreFront.Create Store Front QR" | transloco }}
+            </button>
+          </div>
+          <div class="store-button-div">
+            <label style="display: block; margin-bottom: 0px; visibility: hidden">{{ "StoreFront.Button" | transloco
+              }}</label>
+            <a class="btn button-theme" target="_blank"
+              href="{{ environment.storeFrontBaseUrlFood }}{{ merchantDto.slug }}">
+              {{ "StoreFront.Open Store Front" | transloco }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Store Front QR Table -->
+  <!-- Table for desktop view-->
+  <div class="table-responsive mt-3 table-for-desktop">
+    <div *ngIf="gettingPromoList" class="d-flex justify-content-center text-center">
+      <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+    </div>
+    <div *ngIf="allSourceQR.length > 0">
+      <table class="table table-bordered table-hover" role="table">
+        <thead class="bg-theme white-text sorting" role="rowgroup">
+          <tr role="row">
+            <th role="columnheader">
+              {{ "StoreFront.Source" | transloco }}
+            </th>
+            <th role="columnheader">
+              {{ "reuseableWords.Action" | transloco }}
+            </th>
+          </tr>
+        </thead>
+        <tbody role="rowgroup">
+          <tr *ngFor="let item of allSourceQR" role="row">
+            <td role="cell">
+              {{ item.source }}
+            </td>
+            <td role="cell">
+              <!-- <i class="fas fa-trash-alt" style="font-size: 22px; color: #00305a; margin-right: 0.8em; cursor: pointer;"
+                (click)="confirmationmodal.show(); addModalId(item.qrId)"></i> -->
+              <span *ngIf="merchantDto.slug">
+                <i class="fas fa-qrcode" style="font-size: 22px; color: #00305a; cursor: pointer"
+                  (click)="DownloadSourceQRCode((promo = item.qrId))"></i>
+                <span *ngIf="gettingSourcePDF" class="spinner-border spinner-border-sm ml-3" role="status"
+                  aria-hidden="true"></span>
+              </span>
+              <i class="fas fa-copy ml-3" style="font-size: 22px; color: #00305a; cursor: pointer"
+                (click)="copyInputSourceUrl(item.source)"></i>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- <div *ngIf="allSourceQR.length == 0 && !gettingPromoList" class="alert alert-info w-100" role="alert">
+          {{ "StoreFront.No source added." | transloco }}
+        </div> -->
+  </div>
+
+  <!--For  Mobile view -->
+  <div class="mt-2 mobile-view">
+    <div class="table-responsive">
+      <table *ngIf="allSourceQR?.length > 0" class="table">
+        <thead>
+          <tr class="mobile-table-bg">
+            <th scope="col">Source</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+
+        <tbody *ngFor="let item of allSourceQR">
+          <tr class="">
+            <td>{{ item.source }}</td>
+            <td>
+              <div class="icons-div">
+                <!-- <i class="fas fa-trash-alt image-icons" (click)="deleteSource(item.qrId)"></i> -->
+                <i class="fas fa-qrcode" style="font-size: 22px; color: #00305a; cursor: pointer"
+                  (click)="DownloadSourceQRCode((promo = item.qrId))"></i>
+                <span *ngIf="gettingSourcePDF" class="spinner-border spinner-border-sm ml-3" role="status"
+                  aria-hidden="true"></span>
+                <i class="fas fa-copy ml-3" style="font-size: 22px; color: #00305a; cursor: pointer"
+                  (click)="copyInputSourceUrl(item.source)"></i>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Store Front QR Modal Table -->
+
+  <span style="font-size: medium" class="alert alert-danger message" role="alert" *ngIf="
+      merchantDto.has_address_error == 1 &&
+      merchantDto.storefrontStatus &&
+      !savingMerchant
+    ">
+    Your business address or phone number is incorrect or improperly formatted,
+    and this may affect storefront delivery orders.
+  </span>
+
+  <div style="margin-top: 20px" class="row align-items-center mb-5">
+    <div class="col-md-6">
+      <div class="card store-front-card">
+        <div class="card-header">
+          <h4>{{ "StoreFront.Store Front Logo" | transloco }}</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-12 logo-div">
+              <div style="height: 250px" *ngIf="merchantDto.logo" class="col-md-12 logo-height">
+                <img src="{{ merchantDto.logo }}" style="width: 100%; height: inherit" />
+              </div>
+
+              <button class="btn button-theme download-btn upload-button"
+                onclick="document.getElementById('takeInputLogo').click()">
+                {{ "StoreFront.Upload Logo" | transloco }}
+                <span *ngIf="uploadingLogo" class="spinner-border spinner-border-sm" role="status"
+                  aria-hidden="true"></span>
+              </button>
+              <div class="help-tip tool-main" style="bottom: 12px">
+                <i class="fas fa-info-circle information-icon"></i>
+
+                <p>
+                  {{
+                  "tooltips.StoreFrontTooltips.uploadLogoDescription"
+                  | transloco
+                  }}
+                </p>
+              </div>
+              <input type="file" #takeInput id="takeInputLogo" style="display: none" accept="image/*"
+                (change)="handleFileInputForLogo($event.target.files)" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card store-front-card">
+        <div class="card-header">
+          <h4>{{ "StoreFront.Store Front Banner Image/Video" | transloco }}</h4>
+        </div>
+        <div class="card-body">
+          <div class="col-md-12 video-div">
+            <div style="height: 250px" *ngIf="merchantDto.banner && showBanner" class="col-md-12 video-height">
+              <video style="height: inherit; width: 100%" controls *ngIf="
+                  merchantDto.banner &&
+                  merchantDto.banner
+                    .split('.')
+                    .pop()
+                    .toLowerCase()
+                    .includes('mp4')
+                ">
+                <source src="{{ merchantDto.banner }}" type="video/mp4" />
+                {{
+                "StoreFront.Your browser does not support the video tag."
+                | transloco
+                }}
+              </video>
+              <img *ngIf="
+                  merchantDto.banner &&
+                  merchantDto.banner.split('.').pop().toLowerCase() !== 'mp4'
+                " src="{{ merchantDto.banner }}" style="width: 100%; height: inherit" />
+            </div>
+            <button onclick="document.getElementById('takeInputBanner').click()" class="btn button-theme upload-button">
+              {{ "StoreFront.Upload Banner" | transloco }}
+              <span *ngIf="uploadingBanner" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+            </button>
+            <div class="help-tip tool-main" style="bottom: 12px">
+              <i class="fas fa-info-circle information-icon"></i>
+
+              <p>
+                {{
+                "tooltips.StoreFrontTooltips.uploadBannerDescription"
+                | transloco
+                }}
+              </p>
+            </div>
+            <input type="file" #takeInput id="takeInputBanner" style="display: none" accept="video/mp4,image/*"
+              (change)="handleFileInputForBanner($event.target.files)" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="main-div">
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row" style="align-items: center">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="item">Status</label>
+                  <select class="form-select" id="item" [(ngModel)]="filterStatus" (change)="getAllPromos()">
+                    <option value="1">
+                      {{ "reuseableWords.Active" | transloco }}
+                    </option>
+                    <option value="0">
+                      {{ "reuseableWords.Inactive" | transloco }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{
+                    "SinglePayoutDetail.Start Date" | transloco
+                    }}</label>
+                  <input class="form-control" type="date" [(ngModel)]="filterStartdate"
+                    (ngModelChange)="getAllPromos()" />
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{
+                    "SinglePayoutDetail.End Date" | transloco
+                    }}</label>
+                  <input class="form-control" type="date" [(ngModel)]="filterEnddate"
+                    (ngModelChange)="getAllPromos()" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <label class="invisible" style="display: block">Create button</label>
+
+            <button class="btn button-theme m-0" type="button" (click)="
+                handleCheckboxChange('MONDAY', true); createOurPromo.show()
+              ">
+              {{ "StoreFront.Create Promo Code" | transloco }}
+              <!-- <span *ngIf="saveingLoaltyPoints" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"> </span> -->
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- Table for desktop view-->
+      <div class="table-responsive mt-3 table-for-desktop">
+        <div *ngIf="gettingPromoList" class="d-flex justify-content-center text-center">
+          <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+        </div>
+        <table class="table table-bordered table-hover" role="table">
+          <thead class="bg-theme white-text sorting" role="rowgroup">
+            <tr role="row">
+              <th role="columnheader">
+                {{ "StoreFront.Promo Code" | transloco }}
+              </th>
+              <th role="columnheader">Type</th>
+              <th role="columnheader">
+                {{ "reuseableWords.Status" | transloco }}
+              </th>
+
+              <th role="columnheader">
+                {{ "SinglePayoutDetail.Start Date" | transloco }}
+              </th>
+              <th role="columnheader">
+                {{ "SinglePayoutDetail.End Date" | transloco }}
+              </th>
+              <th role="columnheader">
+                {{ "StoreFront.Sales" | transloco }} ($)
+              </th>
+              <th role="columnheader">
+                {{ "StoreFront.Cost" | transloco }} ($)
+              </th>
+              <th role="columnheader">ROI (%)</th>
+              <th role="columnheader">
+                {{ "StoreFront.Usage Count" | transloco }}
+              </th>
+
+              <th role="columnheader">
+                {{ "reuseableWords.Action" | transloco }}
+              </th>
+            </tr>
+          </thead>
+          <tbody role="rowgroup">
+            <tr *ngFor="let item of allPromos" role="row">
+              <td role="cell">
+                {{ item.promo }}
+              </td>
+              <td role="cell">
+                {{ item.promoType == 1 ? "Free Item With Purchase" : "" }}
+                {{ item.promoType == 2 ? "Buy X Get Y Free" : "" }}
+                {{
+                item.promoType == 3 ? "Get X% Off On Your Order Total" : ""
+                }}
+              </td>
+              <td role="cell">
+                {{ item.status == 1 ? "Active" : "Inactive" }}
+              </td>
+              <td role="cell">
+                {{ item.promostartdate | date : "MM-dd-yyyy" }}
+              </td>
+              <td role="cell">{{ item.promoenddate | date : "MM-dd-yyyy" }}</td>
+              <td role="cell">{{ item.sale | number : "1.2-2" }}</td>
+              <td role="cell">{{ item.cost | number : "1.2-2" }}</td>
+              <td role="cell">{{ item.roi | number : "1.2-2" }}</td>
+              <td role="cell">{{ item.count }}</td>
+
+              <td role="cell">
+                <i class="fas fa-edit" style="
+                    font-size: 22px;
+                    color: #00305a;
+                    margin-right: 0.8em;
+                    cursor: pointer;
+                  " (click)="
+                    openModalforAddEditPromos(item); createOurPromo.show()
+                  "></i>
+
+                <span *ngIf="merchantDto.slug">
+                  <i class="fas fa-qrcode" style="font-size: 22px; color: #00305a; cursor: pointer"
+                    *ngIf="merchantDto.slug" (click)="DownloadQRCode((promo = item.promoId))"></i>
+                  <span *ngIf="gettingPDF" class="spinner-border spinner-border-sm ml-3" role="status"
+                    aria-hidden="true"></span>
+                </span>
+              </td>
+            </tr>
+            <tr *ngIf="allPromos.length == 0">
+              <td colspan="5">
+                {{ "StoreFront.No promo codes added." | transloco }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- <div *ngIf="!loaltyPoints.details?.length" class="alert alert-info w-100" role="alert">
+    No record found
+  </div> -->
+      </div>
+      <!--For  Mobile view -->
+      <div class="mt-2 mobile-view">
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr class="mobile-table-bg">
+                <th scope="col"></th>
+                <th scope="col">Promo Code</th>
+                <th scope="col">Discount %</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody *ngFor="let item of expandtable">
+              <tr class="" (click)="onChangeExpandtable(item.idx)">
+                <td>
+                  <!-- Add Icon -->
+                  <div *ngIf="!item.expandtable">
+                    <i class="fas fa-caret-down"></i>
+                  </div>
+                  <!-- Minus Icon -->
+                  <div *ngIf="item.expandtable">
+                    <i class="fas fa-sort-up"></i>
+                  </div>
+                </td>
+                <td>{{ allPromos[item.idx].promo }}</td>
+                <td>{{ allPromos[item.idx].promoDiscount }}</td>
+                <td>
+                  {{ allPromos[item.idx].status == 1 ? "Active" : "Inactive" }}
+                </td>
+              </tr>
+
+              <!-- Expandable Area -->
+              <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+                <td></td>
+                <td colspan="3">
+                  <div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                        ">
+                        Description
+                      </div>
+                      <div style="font-size: 15px">
+                        {{ allPromos[item.idx].description }}
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-between mt-3">
+                      <div style="
+                          font-weight: 600;
+                          margin-left: -1.8em;
+                          font-size: 15px;
+                          visibility: hidden;
+                        ">
+                        Action
+                      </div>
+                      <div class="icons-div">
+                        <i class="fas fa-edit image-icons" (click)="
+                            openModalforAddEditPromos(allPromos[item.idx]);
+                            createOurPromo.show()
+                          "></i>
+
+                        <span *ngIf="merchantDto.slug">
+                          <i class="fas fa-qrcode image-icons" *ngIf="merchantDto.slug" (click)="
+                              DownloadQRCode(
+                                (promo = allPromos[item.idx].promoId)
+                              )
+                            "></i>
+                          <span *ngIf="gettingPDF" class="spinner-border spinner-border-sm ml-3" role="status"
+                            aria-hidden="true"></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div *ngIf="!expandtable?.length" class="alert alert-info w-100" role="alert">
+            No promo codes added
+          </div>
+        </div>
+      </div>
+
+      <!-- Store Front QR Modal -->
+      <div mdbModal #createStoreFrontQR="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade"
+        tabindex="-1" (close)="resetObj()" role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-theme">
+              <button type="button" class="close pull-right text-white" aria-label="Close"
+                (click)="createStoreFrontQR.hide()">
+                <span aria-hidden="true">×</span>
+              </button>
+              <h4 class="modal-heading">
+                <img src="https://devorder.mifonda.io/assets/images/percentage-discount-svgrepo-com.svg" alt=""
+                  height="32px" />
+                {{ "StoreFront.Create Store Front QR" | transloco }}
+              </h4>
+            </div>
+
+            <div class="modal-body px-3">
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Source" | transloco }} *</label>
+                <select class="form-control" id="source" [(ngModel)]="sourceQRObj.source">
+                  <option *ngFor="let opt of sourceOptionsQR" [value]="opt.value">{{opt.value}}</option>
+                </select>
+
+                <div *ngIf="sourceQRObj.source === 'Other'" class="form-group col-md-12">
+                  <div class="main-div">
+                    <div class="row">
+                      <div class="col-md-7 pl-0">
+                        <input class="form-control" [(ngModel)]="newOption" placeholder="Enter new option" />
+                      </div>
+                      <div class="col-md-5">
+                        <button mdbBtn class="btn orange-bt text-white" (click)="addUserOptionQR()">Add Option</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer px-3">
+              <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+                aria-label="Close" (click)="createStoreFrontQR.hide()" mdbWavesEffect>
+                {{ "reuseableWords.Close" | transloco }}
+              </button>
+              <button type="button" class="btn orange-bt text-white" (click)="addFrontQR()"
+                [disabled]="sourceQRObj.source == '' || sourceQRObj.source === 'Other'">
+                {{ "reuseableWords.SAVE" | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- confirmation modal -->
+
+      <div mdbModal #confirmationmodal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade"
+        tabindex="-1" role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-theme">
+              <button type="button" class="close pull-right text-white" aria-label="Close"
+                (click)="confirmationmodal.hide()">
+                <span aria-hidden="true">×</span>
+              </button>
+              <h4 class="modal-heading">
+                Sure you want to delete this source ?
+              </h4>
+            </div>
+            <!-- <div class="modal-body px-3">
+          <p>Source : {{ source }}</p>
+        </div> -->
+            <div class="modal-footer px-3">
+              <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+                aria-label="Close" (click)="closeConfirmModal()" mdbWavesEffect>
+                Close
+              </button>
+              <button type="button" class="btn orange-bt text-white"
+                (click)="closeConfirmModal(); deleteSource(delModalId)">
+                Yes Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Create Points modal -->
+      <div mdbModal #createOurPromo="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+        (close)="resetObj()" role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+          <div class="modal-content">
+            <div class="modal-header bg-theme">
+              <button type="button" class="close pull-right text-white" aria-label="Close"
+                (click)="createOurPromo.hide()">
+                <span aria-hidden="true">×</span>
+              </button>
+              <h4 class="modal-heading">
+                <img src="https://devorder.mifonda.io/assets/images/percentage-discount-svgrepo-com.svg" alt=""
+                  height="32px" />
+                {{ "StoreFront.Create Promo Codes" | transloco }}
+              </h4>
+            </div>
+            <!-- New promocode setup -->
+            <div class="modal-body px-3">
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Source" | transloco }} *</label>
+                <select class="form-control" id="source" [(ngModel)]="promoObj.source">
+                  <option *ngFor="let opt of sourceOptionsPromo" [value]="opt.value">{{opt.value}}</option>
+                </select>
+                <div *ngIf="promoObj.source === 'Other'" class="form-group col-md-12">
+                  <div class="main-div">
+                    <div class="row">
+                      <div class="col-md-7 pl-0">
+                        <input class="form-control" type="text" [(ngModel)]="newOption"
+                          placeholder="Enter new option" />
+                      </div>
+                      <div class="col-md-5">
+                        <button mdbBtn class="btn orange-bt text-white" (click)="addUserOptionPromo()">Add
+                          Option</button>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Promo Code" | transloco }} *</label>
+                <input class="form-control" type="text" id="percentage" placeholder="Enter Promo Code"
+                  [(ngModel)]="promoObj.promo" />
+              </div>
+
+              <div class="form-check form-group">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="promoObj.status" />
+                <label class="form-check-label" for="flexCheckDefault">
+                  {{ "StoreFront.Activate Promo Code" | transloco }}
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Promo Description" | transloco }} *</label>
+                <textarea placeholder="Enter Promo Description" cols="30" rows="5" class="form-control"
+                  [(ngModel)]="promoObj.description"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Promo Text" | transloco }} *</label>
+                <textarea placeholder="Enter Promo Text" cols="30" rows="5" class="form-control"
+                  [(ngModel)]="promoObj.promoText"></textarea>
+              </div>
+
+              <div class="form-check form-group">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="promoObj.print" />
+                <label class="form-check-label" for="flexCheckDefault">
+                  {{ "StoreFront.Print in Receipt" | transloco }}
+                </label>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Promo start date" | transloco }} *</label>
+                <input class="form-control" type="date" id="start-date" placeholder="Enter Promo start date"
+                  [(ngModel)]="promoObj.promostartdate" [min]="currentDate" (ngModelChange)="checkenddate()" />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="percentage">{{ "StoreFront.Promo End date" | transloco }} *</label>
+                <input class="form-control" type="date" id="end-date" placeholder="Enter Promo end date"
+                  [(ngModel)]="promoObj.promoenddate" [min]="currentDate" (ngModelChange)="checkenddate()" />
+              </div>
+              <p style="color: red" *ngIf="smallerenddate">
+                {{
+                "StoreFront.Start date can not be greater than end date."
+                | transloco
+                }}
+              </p>
+              <div class="selection-check">
+                <div class="form-check form-group selec-radio pl-0">
+                  <input type="radio" name="flexRadioDefault" id="flexRadioDefault1" [(ngModel)]="promoObj.promoType"
+                    [value]="1" />
+                  <label class="form-check-label sele-label" for="flexRadioDefault1">
+                    {{ "StoreFront.Free Item With Purchase" | transloco }}
+                  </label>
+                </div>
+
+                <div class="form-check form-group selec-radio">
+                  <input type="radio" name="flexRadioDefault" id="flexRadioDefault2" [(ngModel)]="promoObj.promoType"
+                    [value]="2" />
+                  <label class="form-check-label sele-label" for="flexRadioDefault2">
+                    {{ "StoreFront.Buy X Get Y Free" | transloco }}
+                  </label>
+                </div>
+
+                <div class="form-check form-group selec-radio">
+                  <input type="radio" name="flexRadioDefault" id="flexRadioDefault3" [(ngModel)]="promoObj.promoType"
+                    [value]="3" />
+                  <label class="form-check-label sele-label" for="flexRadioDefault3">
+                    {{
+                    "StoreFront.Get X% Off On Your Order Total" | transloco
+                    }}
+                  </label>
+                </div>
+              </div>
+              <div *ngIf="promoObj.promoType == 1">
+                <h4 style="display: flex; align-items: center" class="mt-3 mb-3">
+                  <i class="fas fa-utensils food-icon"></i>
+                  {{ "StoreFront.Free Item With Purchase" | transloco }}
+                </h4>
+                <div class="form-group">
+                  <label class="form-label" for="item">{{ "StoreFront.Select Free Item" | transloco }} *</label>
+                  <select class="form-select" id="item" [(ngModel)]="promoObj.freeitem">
+                    <option [value]="item.id" *ngFor="let item of itemsObj">
+                      {{ item.itemName }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{ "StoreFront.Minimum Purchase Amount" | transloco }}
+                    ($)
+                    *</label>
+                  <input class="form-control" type="number" id="min-purchase" (input)="preventNegativeInput($event)"
+                    placeholder="Enter Minimum Purchase Amount" [(ngModel)]="promoObj.minPurchaseAmount" />
+                </div>
+              </div>
+
+              <div *ngIf="promoObj.promoType == 2">
+                <h4 style="display: flex; align-items: center" class="mt-3 mb-3">
+                  <i class="fas fa-shopping-cart food-icon"></i>
+                  {{ "StoreFront.Buy X Get Y Free" | transloco }}
+                </h4>
+                <div class="form-group">
+                  <label class="form-label" for="item">{{ "StoreFront.Primary Item" | transloco }} *</label>
+                  <select class="form-select" id="item" [(ngModel)]="promoObj.primaryitem">
+                    <option [value]="item.id" *ngFor="let item of itemsObj">
+                      {{ item.itemName }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{
+                    "StoreFront.Primary Item Quantity" | transloco
+                    }}
+                    *</label>
+                  <input class="form-control" type="number" id="min-purchase" placeholder="Enter Quantity"
+                    [(ngModel)]="promoObj.primaryitemquantity" (input)="preventNegativeInput($event)" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="item">{{ "StoreFront.Free Item" | transloco }} *</label>
+                  <select class="form-select" id="item" [(ngModel)]="promoObj.freeitem">
+                    <option [value]="item.id" *ngFor="let item of itemsObj">
+                      {{ item.itemName }}
+                    </option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{ "StoreFront.Free Item Quantity" | transloco }}
+                    *</label>
+                  <input class="form-control" type="number" id="min-purchase" placeholder="Free Item Quantity"
+                    [(ngModel)]="promoObj.freeitemquantity" (input)="preventNegativeInput($event)" />
+                </div>
+              </div>
+
+              <div *ngIf="promoObj.promoType == 3">
+                <h4 style="display: flex; align-items: center" class="mt-3 mb-3">
+                  <i class="fas fa-shopping-cart food-icon"></i>
+                  {{ "StoreFront.Get X% Off On Your Order Total" | transloco }}
+                </h4>
+
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{ "StoreFront.Discount Percentage" | transloco }} (%)
+                    *</label>
+                  <input class="form-control" type="number" id="min-purchase" placeholder="Enter Discount Percentage"
+                    [(ngModel)]="promoObj.promoDiscount" (input)="preventNegativeInput($event)" />
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{ "StoreFront.Max Discount" | transloco }} ($) *</label>
+                  <input class="form-control" type="number" id="min-purchase" placeholder="Enter Max Discount Amount"
+                    [(ngModel)]="promoObj.maxDiscount" (input)="preventNegativeInput($event)" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="min-purchase">{{ "StoreFront.Minimum Purchase Amount" | transloco }}
+                    ($)
+                    *</label>
+                  <input class="form-control" type="number" id="min-purchase" (input)="preventNegativeInput($event)"
+                    placeholder="Enter Minimum Purchase Amount" [(ngModel)]="promoObj.minPurchaseAmount" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="redirect-url">
+                  {{ "StoreFront.Redirect URL" | transloco }}
+                </label>
+                <input
+                  class="form-control"
+                  type="text"
+                  id="redirect-url"
+                  placeholder="Enter Redirect URL"
+                  [(ngModel)]="promoObj.redirecturl"
+                  (input)="checkURLValidation($event)"
+                />
+                <div
+                  *ngIf="checkURLError.length > 0"
+                  class="alert alert-danger"
+                  role="alert"
+                >
+                  {{ checkURLError }}
+                </div>
+              </div>
+              <div class="form-check form-group">
+                <input class="form-check-input" type="checkbox" [(ngModel)]="promoObj.ishappyhourenabled"
+                  (ngModelChange)="updateHappyHourCheckValue($event)" />
+                <label class="form-check-label" for="flexCheckDefault">
+                  {{ "StoreFront.Happy Hour" | transloco }}
+                </label>
+              </div>
+              <div *ngIf="promoObj.ishappyhourenabled == 1">
+                <div class="form-group">
+                  <label class="form-label" for="start-time">{{ "StoreFront.Start Time" | transloco }} *</label>
+                  <input class="form-control" type="time" id="start-time" [(ngModel)]="promoObj.happyhourstarttime" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="end-time">{{ "StoreFront.End Time" | transloco }} *</label>
+                  <input class="form-control" type="time" id="end-time" [(ngModel)]="promoObj.happyhourendtime" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="days">{{ "StoreFront.Select Days" | transloco }} *</label>
+                  <div class="checkbox-container">
+                    <input class="day-check" type="checkbox" id="monday" value="MONDAY" (change)="
+                        handleCheckboxChange('MONDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('MONDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('MONDAY')
+                      }" for="monday">Mon</label>
+
+                    <input class="day-check" type="checkbox" id="tuesday" value="TUESDAY" (change)="
+                        handleCheckboxChange('TUESDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('TUESDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('TUESDAY')
+                      }" for="tuesday">Tue</label>
+
+                    <input class="day-check" type="checkbox" id="wednesday" value="WEDNESDAY" (change)="
+                        handleCheckboxChange('WEDNESDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('WEDNESDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('WEDNESDAY')
+                      }" for="wednesday">Wed</label>
+
+                    <input class="day-check" type="checkbox" id="thursday" value="THURSDAY" (change)="
+                        handleCheckboxChange('THURSDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('THURSDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('THURSDAY')
+                      }" for="thursday">Thu</label>
+
+                    <input class="day-check" type="checkbox" id="friday" value="FRIDAY" (change)="
+                        handleCheckboxChange('FRIDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('FRIDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('FRIDAY')
+                      }" for="friday">Fri</label>
+
+                    <input class="day-check" type="checkbox" id="saturday" value="SATURDAY" (change)="
+                        handleCheckboxChange('SATURDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('SATURDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('SATURDAY')
+                      }" for="saturday">Sat</label>
+
+                    <input class="day-check" type="checkbox" id="sunday" value="SUNDAY" (change)="
+                        handleCheckboxChange('SUNDAY', $event.target.checked)
+                      " [checked]="
+                        promoObj.days && promoObj.days.includes('SUNDAY')
+                      " />
+                    <label class="form-label checkbox-label" [ngClass]="{
+                        selected:
+                          promoObj.days && promoObj.days.includes('SUNDAY')
+                      }" for="sunday">Sun</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer px-3">
+              <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+                aria-label="Close" (click)="createOurPromo.hide()" mdbWavesEffect>
+                {{ "reuseableWords.Close" | transloco }}
+              </button>
+              <button type="button" class="btn orange-bt text-white" (click)="addPromos()" [disabled]="
+                  promoObj.promo == '' ||
+                  promoObj.source == '' || promoObj.source == 'Other' ||
+                  promoObj.description == '' ||
+                  checkURLError.length > 0 ||
+                  promoObj.promoText == '' ||
+                  promoObj.promostartdate == '' ||
+                  promoObj.promoenddate == '' ||
+                  smallerenddate == true ||
+                  (promoObj.promoType === 1 &&
+                    (promoObj.freeitem === '' ||
+                      promoObj.minPurchaseAmount <= 0)) ||
+                  (promoObj.promoType === 2 &&
+                    (promoObj.freeitem === '' ||
+                      promoObj.freeitemquantity <= 0 ||
+                      promoObj.primaryitem === '' ||
+                      promoObj.primaryitemquantity <= 0)) ||
+                  (promoObj.promoType === 3 &&
+                    (promoObj.promoDiscount <= 0 ||
+                      promoObj.minPurchaseAmount <= 0 ||
+                      promoObj.maxDiscount <= 0)) ||
+                  (promoObj.ishappyhourenabled === 1 &&
+                    (promoObj.happyhourendtime === '' ||
+                      promoObj.happyhourstarttime === '' ||
+                      promoObj.days.length <= 0))
+                ">
+                {{ "reuseableWords.SAVE" | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

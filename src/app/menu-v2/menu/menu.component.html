@@ -1,0 +1,705 @@
+<div class="main_content_div">
+  <h4 class="head">
+    <span>{{ "Menus.Menus" | transloco }}</span>
+    <button *ngIf="userRoleType !== 4" class="outline-button" (click)="openModal()">
+      {{ "reuseableWords.Add" | transloco }} {{ "Menus.Menu" | transloco }}
+    </button>
+  </h4>
+  <div class="searchBar">
+    <input id="searchQueryInput" [(ngModel)]="searchTerm" (ngModelChange)="filterCategories()" type="text"
+      name="searchQueryInput" [placeholder]="'reuseableWords.Search' | transloco" value="" />
+    <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+      <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+        <path fill="#000"
+          d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+      </svg>
+    </button>
+    <!-- <div class="filter">
+      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <img src="../../../assets/icons/filter.svg" alt="" />
+      </a>
+      <div class="dropdown-menu user_dropdown" aria-labelledby="navbarDropdown" style="width: 300px">
+        <small>Clear Filter</small>
+        <a class="dropdown-item user-dropdown mb-2 mt-3">Sort Name A to Z</a>
+        <a class="dropdown-item user-dropdown">Sort Name Z to Z</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item user-dropdown">
+          <strong>Filter By:</strong>
+          <div class="did-floating-label-content mt-3">
+            <select class="did-floating-select" (click)="$event.stopPropagation()" (change)="onFilterChange($event)">
+              <option value="1">Select</option>
+              <option value="2" (click)="plateformOption()">Platform</option>
+              <option value="3">Start Time</option>
+              <option value="4">End Time</option>
+              <option value="5">Days</option>
+            </select>
+            <label class="did-floating-label">Select Filter</label>
+          </div>
+          <div class="did-floating-label-content" *ngIf="platformSelected">
+            <select class="did-floating-select" (click)="$event.stopPropagation()">
+              <option value="1">
+                Select
+                <input type="checkbox" />
+              </option>
+              <option value="2">
+                GrubHub
+                <input type="checkbox" />
+              </option>
+              <option value="3">
+                UberEats
+                <input type="checkbox" />
+              </option>
+              <option value="4">
+                DoorDash
+                <input type="checkbox" />
+              </option>
+              <option value="5">
+                Square
+                <input type="checkbox" />
+              </option>
+              <option value="5">
+                Cliver
+                <input type="checkbox" />
+              </option>
+            </select>
+            <label class="did-floating-label">Select Filter</label>
+          </div>
+        </a>
+        <a class="dropdown-item user-dropdown">
+          <button class="outline-button main-add-button">Apply</button>
+        </a>
+      </div>
+    </div> -->
+  </div>
+
+  <div class="table-responsive" style="overflow: visible" *ngIf="!gettingMenu">
+    <table class="table">
+      <thead>
+        <tr class="table-head">
+          <th scope="col">{{ "reuseableWords.Action" | transloco }}</th>
+          <th scope="col">{{ "reuseableWords.Active" | transloco }}</th>
+          <th scope="col">{{ "Menus.Menu Name" | transloco }}</th>
+          <th scope="col">{{ "reuseableWords.Platform" | transloco }}</th>
+          <th scope="col">{{ "Menus.Cuisines" | transloco }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngIf="allMenusList.length > 0">
+          <tr *ngFor="let menu of allMenusList">
+            <td>
+              <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <img *ngIf="workingwithDownload !== menu.id" src="../../../assets/icons/three-dots.svg"
+                  class="three-dots" alt="dropdown icon" />
+                <span *ngIf="workingwithDownload === menu.id" class="spinner-border spinner-border-sm"
+                  style="width: 1.5rem; height: 1.5rem; margin-left: 5px" role="status" aria-hidden="true">
+                </span>
+              </a>
+              <div *ngIf="userRoleType !== 4" class="dropdown-menu user_dropdown" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item user-dropdown" [routerLink]="['/home/menus/menu-details', menu.id]"
+                  [queryParams]="{
+                    edit: true,
+                    merchantid: selectedMerchantId
+                  }">{{ "reuseableWords.Edit" | transloco }}</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item user-dropdown" (click)="DownloadPdf(menu.id, menu.name)">{{ "Menus.Export PDF" |
+                  transloco }}
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item user-dropdown" (click)="DownloadCsv(menu.id, menu.name)">{{ "Menus.Export CSV" |
+                  transloco }}</a>
+                <div class="dropdown-divider" *ngIf="showRemoveMenuAccessBtn"></div>
+                <a class="dropdown-item user-dropdown" (click)="OpenConfirmDelete(menu.id)"
+                  *ngIf="showRemoveMenuAccessBtn">
+                  {{ "Menus.Remove" | transloco }}
+                </a>
+              </div>
+            </td>
+            <td>
+              <input type="checkbox" [checked]="menu.status" (change)="OpenConfirmToggle(menu, $event)"
+                [disabled]="userRoleType == 4" />
+            </td>
+            <td>
+              <a [routerLink]="['/home/menus/menu-details', menu.id]"
+                [queryParams]="{ merchantid: selectedMerchantId }">{{ menu.name }}</a>
+            </td>
+            <td>
+              <span *ngFor="let platform of menu.menuPlatforms; let last = last">
+                {{
+                MerchantPlatformsEnumNewMenu[platform.platformType]
+                | titlecase
+                }}<span *ngIf="!last">, </span></span>
+            </td>
+            <td>{{ menu.cusines | charTruncate : 30 }}</td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+    <!-- Its only show when we dont have any menu -->
+    <div style="border-bottom: 1px solid #ccc" *ngIf="allMenusList.length == 0 && !gettingMenu">
+      <p class="pl-3 pr-3 pt-3 pb-0" style="width: max-content">
+        {{ "Menus.Your restaurant doesn't have a menu" | transloco }}.
+      </p>
+      <button *ngIf="userRoleType !== 4" class="outline-button mt-3 mb-3 ml-3 main-add-button" (click)="openModal()">
+        {{ "reuseableWords.Add" | transloco }}
+        {{ "Menus.Menu" | transloco }}
+      </button>
+    </div>
+  </div>
+</div>
+<div *ngIf="gettingMenu" class="loader-main mt-5">
+  <span class="spinner-border spinner-border-md loader-main" role="status" aria-hidden="true">
+  </span>
+</div>
+
+<!-- add menu model -->
+<div mdbModal #createMenuModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div *ngIf="addMenu">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "reuseableWords.Add" | transloco }}
+            {{ "Menus.Menu" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{ "Menus.Select your preferred way to create a menu" | transloco }}
+          </p>
+          <div class="select-ans">
+            <label class="answer-label" hidden>
+              <input type="checkbox" (change)="onOptionChange('answerQuestions')" />
+              {{ "Menus.Answer questions to create menu" | transloco }}
+            </label>
+            <label class="answer-label" hidden>
+              <input type="checkbox" (change)="onOptionChange('existingTemplate')" />
+              {{ "Menus.Start from an existing menu template" | transloco }}
+            </label>
+            <label class="answer-label" hidden>
+              <input type="checkbox" (change)="onOptionChange('uploadMenu')" />
+              {{ "Menus.Upload my menu to scan content" | transloco }}
+            </label>
+            <label class="answer-label">
+              <input [checked]="isChecked" type="checkbox" (change)="onOptionChange($event, 'manualBuild')" />
+              {{ "Menus.Build your menu manually" | transloco }}
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button class="button main-add-button" [disabled]="!isChecked" [ngClass]="{
+              'disabled-button': !isChecked
+            }" (click)="continue()">
+            {{ "MerchantOnBoarding.Continue" | transloco }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="createMenu">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            <span *ngIf="addingmenu">Create </span><span *ngIf="updatingmenu">
+              {{ "reuseableWords.Update" | transloco }}
+            </span>
+            {{ "Menus.Menu" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{
+            "Menus.Name the menu, select the location and the time for this menu"
+            | transloco
+            }}
+          </p>
+          <div class="select-options-div">
+            <div class="did-floating-label-content">
+              <input type="text" [(ngModel)]="merchantDto.merchantName" class="did-floating-input"
+                placeholder="Restaurant Name" disabled />
+              <label class="did-floating-label">{{
+                "Menus.Restaurant Name" | transloco
+                }}</label>
+            </div>
+            <div class="did-floating-label-content for-multi-select">
+              <div></div>
+              <ng-multiselect-dropdown #multiSelectDropdown [placeholder]="
+                  ('reuseableWords.Select' | transloco) +
+                  ' ' +
+                  ('Menus.Cuisine Type' | transloco)
+                " [settings]="dropdownSettings" [data]="cuisineList" (onSelect)="addCuisine($event)"
+                (onDeSelect)="removeCuisine($event)" [(ngModel)]="SelectedCuisnieList">
+              </ng-multiselect-dropdown>
+              <label class="did-floating-label">{{
+                "Menus.Cuisine Type" | transloco
+                }}</label>
+            </div>
+
+            <div class="did-floating-label-content">
+              <input type="text" [(ngModel)]="addMenuObj.name" class="did-floating-input"
+                [placeholder]="'Menus.Menu Name' | transloco" />
+              <label class="did-floating-label">{{
+                "Menus.Menu Name" | transloco
+                }}</label>
+            </div>
+            <div class="did-floating-label-content for-multi-select">
+              <!-- <select class="did-floating-select" [(ngModel)]="selectedValue"
+                (ngModelChange)="selectedValue && addMenuObj.menuPlatforms.indexOf(selectedValue) === -1 ? addMenuObj.menuPlatforms.push(selectedValue) : null">
+
+                <option value="grubhub">GrubHub</option>
+                <option value="square">Square</option>
+                <option value="GMB">GMB</option>
+                <option value="storefront">Storefront</option>
+                <option value="clover">Clover</option>
+              </select> -->
+              <div></div>
+
+              <ng-multiselect-dropdown #multiSelectDropdown [placeholder]="
+                  ('reuseableWords.Select' | transloco) +
+                  ' ' +
+                  ('reuseableWords.Platform' | transloco)
+                " [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems"
+                (onSelect)="onItemSelect($event)" (onDeSelect)="onItemDeSelect($event)">
+              </ng-multiselect-dropdown>
+              <label class="did-floating-label">{{
+                "reuseableWords.Platform" | transloco
+                }}</label>
+            </div>
+            <div class="did-floating-label-content">
+              <select class="did-floating-select" [(ngModel)]="addMenuObj.vmerchantId">
+                <option *ngFor="let vmerchant of virtualMerchants" [value]="vmerchant.id">
+                  {{ vmerchant.virtualName }}
+                </option>
+              </select>
+              <label class="did-floating-label">
+                {{ "reuseableWords.Virtual Restaurant" | transloco }}</label>
+            </div>
+          </div>
+          <!--    changing  from here-->
+          <ng-container *ngIf="checkUbereatsConnected()">
+            <div class="select-options-div" *ngFor="let slot of timeSlots; let i = index">
+              <div class="menu-time-container mb-3">
+                <p class="mb-0">{{ "Menus.Menu Time and Days" | transloco }}</p>
+                <p class="remove-menu-hours" *ngIf="i > 0" (click)="removeSlot(i)">
+                  Remove
+                </p>
+              </div>
+              <div class="row">
+                <!-- Start Time and End Time -->
+                <div class="col-md-7">
+                  <div class="start-end-time-div">
+                    <div class="did-floating-label-content">
+                      <select class="did-floating-select" [(ngModel)]="slot.startTime"
+                        [ngModelOptions]="{ standalone: true }">
+                        <option value="">
+                          {{ "reuseableWords.Select" | transloco }}
+                        </option>
+                        <option *ngFor="let time of availableTimes" [value]="time">
+                          {{ time }}
+                        </option>
+                      </select>
+                      <label class="did-floating-label">{{
+                        "Menus.Start Time" | transloco
+                        }}</label>
+                    </div>
+                    <span>to</span>
+                    <div class="did-floating-label-content">
+                      <select class="did-floating-select" [(ngModel)]="slot.endTime"
+                        [ngModelOptions]="{ standalone: true }">
+                        <option value="">
+                          {{ "reuseableWords.Select" | transloco }}
+                        </option>
+                        <option *ngFor="let time of availableTimes" [value]="time">
+                          {{ time }}
+                        </option>
+                      </select>
+                      <label class="did-floating-label">{{
+                        "Menus.End Time" | transloco
+                        }}</label>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Timezone -->
+                <div class="col-md-5">
+                  <div class="did-floating-label-content">
+                    <input type="text" [(ngModel)]="merchantDto.timezone" class="did-floating-input"
+                      placeholder="Timezone" disabled />
+                    <label class="did-floating-label">{{
+                      "reuseableWords.timezone" | transloco
+                      }}</label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Days Selection -->
+              <p>{{ "reuseableWords.Days" | transloco }}</p>
+              <div class="select-days-div">
+                <label class="answer-label" *ngFor="let day of availableDays">
+                  <input type="checkbox" [checked]="slot.selectedDays.includes(day)" (change)="onDayToggle(i, day)" />
+                  {{ "reuseableWords.days." + day | transloco }}
+                </label>
+              </div>
+            </div>
+
+            <!-- Button to Add New Time Slot -->
+            <button type="button" class="outline-button main-add-button" (click)="addNewTimeSlot()">
+              {{ "reuseableWords.Add" | transloco }}
+              {{ "Menus.Menu Time and Days" | transloco }}
+            </button>
+          </ng-container>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button *ngIf="addMenu" class="button main-add-button" (click)="menuSecondStep()">
+            {{ "reuseableWords.Select" | transloco }}
+            {{ "Menus.Menu Details" | transloco }}
+          </button>
+          <button *ngIf="addmanualmenu" class="button main-add-button" (click)="addmenu()" [disabled]="
+              !addMenuObj.name ||
+              !isAnyDaySelectedAcrossSlots() ||
+              this.SelectedCuisnieList.length === 0
+            " [ngClass]="{
+              'disabled-button':
+                !addMenuObj.name ||
+                !isAnyDaySelectedAcrossSlots() ||
+                this.SelectedCuisnieList.length === 0
+            }">
+            {{ "reuseableWords.Add" | transloco }}
+            {{ "Menus.Menu" | transloco }}
+            <span *ngIf="addingMenu" class="spinner-border spinner-border-sm" style="
+                color: white;
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-left: 5px;
+              " role="status" aria-hidden="true">
+            </span>
+          </button>
+          <button *ngIf="updatingmenu" class="button main-add-button" (click)="updatemenu()"
+            [disabled]="!addMenuObj.name || !addMenuObj.cusines" [ngClass]="{
+              'disabled-button': !addMenuObj.name || !addMenuObj.cusines
+            }">
+            Save
+            <span *ngIf="addingMenu" class="spinner-border spinner-border-sm" style="
+                color: white;
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-left: 5px;
+              " role="status" aria-hidden="true">
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="createMenuSecondStep">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "reuseableWords.Create" | transloco }}
+            {{ "Menus.Menu" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Select the menu type and size, and let us know the zip code for this
+            menu
+          </p>
+          <div class="select-options-div">
+            <div class="did-floating-label-content">
+              <select class="did-floating-select">
+                <option value="1">Select</option>
+                <option value="2">Breakfast</option>
+                <option value="3">Brunch</option>
+                <option value="4">Lunch</option>
+                <option value="5">Dinner</option>
+              </select>
+              <label class="did-floating-label">Menu Type</label>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="did-floating-label-content">
+                  <select class="did-floating-select">
+                    <option value="1">Select</option>
+                    <option value="2">Large</option>
+                    <option value="3">Small</option>
+                    <option value="4">Medium</option>
+                  </select>
+                  <label class="did-floating-label">Menu Size</label>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="did-floating-label-content">
+                  <input class="did-floating-input" type="text" placeholder=" Zip code" />
+                  <label class="did-floating-label">Zip Code</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            Cancel
+          </button>
+          <button class="button main-add-button" (click)="creatingMenu()">
+            Begin to Create Menu
+          </button>
+          <div class="note-div mt-2">
+            <p class="note">
+              Note: The meu begin generated will be based across similar
+              restaurant to yours. We will give you an accurate menu, but it
+              will need to be reviewed and edited.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="creatingMenuSpinner">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "reuseableWords.Create" | transloco }}
+            {{ "Menus.Menu" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row ml-2 mt-3">
+            <div class="col-md-1">
+              <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div class="col-md-10 ml-3">
+              <p>
+                {{ "Menus.We are creating your restaurant's menu" | transloco }}
+              </p>
+              <p>
+                This should only take a few moments as we understand your
+                criteria to create an accurate menu
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button class="button main-add-button" (click)="created()">
+            Check Update on Menu
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="menuCreated">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Menu</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row ml-2 mt-3">
+            <div class="col-md-1">
+              <div class="spinner-border spinner-border-stop" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div class="col-md-10 ml-3">
+              <p class="font-weight-bold">Your menu has been created!</p>
+              <p>
+                You can go to your menu page to view the newly created menu,
+                categories, items and modifiers of your restaurant
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            Cancel
+          </button>
+          <button class="button main-add-button" (click)="closeModal()">
+            Go To Menu
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- scan menu -->
+    <div *ngIf="scanMenu">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Upload & Scan Menu</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body" (dragover)="onDragOver($event)" (drop)="onDrop($event)"
+          (dragleave)="onDragLeave($event)" [class.dragging]="isDragging">
+          <p *ngIf="selectedFiles.length === 0">
+            Choose file to upload your restaurant menu. You can select more than
+            one file at a time. You can also drag and drop files anywhere on
+            this page to start uploading.
+          </p>
+          <div *ngIf="selectedFiles.length > 0">
+            <div class="file-display">
+              <div *ngFor="let file of selectedFiles; let i = index" class="file-item">
+                <div class="uploaded-files">
+                  <img src="../../../assets/images/dummy-post-square-1-thegem-blog-masonry.jpg" alt="{{ file.name }}"
+                    class="file-preview" />
+                  <div class="remove-file" (click)="removeFile(i)">
+                    &#10006;
+                  </div>
+                </div>
+                <div>{{ truncateFileName(file.name) }}</div>
+              </div>
+            </div>
+
+            <label class="outline-button mt-2 main-add-button" style="width: max-content">
+              Add More Files
+              <input type="file" (change)="onFileSelected($event)" multiple hidden />
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            Cancel
+          </button>
+          <label class="button main-add-button" *ngIf="selectedFiles.length == 0">
+            Choose File
+            <input type="file" (change)="onFileSelected($event)" hidden />
+          </label>
+          <button *ngIf="selectedFiles.length > 0" type="button" class="button main-add-button"
+            (click)="moveToScaningMenu()">
+            Begin Scanning Menu
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="scaningMenuSpinner">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Upload & Scan Menu</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row ml-2 mt-3">
+            <div class="col-md-1">
+              <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div class="col-md-10 ml-3">
+              <p>
+                We are starting to scan your menu's contents. This may take
+                awhile depending on your menu.
+              </p>
+              <p>
+                If the doesn't scan isn't complete within a few moments we
+                recommended checking back on your menu page for updates.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            Cancel
+          </button>
+          <button class="button main-add-button" (click)="createdScaningMenu()">
+            Check Update on Menu
+          </button>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="menuScanCreated">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Upload & Scan Menu</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row ml-2 mt-3">
+            <div class="col-md-1">
+              <div class="spinner-border spinner-border-stop" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+            </div>
+            <div class="col-md-10 ml-3">
+              <p class="font-weight-bold">Scanning complete!</p>
+              <p>
+                You can go to your menu page to view the newly created menu,
+                categories, items and modifiers of your restaurant
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            Cancel
+          </button>
+          <button class="button main-add-button" (click)="closeModal()">
+            Go To Menu
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div mdbModal #cuisineOtherOption="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  (close)="resetCuisineObj()" role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close"
+          (click)="cuisineOtherOption.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">
+          <img src="https://devorder.mifonda.io/assets/images/percentage-discount-svgrepo-com.svg" alt=""
+            height="32px" />
+          Add Option
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="form-group">
+          <label class="form-label" for="percentage">Option *</label>
+          <input type="text" class="form-control" [(ngModel)]="cuisineOther" placeholder="Enter new option">
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="cuisineOtherOption.hide()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button type="button" class="btn orange-bt text-white" (click)="addCuisineOther()"
+          [disabled]="cuisineOther.trim() == ''">
+          {{ "reuseableWords.SAVE" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,52 @@
+<h2 class="transfer-heading"> {{ 'MerchantPayoutDetail.Transfer History' | transloco }}</h2>
+<!-- table for desktop view -->
+<div class="table-responsive mt-4 history-table desktop-view">
+  <div *ngIf="PayoutCalculationsListObj.length == 0">
+    <div class="alert alert-info" role="alert">
+      <th> {{ 'MerchantPayoutDetail.No transfer history available.' | transloco }}</th>
+    </div>
+  </div>
+  <table *ngIf="PayoutCalculationsListObj.length > 0" class="table table-bordered table-hover" id="price-table">
+    <thead class="bg-theme white-text sorting">
+      <tr>
+        <th>{{ "reuseableWords.From Date" | transloco }}</th>
+        <th>{{ "reuseableWords.To Date" | transloco }}</th>
+        <th>
+          {{ "MerchantPayoutDetail.Payout Created Date & Time" | transloco }}
+        </th>
+        <th>{{ "MerchantPayoutDetail.Payout Done By" | transloco }}</th>
+
+        <th>{{ "MerchantPayoutDetail.Payout Type" | transloco }}</th>
+        <th>{{ "MerchantPayoutDetail.Payout Remarks" | transloco }}</th>
+
+        <th>{{ "MerchantPayoutDetail.Net Payout" | transloco }}</th>
+
+        <th>{{ "reuseableWords.Actions" | transloco }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of PayoutCalculationsListObj; let i = index">
+        <td>{{ item.startDate | date:'MM/dd/yyyy' }}</td>
+        <td>{{ item.endDate | date:"MM/dd/yyyy" }}</td>
+        <td>{{ item.created_datetime }}</td>
+        <td>{{ item.doneByUser }}</td>
+
+        <td>{{ PayoutTypeDescription[item.payoutType] }}</td>
+        <td>{{ item.remarks }}</td>
+
+        <td>$ {{ item.netPayout }}</td>
+
+
+        <td>
+          <a routerLink="/home/merchants/new-transfer-details/{{ item.id }}"
+            [queryParams]="{ startdate: item.startDate, enddate: item.endDate, referrer: 'newpayout' }">
+            <button class="btn button-theme" style="width: fit-content">
+              {{ "MerchantPayoutDetail.ViEW DETAILS" | transloco }}
+            </button>
+          </a>
+
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

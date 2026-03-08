@@ -1,0 +1,54 @@
+.plus-icon {
+  height: 30px;
+}
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.update-button {
+  display: flex;
+  justify-content: flex-end;
+}
+.checkbox-div {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+}
+.save-icon {
+  height: 35px;
+  margin-left: 1em;
+  cursor: pointer;
+}
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.check input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+.check label {
+  font-size: 1.1em;
+  margin-bottom: 0px;
+}
+
+@media screen and (max-width: 768px) {
+  .input-mobile-width {
+    width: 80%;
+  }
+  .icon-mobile-width {
+    width: 20%;
+  }
+  .mobile-margin {
+    margin-bottom: 1.5em;
+  }
+  .status-heading {
+    font-size: 1.3em;
+  }
+  .button-theme {
+    margin: 0px;
+    margin-top: 1em !important;
+  }
+}

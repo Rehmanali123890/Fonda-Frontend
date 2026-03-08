@@ -1,0 +1,239 @@
+.row {
+    align-items: baseline;
+}
+
+table>tbody {
+    background-color: #fff;
+}
+
+#price-table {
+    width: max-content;
+}
+
+.payout-icons {
+    font-size: 25px;
+    color: #4285F4;
+    cursor: pointer;
+}
+
+.payout-icons2 {
+    font-size: 25px;
+    color: #00305a;
+    margin-left: 15px;
+    cursor: pointer;
+}
+
+.adjustments-input {
+    width: auto !important;
+}
+
+.adjustment-div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.button-div {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+
+::selection {
+    color: #fff;
+    background: #5372F0;
+}
+
+.tagChipWrapper {
+    width: 100%;
+}
+
+.wrapper :where(.title, li, li i, .details) {
+    display: flex;
+    align-items: center;
+}
+
+.title img {
+    max-width: 21px;
+}
+
+.title h2 {
+    font-size: 21px;
+    font-weight: 600;
+    margin-left: 8px;
+}
+
+.tagChipContent>p {
+    font-size: 15px;
+}
+
+.tagChipUL {
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 3px;
+    border: 1px solid #000;
+}
+
+.tagChipLI {
+    color: #333;
+    margin: 4px 3px;
+    list-style: none;
+    border-radius: 30px;
+    background: #F2F2F2;
+    padding: 4px 10px;
+    border: 1px solid #e3e1e1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tagChipI {
+    height: 20px;
+    width: 20px;
+    color: #808080;
+    margin-left: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    border-radius: 50%;
+    justify-content: center;
+}
+
+.tagChipUL>input {
+    flex: 1;
+    padding: 5px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+.tagChipDetails {
+    justify-content: space-between;
+}
+
+.tagChipDetails>button {
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 9px 15px;
+    border-radius: 5px;
+    background: #5372F0;
+    transition: background 0.3s ease;
+}
+
+.tagChipDetails>button:hover {
+    background: #2c52ed;
+}
+
+.mobile-view {
+    display: none;
+}
+
+.desktop-view {
+    display: block;
+}
+
+// media query
+@media screen and (max-width:575px) {
+    .mobile-view {
+        display: block;
+    }
+
+    .desktop-view {
+        display: none;
+    }
+
+    .date-input-div {
+        flex-wrap: nowrap !important;
+    }
+
+    .date-input-div .date-input-start {
+        flex-basis: 50%;
+    }
+
+    .date-input-div .date-input-end {
+        flex-basis: 50%;
+        margin-left: -1em;
+    }
+
+    .button-for-mobile {
+        width: 100%;
+        font-size: 11px;
+        box-shadow: none;
+    }
+
+    .table-details {
+        margin-top: 0.7em !important;
+    }
+
+    .table-details h2 {
+        font-size: 1.3em;
+    }
+
+    .adjustment-div {
+        flex-wrap: wrap;
+    }
+
+    .adjustments-input {
+        width: 100%;
+    }
+
+    .update-btn {
+        box-shadow: none;
+        font-size: 11px;
+        width: 100% !important;
+    }
+
+    .transfer-heading {
+        font-size: 1.3em;
+        margin-top: -1em;
+    }
+
+    .history-table {
+        margin-top: 0em !important;
+    }
+
+    .modal-heading {
+        font-size: 1.2em;
+    }
+
+    .modal-footer button {
+        font-size: 11px;
+    }
+
+    table tr {
+        border-style: solid;
+        border-width: unset !important;
+        border-color: #EEEEEE !important;
+    }
+
+    table tr td {
+        border: 2px solid #EEEEEE;
+    }
+
+    table thead th {
+        border: 2px solid #EEEEEE;
+    }
+
+    .mobile-table-bg {
+        background-color: #00305a;
+        color: #fff;
+    }
+
+    table tbody {
+        background-color: #fff;
+        font-size: 15px;
+    }
+
+    .action-for-mobile {
+        width: 77%;
+        font-size: 11px;
+        box-shadow: none;
+    }
+
+    table thead {
+        font-size: 15px;
+    }
+}

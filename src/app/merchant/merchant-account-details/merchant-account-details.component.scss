@@ -1,0 +1,224 @@
+.row {
+  align-items: baseline;
+}
+
+.loader-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.save-button {
+  margin-bottom: .8em;
+}
+
+.custom-tab {
+  background-color: #007bff;
+  /* Choose your desired background color */
+  color: #fff;
+  /* Choose your desired text color */
+  border-radius: 20px;
+  /* Adjust border-radius to control the "pills" appearance */
+  margin: 0 5px;
+  /* Add margin for spacing between tabs */
+}
+
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+}
+
+label {
+  width: 100%;
+}
+
+.toggle-switch {
+  display: inline-block;
+  background: #ccc;
+  border-radius: 16px;
+  width: 100px;
+  height: 33px;
+  position: relative;
+  vertical-align: middle;
+  transition: background 0.25s;
+}
+
+.toggle-switch:before,
+.toggle-switch:after {
+  content: "";
+}
+
+.toggle-switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 5px;
+  left: 4px;
+  transition: left 0.25s;
+}
+
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+.toggle-checkbox:checked+.toggle-switch {
+  background: #00305a;
+}
+
+.toggle-checkbox:checked+.toggle-switch:before {
+  left: 70px;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-label {
+  margin-left: 5px;
+  position: relative;
+  top: 2px;
+}
+
+.save-btn {
+  position: absolute;
+  right: 0px;
+}
+
+.add-storeurls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-store-btn>i {
+  font-size: 22px;
+  cursor: pointer;
+}
+
+// #storefront-div{
+//   padding: 1em 0em;
+// }
+#store-inputs {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.remove-btn>i {
+  margin-left: -1.6em;
+  cursor: pointer;
+  border: 1px solid #e9e7e7;
+  padding: 4px;
+  border-radius: 50%;
+  color: #00305a;
+}
+
+.form-input {
+  width: 100% !important;
+}
+
+.Pause-for-mobile {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+.message-alt {
+  margin: 0.5em 0em;
+}
+
+@media screen and (max-width:768px) {}
+
+@media screen and (max-width:575px) {
+  .Pause-for-mobile {
+    font-size: 1.2em;
+
+  }
+
+  .message {
+    font-size: 11px !important;
+  }
+
+  .reminderm-btn {
+    width: 100%;
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  .reminderm-btn-div {
+    margin-bottom: 0rem !important;
+  }
+
+  .merchant-main {
+    margin-top: -8px;
+  }
+
+  .for-mobile {
+    font-size: 1.2em;
+  }
+
+  .setting-div {
+    margin-top: -6px;
+  }
+
+  .setting-heading-mobile {
+    font-size: 1.2em;
+  }
+
+  .input-fields-mobile {
+    margin-top: -14px;
+  }
+
+  .Business-info-mobile {
+    margin-top: 1em !important;
+  }
+
+  .Business-info-mobile>h4 {
+    margin-bottom: 0.4em !important;
+  }
+
+  // #storefront-div{
+  //   padding: 0em 0em;
+  // }
+  .add-storeurls {
+    margin-bottom: 0.7em;
+    align-items: baseline;
+  }
+
+  #head-div>h4 {
+    font-size: 1.1em;
+  }
+
+  .add-store-btn>i {
+    font-size: 1.1em;
+  }
+
+  .remove-btn>i {
+    margin-left: 0em;
+    cursor: pointer;
+    border: 1px solid #000;
+    padding: 9px 8px;
+    border-radius: 50%;
+    color: #00305a;
+    background-color: white;
+    border-radius: 0.125rem;
+  }
+
+  .setting-btn-mobile {
+    flex-wrap: wrap;
+  }
+
+  .setting-btn-mobile button {
+    width: 100%;
+  }
+
+  .save-btn {
+    position: unset;
+  }
+}

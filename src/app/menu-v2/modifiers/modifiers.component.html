@@ -1,0 +1,916 @@
+<div class="main_content_div">
+  <h4 class="head" *ngIf="selectedTab === 2">
+    <span>{{ "Menus.Modifier Builder" | transloco }}</span>
+    <div class="details-buttons-div" *ngIf="userRoleType !== 4">
+      <button type="button" class="outline-button" (click)="toggleAllAccordions()" *ngIf="selectedTab == 2">
+        {{
+        areAllAccordionsOpen
+        ? ("Menus.Collapse All Modifiers Groups" | transloco)
+        : ("Menus.Expand All Modifiers Groups" | transloco)
+        }}
+      </button>
+    </div>
+  </h4>
+
+  <h4 class="head" *ngIf="selectedTab === 0">
+    <span> {{ "Menus.Modifiers Group" | transloco }}</span>
+    <div class="details-buttons-div" *ngIf="userRoleType !== 4">
+      <button hidden class="outline-button" (click)="openModalForSuggestCategory()">
+        {{ "Menus.Suggest Modifier Group" | transloco }}
+      </button>
+      <button class="outline-button" (click)="addaddon()">
+        {{ "Menus.Add Modifier Group" | transloco }}
+      </button>
+    </div>
+  </h4>
+  <h4 class="head" *ngIf="selectedTab === 1">
+    <span> {{ "Menus.Modifiers" | transloco }}</span>
+    <div class="details-buttons-div">
+      <button class="outline-button" (click)="downloadTemplate()">
+        {{ "Menus.Download template" | transloco }}
+        <span *ngIf="loadingfordownload" class="spinner-border spinner-border-sm"
+          style="width: 1.5rem; height: 1.5rem; margin-left: 5px" role="status" aria-hidden="true">
+        </span>
+      </button>
+      <button class="outline-button" onclick="document.getElementById('takeInput').click()">
+        {{ "Menus.Upload modifiers" | transloco }}
+        <span *ngIf="loadingforupload" class="spinner-border spinner-border-sm"
+          style="width: 1.5rem; height: 1.5rem; margin-left: 5px" role="status" aria-hidden="true">
+        </span>
+        <input type="file" #takeInput id="takeInput" style="display: none" (change)="handleFileInput($event)"
+          accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+      </button>
+      <button hidden class="outline-button" (click)="openModalForSuggestCategory()">
+        {{ "Menus.Suggest" | transloco }} {{ "Menus.Modifier" | transloco }}
+      </button>
+      <button class="outline-button" (click)="showaddItems()" *ngIf="userRoleType !== 4">
+        {{ "reuseableWords.Add" | transloco }}
+        {{ "Menus.Modifier" | transloco }}
+      </button>
+    </div>
+  </h4>
+
+  <div class="tabs">
+    <div class="tab" [class.active]="selectedTab === 2" (click)="selectTab(2)">
+      {{ "Menus.Modifier Builder" | transloco }}
+    </div>
+
+    <div class="tab" [class.active]="selectedTab === 0" (click)="selectTab(0)">
+      {{ "Menus.Modifier Groups" | transloco }}
+    </div>
+    <div class="tab" [class.active]="selectedTab === 1" (click)="selectTab(1)">
+      {{ "Menus.Modifiers" | transloco }}
+    </div>
+
+    <div class="underline" [style.transform]="underlineStyle"></div>
+  </div>
+
+  <div class="tab-content mt-4">
+    <div *ngIf="selectedTab === 0">
+      <div class="searchBar">
+        <input id="searchQueryInput" [(ngModel)]="searchTermModifierGroup" (ngModelChange)="filterModifierGroup()"
+          type="text" name="searchQueryInput" [placeholder]="'reuseableWords.Search' | transloco" value="" />
+        <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+          <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+            <path fill="#000"
+              d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+          </svg>
+        </button>
+        <!--<div class="filter">
+          <img src="../../../assets/icons/filter.svg" alt="" />
+        </div>-->
+      </div>
+
+      <div class="table-responsive" style="overflow: visible">
+        <table class="table">
+          <thead>
+            <tr class="table-head">
+              <th scope="col">{{ "reuseableWords.Action" | transloco }}</th>
+              <th scope="col">{{ "reuseableWords.Active" | transloco }}</th>
+              <th scope="col">{{ "Menus.Modifier Group Name" | transloco }}</th>
+              <!--<th scope="col">{{ "Menus.Description" | transloco }}</th>-->
+              <th scope="col">{{ "reuseableWords.Items" | transloco }}</th>
+              <th scope="col">{{ "Menus.Modifiers" | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <ng-container *ngIf="someModifiers">
+              <tr *ngFor="let addon of MerchantaddOnsListWithOptions">
+                <td>
+                  <a class="nav-link dropdown-toggle custom-toggle" id="navbarDropdown" role="button"
+                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img *ngIf="workingwithremovemodifier !== addon.id" src="../../../assets/icons/three-dots.svg"
+                      class="three-dots" alt="dropdown icon" />
+                    <span *ngIf="workingwithremovemodifier === addon.id" class="spinner-border spinner-border-sm"
+                      style="width: 1.5rem; height: 1.5rem; margin-left: 5px" role="status" aria-hidden="true"></span>
+                  </a>
+                  <div *ngIf="userRoleType !== 4" class="dropdown-menu user_dropdown" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item user-dropdown" [routerLink]="[
+                        '/home/menus/modifier-group-details',
+                        addon.id
+                      ]" [queryParams]="{
+                        edit: true,
+                        merchantid: selectedMerchantId
+                      }">
+                      {{ "reuseableWords.Edit" | transloco }}
+                    </a>
+                    <div class="dropdown-divider" *ngIf="showRemoveModifiersAccessBtn"></div>
+                    <a class="dropdown-item user-dropdown" (click)="deletemodifiergroup(addon.id)"
+                      *ngIf="showRemoveModifiersAccessBtn">
+                      {{ "Menus.Remove" | transloco }}
+                    </a>
+                  </div>
+                </td>
+
+                <td>
+                  <input type="checkbox" [checked]="addon.status" (change)="AddonStatusToggle(addon, $event)"
+                    [disabled]="userRoleType == 4" />
+                </td>
+                <td>
+                  <a [routerLink]="[
+                      '/home/menus/modifier-group-details',
+                      addon.id
+                    ]" [queryParams]="{ merchantid: selectedMerchantId }">{{ addon.addonName }}</a>
+                </td>
+                <!--<td class="description-cd">
+                  {{ addon.addonDescription | charTruncate : 30 }}
+                </td>-->
+                <td>
+                  <a [routerLink]="[
+                      '/home/menus/modifier-group-details',
+                      addon.id
+                    ]" [queryParams]="{
+                      merchantid: selectedMerchantId,
+                      tab: 'items'
+                    }">
+                    {{ addon.itemcount }}</a>
+                </td>
+                <td>
+                  <a [routerLink]="[
+                      '/home/menus/modifier-group-details',
+                      addon.id
+                    ]" [queryParams]="{
+                      merchantid: selectedMerchantId,
+                      tab: 'addonsOptions'
+                    }">{{ addon.addonOptions?.length }}</a>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+        <div style="border-bottom: 1px solid #ccc" *ngIf="!someModifiers && !gettingMerchantAddOns">
+          <p class="pl-3 pr-3 pt-3 pb-0 w-100" style="width: max-content !important">
+            {{
+            "Menus.Your restaurant doesn't have a modifier group" | transloco
+            }}.
+          </p>
+          <div *ngIf="userRoleType !== 4" class="details-buttons-div mb-2">
+            <button hidden class="outline-button main-add-button" (click)="openModalForSuggestCategory()">
+              {{ "Menus.Suggest Modifier Group" | transloco }}
+            </button>
+            <button class="outline-button main-add-button" (click)="addaddon()">
+              {{ "Menus.Add Modifier Group" | transloco }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="gettingMerchantAddOns && selectedTab == 0" class="loader-main mt-5">
+      <span class="spinner-border spinner-border-md loader-main" role="status" aria-hidden="true">
+      </span>
+    </div>
+    <div *ngIf="gettingProducts && selectedTab == 1" class="loader-main mt-5">
+      <span class="spinner-border spinner-border-md loader-main" role="status" aria-hidden="true">
+      </span>
+    </div>
+
+    <!-- tab1 -->
+    <div *ngIf="selectedTab === 1 && !gettingProducts">
+      <div class="searchBar">
+        <input id="searchQueryInput" [(ngModel)]="searchTermAddons" (ngModelChange)="filterAddons()" type="text"
+          name="searchQueryInput" [placeholder]="'reuseableWords.Search' | transloco" value="" />
+        <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+          <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+            <path fill="#000"
+              d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+          </svg>
+        </button>
+        <!-- <div class="filter">
+          <img src="../../../assets/icons/filter.svg" alt="" />
+        </div> -->
+      </div>
+
+      <div class="table-responsive" style="overflow: visible">
+        <table class="table">
+          <thead>
+            <tr class="table-head">
+              <th scope="col">{{ "reuseableWords.Action" | transloco }}</th>
+              <th scope="col1">{{ "reuseableWords.Active" | transloco }}</th>
+              <th scope="col">
+                {{ "Menus.Modifier Name in modifier" | transloco }}
+              </th>
+              <!--<th scope="col">{{ "Menus.Description" | transloco }}</th>-->
+              <th scope="col">{{ "reuseableWords.Price" | transloco }}</th>
+              <!--<th scope="col">{{ "Menus.Items" | transloco }}</th>-->
+              <th scope="col">{{ "Menus.Modifier Groups" | transloco }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Its only show when we dont have any menu -->
+            <tr style="border-bottom: 1px solid #ccc" *ngIf="!someModifiersItems">
+              <p class="pl-3 pr-3 pt-3 pb-0" style="width: max-content !important">
+                {{
+                "Menus.Your restaurant doesn't have a modifier" | transloco
+                }}.
+              </p>
+              <div *ngIf="userRoleType !== 4" class="details-buttons-div mb-2">
+                <button hidden class="outline-button main-add-button" (click)="openModalForSuggestModifier()">
+                  {{ "Menus.Suggest" | transloco }}
+                  {{ "Menus.Modifier" | transloco }}
+                </button>
+                <button class="outline-button main-add-button" (click)="showaddItems()">
+                  {{ "reuseableWords.Add" | transloco }}
+                  {{ "Menus.Modifier" | transloco }}
+                </button>
+              </div>
+            </tr>
+            <ng-container *ngIf="someModifiersItems">
+              <tr *ngFor="let option of addonsList">
+                <td>
+                  <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <img *ngIf="
+                        workingwithremove !== option.id && selectedTab == 1
+                      " src="../../../assets/icons/three-dots.svg" class="three-dots" alt="dropdown icon" />
+                    <span *ngIf="
+                        workingwithremove === option.id && selectedTab == 1
+                      " class="spinner-border spinner-border-sm"
+                      style="width: 1.5rem; height: 1.5rem; margin-left: 5px" role="status" aria-hidden="true"></span>
+                  </a>
+                  <div *ngIf="userRoleType !== 4" class="dropdown-menu user_dropdown" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item user-dropdown" [routerLink]="['/home/menus/modifier-details', option.id]"
+                      [queryParams]="{
+                        edit: true,
+                        merchantid: selectedMerchantId
+                      }">
+                      {{ "reuseableWords.Edit" | transloco }}
+                    </a>
+                    <div class="dropdown-divider" *ngIf="showRemoveModifiersAccessBtn"></div>
+                    <a class="dropdown-item user-dropdown" (click)="deleteAddonOption(option.id)"
+                      *ngIf="showRemoveModifiersAccessBtn">
+                      {{ "Menus.Remove" | transloco }}
+                    </a>
+                  </div>
+                </td>
+
+                <td>
+                  <input type="checkbox" [checked]="option.itemStatus" (change)="modifierStatusToggle(option, $event)"
+                    [disabled]="userRoleType == 4" />
+                </td>
+                <td>
+                  <a [routerLink]="['/home/menus/modifier-details', option.id]"
+                    [queryParams]="{ merchantid: selectedMerchantId }">{{ option.itemName }}</a>
+                </td>
+                <!--<td class="description-cd">
+                  {{ option.itemDescription | charTruncate : 30 }}
+                </td>-->
+                <td>{{ formatCurrency(option.itemUnitPrice) }}</td>
+                <!--<td>
+                  <a style="color:#3d5f90; text-decoration: underline;">{{getTotalItemCountByAddonOptionId(option.id)}}</a>
+                </td>-->
+
+                <td>
+                  <a [routerLink]="['/home/menus/modifier-details', option.id]" [queryParams]="{
+                      merchantid: selectedMerchantId,
+                      tab: 'modifiers'
+                    }">{{ option.addonOptionCount }}</a>
+                </td>
+              </tr>
+            </ng-container>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div *ngIf="selectedTab === 2">
+      <div *ngIf="userRoleType !== 4">
+        <div *ngIf="!someModifiers">
+          <p class="mb-0">
+            {{
+            "Menus.Your restaurant doesn't have a modifier group" | transloco
+            }}.
+          </p>
+          <p>{{ "Menus.These are required to build the menu" | transloco }}.</p>
+
+          <button class="outline-button main-add-button" (click)="openModalForSuggestCategory()">
+            {{ "Menus.Suggest Modifier Group" | transloco }}
+          </button>
+        </div>
+      </div>
+      <div *ngIf="MerchantaddOnsWithOptions && selectedTab == 2" class="loader-main mt-5 mb-5">
+        <span class="spinner-border spinner-border-md loader-main" role="status" aria-hidden="true">
+        </span>
+      </div>
+      <div class="accordion" id="accordionPanelsStayOpenExample" *ngIf="someModifiers">
+        <div class="accordion-item" *ngFor="let addon of MerchantaddOnsListWithOptions; let i = index">
+          <h2 class="accordion-header" [id]="'heading' + i">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+              [attr.data-bs-target]="'#collapse' + i" aria-expanded="false" [attr.aria-controls]="'collapse' + i">
+              <a style="
+                  color: black !important;
+                  text-decoration: none !important;
+                " class="move-path" [routerLink]="['/home/menus/modifier-group-details', addon.id]"
+                [queryParams]="{ merchantid: selectedMerchantId }">{{ addon.addonName }}</a>
+            </button>
+
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+              aria-haspopup="true" aria-expanded="false">
+              <img *ngIf="workingwithremovemodifier !== addon.id" src="../../../assets/icons/three-dots.svg"
+                class="three-dots mr-3" alt="" />
+              <span *ngIf="workingwithremovemodifier === addon.id" class="spinner-border spinner-border-sm"
+                style="width: 1.5rem; height: 1.5rem; margin-left: 5px" role="status" aria-hidden="true">
+              </span>
+            </a>
+            <div *ngIf="userRoleType !== 4" class="dropdown-menu user_dropdown" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item user-dropdown" [routerLink]="['/home/menus/modifier-group-details', addon.id]"
+                [queryParams]="{
+                  edit: true,
+                  merchantid: selectedMerchantId
+                }">
+                {{ "reuseableWords.Edit" | transloco }}
+              </a>
+              <div class="dropdown-divider" *ngIf="showRemoveModifiersAccessBtn"></div>
+              <a class="dropdown-item user-dropdown" (click)="deletemodifiergroup(addon.id)"
+                *ngIf="showRemoveModifiersAccessBtn">{{ "Menus.Remove" | transloco }}</a>
+            </div>
+          </h2>
+
+          <div cdkDropList (cdkDropListDropped)="drop($event)" id="{{ 'collapse' + i }}"
+            class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+            <div class="accordion-body">
+              <div class="table-responsive">
+                <table class="table text-end">
+                  <tbody class="example-list">
+                    <tr class="example-box" *ngFor="let item of addon.addonOptions">
+                      <td cdkDrag (cdkDragStarted)="onDragStarted(addon)">
+                        <img style="max-width: none !important" src="../../../assets/icons/harmburder.svg"
+                          class="three-dots" alt="" />
+                      </td>
+
+                      <td>
+                        <select [disabled]="userRoleType === 4" class="form-select" aria-label="Default select example"
+                          (focus)="storeOriginalStatus(item.addonOptionStatus)" [(ngModel)]="item.addonOptionStatus"
+                          (change)="onItemStatusChange(item, addon)">
+                          <option value="1">
+                            {{ "reuseableWords.Active" | transloco }}
+                          </option>
+                          <option value="0">
+                            {{ "reuseableWords.Inactive" | transloco }}
+                          </option>
+                          <option value="3">
+                            {{ "Menus.Unassign Modifier" | transloco }}
+                          </option>
+                        </select>
+                      </td>
+
+                      <td>
+                        <a [routerLink]="[
+                            '/home/menus/modifier-details',
+                            item.id
+                          ]" [queryParams]="{ merchantid: selectedMerchantId }">{{ item.addonOptionName }}</a>
+                      </td>
+                      <td class="description-cd">
+                        {{ item.addonOptionDescription | charTruncate : 30 }}
+                      </td>
+                      <td>{{ formatCurrency(item.addonOptionPrice) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <button class="outline-button main-add-button" *ngIf="userRoleType !== 4" (click)="
+                  selectedCategoryId = addon.id;
+                  selectedItemIds = [];
+                  openModalForAddItems(addon)
+                ">
+                {{ "reuseableWords.Add" | transloco }}
+                {{ "Menus.Modifier" | transloco }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- add modifiers -->
+<div mdbModal #createModifierModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "Menus.Add Modifier Group" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{ "Menus.Name your modifier group and description" | transloco }}
+          </p>
+          <div class="select-ans mt-2">
+            <label class="answer-label mb-4">
+              <input type="checkbox" [checked]="addEditAddOnObj.addon.status"
+                [(ngModel)]="addEditAddOnObj.addon.status" />
+              {{ "reuseableWords.Active" | transloco }}
+            </label>
+          </div>
+
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [placeholder]="'Menus.Modifier Group Name' | transloco"
+              [(ngModel)]="addEditAddOnObj.addon.addonName" />
+            <label class="did-floating-label">{{
+              "Menus.Modifier Group Name" | transloco
+              }}</label>
+          </div>
+
+          <div class="did-floating-label-content">
+            <textarea class="did-floating-input" style="height: 100% !important"
+              [(ngModel)]="addEditAddOnObj.addon.addonDescription" [placeholder]="'Menus.Description' | transloco"
+              rows="5"></textarea>
+            <label class="did-floating-label-textarea">
+              {{ "Menus.Description" | transloco }} ({{
+              "Menus.optional" | transloco
+              }})
+            </label>
+          </div>
+
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [placeholder]="'Menus.Minimum Quantity' | transloco"
+              [(ngModel)]="addEditAddOnObj.addon.minPermitted" appPreventNegative />
+            <label class="did-floating-label">{{ "Menus.Minimum Quantity" | transloco }}
+            </label>
+          </div>
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [placeholder]="'Menus.Maximum Quantity' | transloco"
+              [(ngModel)]="addEditAddOnObj.addon.maxPermitted" appPreventNegative />
+            <label class="did-floating-label">{{ "Menus.Maximum Quantity" | transloco }}
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button *ngIf="openmodalfor == 'add'" class="button main-add-button" (click)="PostAddOns()" [disabled]="
+              !addEditAddOnObj.addon.addonName ||
+              addEditAddOnObj.addon.minPermitted >
+                addEditAddOnObj.addon.maxPermitted
+            " [ngClass]="{
+              'disabled-button':
+                !addEditAddOnObj.addon.addonName ||
+                addEditAddOnObj.addon.minPermitted >
+                  addEditAddOnObj.addon.maxPermitted
+            }">
+            {{ "reuseableWords.Add" | transloco }}
+            <span class="spinner-border spinner-border-sm" style="
+                color: white;
+                width: 1.1rem;
+                height: 1.1rem;
+                margin-left: 5px;
+              " role="status" aria-hidden="true" *ngIf="addingAddons">
+            </span>
+          </button>
+
+          <button *ngIf="openmodalfor == 'edit'" class="button main-add-button" (click)="EditAddOns()"
+            [disabled]="!addEditAddOnObj.addon.addonName"
+            [ngClass]="{ 'disabled-button': !addEditAddOnObj.addon.addonName }">
+            {{ "reuseableWords.Update" | transloco }}
+            <span class="spinner-border spinner-border-sm" style="
+                color: white;
+                width: 1.1rem;
+                height: 1.1rem;
+                margin-left: 5px;
+              " role="status" aria-hidden="true" *ngIf="addingAddons">
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- suggest modifiers -->
+<div mdbModal #suggestCategoryModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Suggest Modifier Group
+          </h5>
+          <button type="button" class="close" (click)="closeModalForSuggestCategory()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Select Papular categories from similar restaurant to yours.</p>
+          <div class="searchBar mb-0 mt-0">
+            <input id="searchQueryInput" type="text" name="searchQueryInput"
+              [placeholder]="'Menus.Search all categories' | transloco" value="" class="w-100" />
+            <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+              <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+                <path fill="#000"
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+              </svg>
+            </button>
+          </div>
+          <div class="select-ans mt-4">
+            <label class="answer-label mb-0 font-weight-bold">
+              <input type="checkbox" />
+              <span class="item-name">Modifier Groups</span>
+              <span class="price-div">Modifiers</span>
+            </label>
+            <hr />
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+          </div>
+          <div class="details-buttons-div mt-3 ml-4">
+            <button class="outline-button main-add-button rounded pagi-height">
+              Previous
+            </button>
+            <button class="outline-button main-add-button rounded pagi-height">
+              Next
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModalForSuggestCategory()">
+            Cancel
+          </button>
+          <button type="button" class="outline-button main-add-button">
+            Add Modifier Group
+          </button>
+          <button class="button main-add-button" (click)="suggestModifier()">
+            Add Modifier Group and Modifiers
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- working -->
+<!-- add modifiers for modifier -->
+<!-- add item -->
+<div mdbModal #createMenuModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "reuseableWords.Add" | transloco }}
+            {{ "Menus.Modifier" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{
+            "Menus.Name, describe, price and make your item active"
+            | transloco
+            }}
+          </p>
+          <div class="select-ans mt-2">
+            <label class="answer-label mb-4">
+              <input type="checkbox" checked />
+              {{ "reuseableWords.Active" | transloco }}
+            </label>
+          </div>
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [(ngModel)]="addProductObj.item.itemName"
+              [placeholder]="'Menus.Modifier Name' | transloco" (input)="restrictWords($event, 10)" />
+            <label class="did-floating-label">{{
+              "Menus.Modifier Name" | transloco
+              }} ..</label>
+          </div>
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [(ngModel)]="addProductObj.item.posName"
+              [placeholder]="'Menus.POS Name' | transloco" (input)="restrictWords($event, 10)" />
+            <label class="did-floating-label">{{ "Menus.POS Name" | transloco }} ({{
+              "Menus.optional" | transloco
+              }})</label>
+          </div>
+
+          <div class="did-floating-label-content">
+            <textarea class="did-floating-input" style="height: 100% !important"
+              [(ngModel)]="addProductObj.item.itemDescription" [placeholder]="'Menus.Description' | transloco"
+              rows="5"></textarea>
+            <label class="did-floating-label-textarea">
+              {{ "Menus.Description" | transloco }} ({{
+              "Menus.optional" | transloco
+              }})
+            </label>
+          </div>
+
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [placeholder]="'reuseableWords.SKU' | transloco"
+              [(ngModel)]="addProductObj.item.itemSKU" (input)="restrictWords($event, 10)" />
+            <label class="did-floating-label">{{ "reuseableWords.SKU" | transloco }} ({{
+              "Menus.optional" | transloco
+              }})</label>
+          </div>
+          <div class="did-floating-label-content">
+            <input class="did-floating-input" type="text" [min]="1" [max]="9999"
+              [placeholder]="'reuseableWords.Price' | transloco" [(ngModel)]="addProductObj.item.itemUnitPrice"
+              appPreventNegative mask="separator.2" prefix="$" thousandSeparator="," />
+            <label class="did-floating-label">{{
+              "reuseableWords.Price" | transloco
+              }}</label>
+          </div>
+          <div class="select-days-div">
+            <label class="answer-label">
+              <input type="checkbox" [(ngModel)]="platformBasedPricing" (change)="fillPlatformPricingCheckboxes()" />
+              {{ "Menus.Separate platform based Pricing" | transloco }}
+            </label>
+          </div>
+
+          <div class="row" *ngFor="let platform of PlatformsPricingList">
+            <div class="col-md-8">
+              <div class="did-floating-label-content did-floating-label-content-for-platform">
+                <input class="did-floating-input did-floating-input-for-platform" type="text" placeholder="{{
+                    MerchantPlatformsEnum[platform.platformType]
+                  }} Price" value="{{
+                    MerchantPlatformsEnum[platform.platformType]
+                  }} Price" readonly />
+                <label class="did-floating-label did-floating-label-for-platform">{{
+                  MerchantPlatformsEnum[platform.platformType] }}
+                  {{ "reuseableWords.Price" | transloco }}</label>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="did-floating-label-content">
+                <input class="did-floating-input" type="text" [(ngModel)]="platform.platformItemPrice"
+                  placeholder=" Price" appPreventNegative mask="separator.2" prefix="$" thousandSeparator="," />
+                <label class="did-floating-label">
+                  {{ "reuseableWords.Price" | transloco }}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button class="button main-add-button" (click)="addItems()" [disabled]="
+              !addProductObj.item.itemName ||
+              addProductObj.item.itemUnitPrice === null ||
+              isInvalidPrice(addProductObj.item.itemUnitPrice)
+            " [ngClass]="{
+              'disabled-button':
+                !addProductObj.item.itemName ||
+                addProductObj.item.itemUnitPrice === null ||
+                isInvalidPrice(addProductObj.item.itemUnitPrice)
+            }">
+            {{ "reuseableWords.SAVE" | transloco }}
+            <span *ngIf="addingProducts" class="spinner-border spinner-border-sm" style="
+                color: white;
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-left: 5px;
+              " role="status" aria-hidden="true">
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- suggest modifiers for modifier group -->
+<div mdbModal #suggestModifierModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            Suggest Modifier Group
+          </h5>
+          <button type="button" class="close" (click)="closeModalForSuggestModifier()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Select Papular categories from similar restaurant to yours.</p>
+          <div class="searchBar mb-0 mt-0">
+            <input id="searchQueryInput" type="text" name="searchQueryInput" placeholder="Search all categories"
+              value="" class="w-100" />
+            <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+              <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+                <path fill="#000"
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+              </svg>
+            </button>
+          </div>
+          <div class="select-ans mt-4">
+            <label class="answer-label mb-0 font-weight-bold">
+              <input type="checkbox" />
+              <span class="item-name">Modifiers</span>
+              <span class="price-div">Options</span>
+            </label>
+            <hr />
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+
+            <label class="answer-label mb-0">
+              <input type="checkbox" />
+              <span class="item-name">Cheese</span>
+              <span class="price-div">Cheddar,Monterey,jack ...</span>
+            </label>
+            <hr />
+          </div>
+          <div class="details-buttons-div mt-3 ml-4">
+            <button class="outline-button main-add-button rounded pagi-height">
+              Previous
+            </button>
+            <button class="outline-button main-add-button rounded pagi-height">
+              Next
+            </button>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModalForSuggestModifier()">
+            Cancel
+          </button>
+
+          <button class="button main-add-button" (click)="saveModifier()">
+            Add Modifiers
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- file upload modal item price -->
+
+<!-- Add modifier to modifier group in builder Modal -->
+<div mdbModal #addItemsModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "Menus.Add modifiers to Modifier Group" | transloco }}
+          </h5>
+          <button type="button" class="close" (click)="closeModalForAddItems()">
+            <img src="../../../assets/icons/black-cross.svg" class="cross-icon" alt="" />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            {{
+            "Menus.This list shows modifiers that can be added to modifier groups"
+            | transloco
+            }}.
+          </p>
+          <div class="searchBar mb-0 mt-0">
+            <input id="searchQueryInput" type="text" [(ngModel)]="searchTermBuilder"
+              (ngModelChange)="filterAddonsOptionsBuilder()" name="searchQueryInput" placeholder="Search all items"
+              value="" class="w-100" />
+
+            <button id="searchQuerySubmit" type="submit" name="searchQuerySubmit">
+              <svg style="width: 24px; height: 24px" viewBox="0 0 24 24">
+                <path fill="#000"
+                  d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z" />
+              </svg>
+            </button>
+          </div>
+          <div *ngIf="isFiltering" class="loader-main mt-5">
+            <span class="spinner-border spinner-border-md loader-main" role="status" aria-hidden="true">
+            </span>
+          </div>
+          <div class="select-ans mt-4">
+            <!-- Header with Categories and Price -->
+            <label class="answer-label mb-0 font-weight-bold">
+              <input type="checkbox" [(ngModel)]="selectAllItems" (change)="toggleSelectAllItems($event)" />
+              <span class="item-name">{{
+                "Menus.Select All" | transloco
+                }}</span>
+              <span class="price-div">{{
+                "reuseableWords.Price" | transloco
+                }}</span>
+            </label>
+            <hr />
+
+            <!-- Items with names and prices -->
+
+            <div *ngIf="itemsListAll.length == 0">
+              <p class="mb-0">
+                {{
+                "Menus.There are no items available to be added to this modifier group"
+                | transloco
+                }}.
+              </p>
+              <button class="outline-button main-add-button mt-2 mb-4"
+                (click)="closeModalForAddItems(); selectTab(1); showaddItems()">
+                {{ "reuseableWords.Add" | transloco }}
+                {{ "Menus.Modifier" | transloco }}
+              </button>
+            </div>
+            <div *ngFor="let item of itemsListAll">
+              <label class="answer-label mb-0 d-flex justify-content-between align-items-center">
+                <span class="d-flex align-items-center">
+                  <input type="checkbox" class="mr-2" [checked]="isSelectedItem(item.id)"
+                    (change)="onItemChange(item.id, $event)" />
+                  <span class="item-name">{{ item.itemName }}</span>
+                </span>
+                <span class="price-div">${{ item.itemUnitPrice ?? "0.00" }}</span>
+              </label>
+              <hr />
+            </div>
+          </div>
+
+          <!--<div class="details-buttons-div mt-3 ml-4">
+            <button class="outline-button main-add-button rounded pagi-height">
+              Previous
+            </button>
+            <button class="outline-button main-add-button rounded pagi-height">
+              Next
+            </button>
+          </div>-->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="outline-button main-add-button" (click)="closeModalForAddItems()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button type="button" class="button main-add-button" (click)="addModifier()"
+            [disabled]="selectedItems.length === 0" [ngClass]="{ 'disabled-button': selectedItems.length === 0 }">
+            {{ "reuseableWords.Add" | transloco }}
+            {{ "Menus.Modifier" | transloco }}
+            <span *ngIf="addingItems" class="spinner-border spinner-border-sm" style="
+                color: white;
+                width: 1.5rem;
+                height: 1.5rem;
+                margin-left: 5px;
+              " role="status" aria-hidden="true">
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

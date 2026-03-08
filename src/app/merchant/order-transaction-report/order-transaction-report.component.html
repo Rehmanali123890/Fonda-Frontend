@@ -1,0 +1,305 @@
+<div class="container-fluid">
+  <div class="row mt-5">
+    <div class="col-md-8 tabs-desktop-view">
+      <div class="btn-group">
+        <button
+          [class.active]="selecetedTab === 1"
+          class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 1"
+          style="text-transform: capitalize"
+        >
+          {{ "Reports.Order Transaction Report" | transloco }}
+        </button>
+        <button
+          [class.active]="selecetedTab === 2"
+          class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+          (click)="selecetedTab = 2"
+          style="text-transform: capitalize"
+        >
+        {{ "Reports.Payout History Report" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- <mdb-tabset
+    [buttonClass]="' pills-custom mb-4'"
+    [contentClass]="'custom-tabs'"
+  >
+    <mdb-tab [heading]="'Reports.Order Transaction Report' | transloco" (select)="selecetedTab = 1"> -->
+  <!-- <app-merchant-account-details>
+      </app-merchant-account-details> -->
+  <!-- </mdb-tab>
+    <mdb-tab [heading]="'Reports.Merchant Reports' | transloco" (select)="selecetedTab = 2">
+      <app-finnace-report> </app-finnace-report>
+    </mdb-tab>
+  </mdb-tabset> -->
+  <div class="col-md-12 mt-5">
+    <div *ngIf="selecetedTab == 1">
+      <div class="search-filters">
+        <div class="card">
+          <div class="card-body">
+            <div class="row">
+              <div class="main-search-div">
+                <div class="mt-3 search_filters_form">
+                  <div class="row">
+                    <div class="form-group col-md-3">
+                      <label>{{ "Orders.Order Id" | transloco }} </label>
+                      <input
+                        [(ngModel)]="searchOrderId"
+                        type="text"
+                        class="input-style"
+                      />
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>{{ "Orders.Customer Name" | transloco }}</label>
+                      <input
+                        [(ngModel)]="searchCustomerName"
+                        type="text"
+                        class="input-style"
+                      />
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>{{ "reuseableWords.Source" | transloco }}</label>
+                      <ng-select
+                        [(ngModel)]="searchSource"
+                        [placeholder]="'reuseableWords.Source' | transloco"
+                      >
+                        <ng-option [value]="'doordash'">Doordash</ng-option>
+                        <ng-option [value]="'ubereats'">Ubereats</ng-option>
+                        <ng-option [value]="'grubhub'">Grubhub</ng-option>
+                        <ng-option [value]="'phone_order'"
+                          >{{ "reuseableWords.Phone" | transloco }}
+                          {{ "Orders.Order" | transloco }}</ng-option
+                        >
+                        <ng-option [value]="'online_order'"
+                          >{{ "reuseableWords.online" | transloco }}
+                          {{ "Orders.Order" | transloco }}</ng-option
+                        >
+                        <ng-option [value]="'flipdish'">Flipdish</ng-option>
+                      </ng-select>
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>{{
+                        "Orders.order external reference" | transloco
+                      }}</label>
+                      <input
+                        [(ngModel)]="searchExternalReferenceNumber"
+                        type="text"
+                        class="input-style"
+                      />
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>{{ "Reports.Restaurant Name" | transloco }}</label>
+                      <ng-select
+                        [(ngModel)]="merchantId"
+                        (ngModelChange)="MerchantChanged()"
+                        [clearable]="false"
+                        [loading]="gettingMerchants"
+                        [searchable]="true"
+                        type="text"
+                        class="bg ng-select-side-nav"
+                        placeholder="Select Merchant"
+                      >
+                        <!-- <ng-option [value]="'-1'">All</ng-option> -->
+                        <ng-option
+                          [value]="item.id"
+                          *ngFor="let item of MerchantsList"
+                        >
+                          {{ item.merchantName }}
+                        </ng-option>
+                      </ng-select>
+                    </div>
+                    <div
+                      class="form-group col-md-3"
+                      *ngIf="!disabledStartDateDiv"
+                    >
+                      <label>{{
+                        "reuseableWords.From Date" | transloco
+                      }}</label>
+
+                      <input
+                        [readonly]="filterType != 6"
+                        [(ngModel)]="startDate"
+                        type="date"
+                        class="input-style"
+                        placeholder="Start Date"
+                      />
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>{{ "reuseableWords.To Date" | transloco }}</label>
+
+                      <input
+                        [readonly]="filterType != 6"
+                        [(ngModel)]="endDate"
+                        type="date"
+                        class="input-style"
+                        placeholder="End Date"
+                      />
+                    </div>
+                    <div class="form-group col-md-3">
+                      <label>{{ "reuseableWords.Days" | transloco }}</label>
+                      <select
+                        [(ngModel)]="filterType"
+                        (change)="changeDateAccordinglySearch()"
+                        class="input-style"
+                        id="order-date-form"
+                        aria-label="Default select example"
+                      >
+                        <option [value]="1">
+                          {{ "reuseableWords.Today" | transloco }}
+                        </option>
+                        <option [value]="2">
+                          {{ "reuseableWords.Last 7 days" | transloco }}
+                        </option>
+                        <option [value]="3">
+                          {{ "reuseableWords.Last week" | transloco }}
+                        </option>
+                        <option [value]="4">
+                          {{ "reuseableWords.Last Month" | transloco }}
+                        </option>
+                        <option [value]="5">
+                          {{ "reuseableWords.Any Time" | transloco }}
+                        </option>
+                        <option [value]="6">
+                          {{ "reuseableWords.Custom" | transloco }}
+                        </option>
+                      </select>
+                      <div></div>
+                    </div>
+                    <div class="col-md-3">
+                      <label style="visibility: hidden; margin-bottom: 0px">{{
+                        "StoreFront.button" | transloco
+                      }}</label>
+
+                      <button
+                        style="width: 100%"
+                        type="submit"
+                        class="btn button-theme"
+                        (click)="changeDateAccordinglySearch()"
+                      >
+                        {{ "reuseableWords.APPLY" | transloco }}
+                      </button>
+                    </div>
+                    <div class="col-md-3">
+                      <label style="visibility: hidden; margin-bottom: 0px">{{
+                        "StoreFront.button" | transloco
+                      }}</label>
+                      <button
+                        style="width: 100%"
+                        type="submit"
+                        class="btn button-theme"
+                        (click)="downloadTransactionReport()"
+                      >
+                        {{ "Reports.Download" | transloco }}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="selecetedTab == 2">
+      <app-finnace-report> </app-finnace-report>
+    </div>
+  </div>
+
+  <div class="col-md-12">
+    <div class="card">
+      <div class="table-responsive" *ngIf="selecetedTab == 1">
+        <div
+          *ngIf="gettingTransactionList"
+          class="d-flex justify-content-center text-center"
+        >
+          <mat-progress-bar
+            class="progress primary-color-dark mb-0"
+            mode="indeterminate"
+          ></mat-progress-bar>
+        </div>
+        <table class="table table-bordered table-hover">
+          <thead class="bg-theme white-text sorting">
+            <tr>
+              <th>{{ "Orders.Order Date" | transloco }}</th>
+              <th>{{ "Orders.Order Id" | transloco }}</th>
+              <th>{{ "Orders.Order Type" | transloco }}</th>
+              <th>{{ "dashboard.Virtual Merchant Name" | transloco }}</th>
+              <th>{{ "Orders.Order External Reference" | transloco }}</th>
+              <th>{{ "Orders.Order Status" | transloco }}</th>
+              <th>{{ "Orders.Customer Name" | transloco }}</th>
+              <th>{{ "Orders.Completion Time" | transloco }}</th>
+              <th>{{ "Orders.Platform Name" | transloco }}</th>
+              <th>{{ "Reports.Restaurant Name" | transloco }}</th>
+              <th>
+                {{ "MerchantPayoutDetail.Order Adjustments" | transloco }}
+              </th>
+              <th>{{ "Orders.Order" | transloco }} Subtotal</th>
+              <th>{{ "Orders.Tax Amount" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Error Charges" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Commission" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Commission Tax" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Marketing Fee" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Square Fee" | transloco }}</th>
+              <th>{{ "Orders.Market Place Tax Ubereats" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Promo Discount" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Processing Fee" | transloco }}</th>
+              <th>{{ "MerchantPayoutDetail.Staff Tips" | transloco }}</th>
+              <th>{{ "Orders.Refunded Amount" | transloco }}</th>
+              <th>{{ "Orders.Order" | transloco }} Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of transactionDataList">
+              <td>{{ item.orderDateTime2 }}</td>
+              <td>
+                <span class="badge mb-0">
+                  <a
+                    target="_blank"
+                    href="/home/orders/order-details/{{ item.id }}"
+                  >
+                    <img
+                      *ngIf="!item.short_order_id"
+                      width="15"
+                      src="../../../assets/images/image_2021_11_26T16_14_32_578Z.png"
+                    />
+                    {{ item.short_order_id }}
+                  </a>
+                </span>
+              </td>
+              <td>{{ item.ordertype }}</td>
+              <td>{{ item.virtualname }}</td>
+              <td>{{ item.orderexternalreference }}</td>
+              <td>{{ item.status_description }}</td>
+              <td>{{ item.customername }}</td>
+              <td>{{ item.completion_time }}</td>
+              <td>{{ item.ordersource }}</td>
+              <td>{{ item.merchantname }}</td>
+              <td>{{ item.adjustment | currency : "USD" }}</td>
+              <td>{{ item.ordersubtotal | currency : "USD" }}</td>
+              <td>{{ item.ordertax | currency : "USD" }}</td>
+              <td>{{ item.errorcharge | currency : "USD" }}</td>
+              <td>{{ item.commission | currency : "USD" }}</td>
+              <td>{{ item.Comissiontax | currency : "USD" }}</td>
+              <td>{{ item.marketing_fee | currency : "USD" }}</td>
+              <td>{{ item.squarefee | currency : "USD" }}</td>
+              <td>{{ item.marketplacetax | currency : "USD" }}</td>
+              <td>{{ item.promodiscount * -1 | currency : "USD" }}</td>
+              <td>{{ item.processingfee | currency : "USD" }}</td>
+              <td>{{ item.stafftips | currency : "USD" }}</td>
+              <td>{{ item.refund_amount | currency : "USD" }}</td>
+              <td>{{ item.ordertotal | currency : "USD" }}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div
+          *ngIf="!transactionDataList?.length"
+          class="alert alert-info w-100"
+          role="alert"
+        >
+          {{ "reuseableWords.No record found" | transloco }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

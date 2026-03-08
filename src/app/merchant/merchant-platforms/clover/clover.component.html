@@ -1,0 +1,206 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="card mb-3 mt-4">
+      <h5 class="card-header">{{ currentPlatform }}</h5>
+      <div class="card-body">
+        <div *ngIf="isConnected">
+          Connected merchant name: {{ getStoreinfo(currentPlatformId)[0]
+          }}<br />
+          Connected merchant phone: {{ getStoreinfo(currentPlatformId)[1] }}
+        </div>
+        <!-- Store Name: {{ConnectedPlatforms.filter(x => x.platformtype == 3)[0].metadata}} -->
+        <span
+          *ngIf="isProcessing"
+          class="spinner-border spinner-border-sm"
+          role="status"
+          aria-hidden="true"
+        ></span>
+        <div class="row">
+          <div class="col-md-3" *ngIf="!isProcessing">
+            <button
+              *ngIf="isConnected"
+              type="button"
+              class="btn button-theme platforms-btn"
+            >
+              Connected with {{ currentPlatform }}
+            </button>
+
+            <button
+              type="button"
+              *ngIf="!isConnected"
+              class="connect-btn btn platforms-btn button-theme"
+              (click)="doAuthorizationClover()"
+            >
+              Connect with {{ currentPlatform }}
+            </button>
+          </div>
+          <div class="col-md-3">
+            <button
+              *ngIf="isConnected"
+              (click)="disconnectPlatform(currentPlatformId)"
+              type="button"
+              class="disco-btn btn button-theme platforms-btn"
+            >
+              Disconnect {{ currentPlatform }}
+            </button>
+          </div>
+          <div class="col-md-3">
+            <div>
+              <button
+                *ngIf="isConnected"
+                [disabled]="syncing"
+                data-toggle="modal"
+                data-target="#exampleModalc1"
+                type="button"
+                class="disco-btn btn button-theme platforms-btn"
+              >
+                Download {{ currentPlatform }} Menu to Fonda
+              </button>
+            </div>
+            <div>
+              <button
+                *ngIf="isConnected"
+                [disabled]="syncing"
+                data-toggle="modal"
+                data-target="#exampleModalc2"
+                type="button"
+                class="disco-btn btn button-theme platforms-btn"
+              >
+                Upload Fonda menu to {{ currentPlatform }}
+              </button>
+            </div>
+          </div>
+          <div class="col-md-3 auto-sync-div">
+            <div *ngIf="isConnected" class="checkbox-div">
+              <div class="form-checkbox-div">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    value="1"
+                    [(ngModel)]="AutoSync"
+                    type="radio"
+                    name="flexRadioDefault{{ currentPlatformId }}"
+                    id="flexRadioDefault1{{ currentPlatformId }}"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="flexRadioDefault1{{ currentPlatformId }}"
+                  >
+                    Auto Sync on
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    value="0"
+                    [(ngModel)]="AutoSync"
+                    type="radio"
+                    name="flexRadioDefault{{ currentPlatformId }}"
+                    id="flexRadioDefault2{{ currentPlatformId }}"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="flexRadioDefault2{{ currentPlatformId }}"
+                  >
+                    Auto Sync Off
+                  </label>
+                </div>
+              </div>
+              <div>
+                <button
+                  type="button"
+                  (click)="saveAutoSyncSettings(currentPlatformId)"
+                  class="btn button-theme save-btn"
+                >
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="exampleModalc1"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This action will create a new menu in Fonda similar to menu in Clover.
+        Are you sure you want to proceed?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn button-theme" data-dismiss="modal">
+          No
+        </button>
+        <button
+          type="button"
+          class="btn button-theme"
+          data-dismiss="modal"
+          (click)="triggerManualSync(currentPlatformId, 1)"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="exampleModalc2"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Are you sure?</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        This action will replace your clover menu with dashboard menu. Are you
+        sure you want to proceed?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn button-theme" data-dismiss="modal">
+          No
+        </button>
+        <button
+          type="button"
+          class="btn button-theme"
+          data-dismiss="modal"
+          (click)="triggerManualSync(currentPlatformId, 0)"
+        >
+          Yes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,448 @@
+/* confirmation-screen.component.css */
+
+@font-face {
+  font-family: "JETSansDigital";
+  src: url("https://d30v2pzvrfyzpo.cloudfront.net/fonts/JETSansDigital-Regular-optimised.woff2")
+      format("woff2"),
+    url("https://d30v2pzvrfyzpo.cloudfront.net/fonts/JETSansDigital-Regular-optimised.woff")
+      format("woff");
+}
+
+@import url("../../../assets/storeFrontStyle/style.css");
+  
+  .container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #fff;
+  }
+
+  #header{
+    z-index: 1;
+  }
+
+  #header-logo {
+    height: 73px;
+    padding-top: 0.3em;
+    padding-left: 1em;
+    padding-bottom: 0.2em;
+  }
+
+  @media screen and (max-width: 768px) {
+    #header-logo {
+      padding: 0.4em !important;
+    }
+  }
+  /* .container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;  
+    height: 100vh; 
+    background-color: white; 
+    overflow: auto; 
+    z-index: 999; 
+  } */
+  
+  .Header_c-header_3SPN7 {
+    box-shadow: 3px 3px -4px 6px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .header {
+    display: flex;
+    height: 80px;
+    padding: 0 16px;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.15);
+    background-color: #fff;
+  }
+  
+  .logo {
+    display: flex;
+    width: 103px;
+    height: 69px;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+  }
+  
+  .logo-img {
+    width: 103px;
+    height: 69px;
+    object-fit: contain;
+  }
+  
+  .header-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .restaurant-name {
+    font-family: Outfit, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #000;
+    margin: 0;
+  }
+  
+  .restaurant-address {
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #212529;
+    line-height: 18px;
+    font-style: normal;
+    margin: 0;
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .success-header {
+    color: #54b054;
+    font-family: "JET Sans Digital", sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    padding: 32px 0 16px;
+    text-align: center;
+    margin: 0;
+  }
+  
+  .email-info {
+    text-align: center;
+    padding: 0 10px;
+  }
+  
+  .email-text {
+    font-family: "JET Sans Digital", sans-serif;
+    font-size: 16px;
+    color: #212529;
+    margin: 0;
+  }
+  .email-text span{
+    display: block;
+  }
+  
+  .email {
+    font-weight: 700;
+  }
+  
+  .order-info {
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .pickup-time {
+    font-family: "JET Sans Digital", sans-serif;
+    font-size: 16px;
+    color: #212529;
+    margin: 0 0 16px;
+  }
+  
+  .order-details {
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    color: #1e1e1e;
+    line-height: 150%;
+  }
+  
+  .order-number {
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  .location-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px;
+    max-width: 400px;
+    width: 100%;
+  }
+  
+  .map-container {
+    text-align: left;
+    width: 100%;
+    padding: 5px 0;
+  }
+  
+  .map-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px 8px 0 0;
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .location-info {
+    width: 100%;
+    padding: 16px;
+    border-radius: 0 0 8px 8px;
+    text-align: center;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    align-items: flex-start; /* Ensures left alignment */
+    gap: 5px; 
+  }
+  
+  .location-text {
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    color: #1e1e1e;
+    line-height: 150%;
+    margin-bottom: 10px;
+  }
+  
+  .location-text address {
+    font-style: normal;
+    display: block;
+  }
+  
+  .location-name {
+    font-weight: 700;
+    display: block;
+  }
+
+  #merchant-name {
+    font-weight: bold;
+    font-size: 18px;
+    margin: 10px 0px 0px 0px;
+  }
+
+  #merchant-address {
+      font-size: 14px;
+      color: #1E1E1E;
+  }
+
+  .merchant-location-link {
+    display: flex;
+    justify-content: flex-start; 
+    width: 100%; 
+    margin-top: 5px; 
+}
+  
+  .directions-link {
+    color: #3a79fa;
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .payment-info {
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .payment-text {
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    color: #1e1e1e;
+    line-height: 150%;
+    margin: 0;
+  }
+  
+  .button-container {
+    padding: 16px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  
+  .order-button {
+    max-width: 400px;
+    width: 100%;
+    height: 48px;
+    border-radius: 80px;
+    color: #fff;
+    font-family: "JET Sans Digital", sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    background-color: #ffa230;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .footer {
+    bottom: 0;
+    left: 0;
+    padding: 95px 16px 0px 16px;
+    text-align: center;
+    height: 157px;
+  }
+  .footer.delivery-true {
+    margin-top: 160px;
+    padding: 0;
+    text-align: center;
+    height: 47px;
+    bottom: 0;
+  }
+  .copyright {
+    color: #000;
+    font-family: "JET Sans Digital", sans-serif;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+  
+  .powered-by {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .powered-text {
+    color: #000;
+    font-family: "JET Sans Digital", sans-serif;
+    font-size: 14px;
+  }
+  
+  .fonda-logo {
+    width: 70px;
+    height: 17.769px;
+  }
+  #Fonda-logo-text{
+    color: #595959;
+    font-weight: bold;
+  }
+  
+  .copy-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    /* height: 157px; */
+    padding: 16px 24px 32px 24px;
+    margin-top: 78px;
+    /* margin-top: 5em;
+    margin-bottom: 1em;
+    display: block; */
+  }
+
+  .copy-right-delivery {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    /* height: 520px; */
+    padding: 16px 24px 32px 24px;
+    margin-top: 435px;
+  }
+
+  .resto-logo {
+    align-items: center !important;
+    max-width: unset;
+    padding-left: 0px !important;
+  }
+
+  @media (max-width: 767px) {
+    .resto-logo {
+      display: flex;
+      justify-content: flex-start;
+      padding-left: 0px !important;
+    }
+    .copy-right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    /* height: 90px; */
+    padding: 16px 6px 32px 6px;
+    margin-top: 1em;
+    margin-bottom: 0;
+    text-align: center;
+    font-size: 14px;
+    /* margin-top: 5em;
+    margin-bottom: 1em;
+    display: block; */
+    }
+
+    .copy-right-delivery {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      /* height: 270px; */
+      padding: 16px 6px 32px 6px;
+      margin-top: 186px;
+      margin-bottom: 0;
+      text-align: center;
+      font-size: 14px;
+    }
+
+  }
+  @media (max-width: 640px) {
+    .container {
+      min-width: unset;
+    }
+  
+    .header {
+      height: auto;
+      padding: 12px;
+    }
+  
+    .logo {
+      width: 80px;
+      height: auto;
+    }
+  
+    .logo-img {
+      width: 80px;
+      height: auto;
+    }
+  
+    .restaurant-name {
+      font-size: 14px;
+    }
+  
+    .restaurant-address {
+      font-size: 12px;
+    }
+  
+    .success-header {
+      font-size: 24px;
+    }
+  
+    .email-info {
+      padding: 0 16px;
+    }
+  
+    .location-card {
+      padding: 0 8px;
+    }
+    
+    .button-container {
+      padding: 16px 8px;
+    }
+  
+    .order-button {
+      height: 44px;
+      font-size: 16px;
+    }
+  
+    .footer {
+      padding: 30px 16px 12px;
+      height: 120px;
+    }
+    .footer-text{
+      padding-top: 25px;
+    }
+    .footer.delivery-true {
+      margin-top: 120px;
+      padding: 0;
+      text-align: center;
+      height: 97px;
+      bottom: 0;
+    }
+  }
+  

@@ -1,0 +1,188 @@
+<div
+  mdbModal
+  #lazyConfirmationModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myBasicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <button type="button" class="close pull-right" aria-label="Close" (click)="lazyConfirmationModal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100" id="myModalLabel"><i class="fa fa-exclamation-triangle yellow-text"></i>{{modalObj.Title}}
+        </h4> -->
+        <h4 class="modal-title w-100 text-center" id="myModalLabel">
+          {{ modalObj.Title }}
+        </h4>
+      </div>
+      <div class="modal-body">
+        <!-- {{modalObj.Text}} -->
+        <p class="text-center">
+          <i
+            class="fa fa-exclamation-triangle text-danger"
+            style="font-size: 3rem"
+          ></i>
+        </p>
+        <div class="text-center" [innerHTML]="modalObj.Text"></div>
+      </div>
+      <div class="modal-footer">
+        <button
+          *ngIf="
+            modalObj &&
+            !modalObj.hideProceed &&
+            modalObj.acceptButtonText &&
+            modalObj.rejectButtonText
+          "
+          type="button"
+          mdbBtn
+          color="primary"
+          (click)="proceed()"
+          class="relative waves-light btn-sm"
+          mdbWavesEffect
+        >
+          {{ modalObj.acceptButtonText }}
+        </button>
+        <button
+          *ngIf="
+            modalObj &&
+            !modalObj.hideProceed &&
+            !modalObj.acceptButtonText &&
+            !modalObj.rejectButtonText
+          "
+          type="button"
+          mdbBtn
+          style="background-color: #00305a; color: #fff"
+          (click)="proceed()"
+          class="relative waves-light btn-sm"
+          mdbWavesEffect
+        >
+          Yes
+        </button>
+
+        <button
+          type="button"
+          *ngIf="modalObj.rejectButtonText"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light btn-sm"
+          aria-label="Close"
+          (click)="reject()"
+          mdbWavesEffect
+        >
+          {{ modalObj.rejectButtonText }}
+        </button>
+        <button
+          type="button"
+          *ngIf="!modalObj.rejectButtonText"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light btn-sm"
+          aria-label="Close"
+          (click)="reject()"
+          mdbWavesEffect
+        >
+          NO
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div
+  mdbModal
+  #lazyConfirmationModalNew="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myBasicModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header" style="background: white !important; color: black !important; border: none !important;">
+        <h5 class="modal-title" id="exampleModalLabel">{{ modalObjNew.Title }}</h5>
+        <button
+          type="button"
+          class="close"
+          (click)="rejectNew()"
+        >
+          <img
+            src="../../../assets/icons/black-cross.svg"
+            class="cross-icon"
+            alt=""
+          />
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          {{modalObjNew.Description}}
+        </p>
+        <p class="font-weight-bold">
+         {{ modalObjNew.Text }}
+        </p>
+      </div>
+
+  
+      <div class="modal-footer">
+      
+        <button
+          type="button"
+          *ngIf="!modalObjNew.rejectButtonText"
+          class="outline-button main-add-button"
+          aria-label="Close"
+          (click)="rejectNew()"
+        >
+          Cancel
+        </button>
+
+        <button
+        *ngIf="
+          modalObjNew &&
+          !modalObjNew.hideProceed &&
+          modalObjNew.acceptButtonText
+        "
+        class="button main-add-button"
+        type="button"
+        (click)="proceedNew()"
+      >
+        {{ modalObjNew.acceptButtonText }}
+      </button>
+
+        <button
+          *ngIf="
+            modalObjNew &&
+            !modalObjNew.hideProceed &&
+            !modalObjNew.acceptButtonText &&
+            !modalObjNew.rejectButtonText
+          "
+          type="button"
+          class="button main-add-button"
+          (click)="proceedNew()"
+        >
+          Yes
+        </button>
+
+        <button
+          type="button"
+          *ngIf="modalObjNew.rejectButtonText"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light btn-sm"
+          aria-label="Close"
+          (click)="rejectNew()"
+          mdbWavesEffect
+        >
+          {{ modalObjNew.rejectButtonText }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

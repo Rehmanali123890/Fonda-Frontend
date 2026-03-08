@@ -1,0 +1,72 @@
+<header data-theme="je" data-test-id="header-component" class="Header_c-header_3SPN7" id="header">
+  <div class="Header_c-header-container_2hcCm resto-logo">
+    <img src="{{ merchantData.logo }}" id="header-logo" alt="" />
+    <div class="merchant-details ml-4">
+      <h3>
+        {{ merchantData.merchantName }}
+      </h3>
+      <h6 class="mt-1">
+        {{ merchantData.address }}
+      </h6>
+    </div>
+  </div>
+</header>
+
+<section class="content">
+  <h2 class="success-header">Thanks for ordering!</h2>
+
+  <div class="email-info">
+    <p class="email-text">
+      <span>Order confirmation and updates will be sent to </span>
+      <span class="email">{{orderData.customerEmail}}</span>
+    </p>
+  </div>
+
+  <div class="order-info">
+    <p class="pickup-time" *ngIf="!isDelivery">
+      Your order will be ready for pickup in approximately {{merchantData.pickUptime}} minutes.
+    </p>
+    <p class="pickup-time" *ngIf="isDelivery">
+      You'll receive an email with tracking details once it's on its way.
+    </p>
+    <div class="order-details">
+      <p class="order-number">Order #{{orderData.orderExternalReference}}</p>
+      <time datetime="2025-02-21T23:39">{{formattedDate}}</time>
+    </div>
+  </div>
+
+  <article class="location-card" *ngIf="!isDelivery">
+    <div class="location-info">
+      <div id="map" style="width: 100%; height: 300px;"></div>
+      <div class="map-container" id="location">
+        <p id='merchant-name'>{{merchantData.merchantName}}</p>
+        <p id='merchant-address'>{{merchantData.address}}</p>
+      </div>
+      <div class="merchant-location-link">
+        <a href="#" class="directions-link">Get directions</a>
+      </div>
+    </div>
+  </article>
+
+  <div class="payment-info">
+    <p class="payment-text">
+      Payment Status: Paid<br />
+      Total: ${{orderData.orderTotal | number:'1.2-2'}}
+    </p>
+  </div>
+  <div class="button-container">
+    <button class="order-button" (click)="navigateToOrder()">Place another order</button>
+  </div>
+</section>
+
+<!-- Footer section -->
+<div [ngClass]="{'copy-right': true, 'copy-right-delivery': isDelivery}">
+  <span style="padding: 0px" class="ReopenBannerLink_reopen-link_3VNOh">
+    © 2024 Fonda Technologies, Inc. All rights reserved
+  </span>
+  <a style="padding: 0px 1em; text-align: center; display: flex; gap: 7px; margin-top: 0.4em;"
+    class="ReopenBannerLink_reopen-link_3VNOh">
+    Powered by
+    <img src="../../../assets/images/copyright-Logo.svg" style="width: 70px" alt="" />
+  </a>
+</div>

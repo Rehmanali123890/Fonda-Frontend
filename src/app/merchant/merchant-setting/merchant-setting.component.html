@@ -1,0 +1,194 @@
+<div class="container-fluid pb-4">
+  <div *ngIf="showmainloader" class="loader-main">
+    <span
+      class="spinner-border spinner-border-lg"
+      role="status"
+      aria-hidden="true"
+    >
+    </span>
+  </div>
+</div>
+<div class="container-fluid pb-4" *ngIf="!showmainloader">
+  <div class="mb-4 d-flex align-items-center edit-main-dev">
+    <div class="back-desktop" routerLink="/home/merchants/merchantsList">
+      <svg
+        style="height: 29px; cursor: pointer; margin-bottom: 6px"
+        fill="#000000"
+        version="1.1"
+        baseProfile="tiny"
+        id="Layer_1"
+        xmlns:x="&amp;ns_extend;"
+        xmlns:i="&amp;ns_ai;"
+        xmlns:graph="&amp;ns_graphs;"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:a="http://ns.adobe.com/AdobeSVGViewerExtensions/3.0/"
+        viewBox="0 0 42 42"
+        xml:space="preserve"
+      >
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g
+          id="SVGRepo_tracerCarrier"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        ></g>
+        <g id="SVGRepo_iconCarrier">
+          <polygon
+            fill-rule="evenodd"
+            points="27.066,1 7,21.068 26.568,40.637 31.502,35.704 16.865,21.068 32,5.933 "
+          ></polygon>
+        </g>
+      </svg>
+    </div>
+    <img
+      src="https://img.icons8.com/windows/30/ee4423/circled-left-2.png"
+      routerLink="/home/merchants/merchantsList"
+      class="back-mobile"
+    />
+    <h4 class="ml-2 edit-heading">
+      {{ "MerchantSetting.merchantsettingheading" | transloco }}
+    </h4>
+    <h2 class="ml-4 edit-heading-mobile">
+      Edit Information
+      <span class="merchant-name">({{ merchantDto.merchantName }})</span>
+    </h2>
+    <div class="d-flex"></div>
+  </div>
+
+  <div>
+    <mdb-tabs #tabs>
+      <span
+        *ngIf="gettingMerchantDetail"
+        class="spinner-border spinner-border-sm"
+        role="status"
+        aria-hidden="true"
+      >
+      </span>
+      <!--Panel 2-->
+      <mdb-tab
+        title="{{ 'MerchantSetting.accountDetails' | transloco }}"
+        (select)="selectedTab = 'account'"
+      >
+        <app-merchant-account-details
+          (triggerChangeParent)="this.GetMerchantDetail()"
+          [selectedTab]="selectedTab"
+          [merchantDto]="merchantDto"
+          [merchantId]="merchantId"
+          [gettingMerchantDetail]="gettingMerchantDetail"
+        >
+        </app-merchant-account-details>
+      </mdb-tab>
+      <mdb-tab
+        title="{{ 'MerchantSetting.Hours' | transloco }}"
+        (select)="selectedTab = 'hours'"
+      >
+        <app-merchant-time-management
+          [selectedTab]="selectedTab"
+          [merchantId]="merchantId"
+          [merchantDto]="merchantDto"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+        >
+        </app-merchant-time-management>
+      </mdb-tab>
+
+      <mdb-tab
+        id="newPayoutTab"
+        title="{{ 'MerchantSetting.Payouts' | transloco }}"
+        *ngIf="userRoleType === 1"
+        (mdbSelect)="MerchantPayoutDetailHandler()"
+      >
+        <app-merchant-payout-details
+          [selectedTab]="selectedTab"
+          [merchantDto]="merchantDto"
+          [merchantId]="merchantId"
+          [gettingMerchantDetail]="gettingMerchantDetail"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+        >
+        </app-merchant-payout-details>
+      </mdb-tab>
+
+      <mdb-tab
+        title="New Payouts"
+        *ngIf="userRoleType === 1"
+        (mdbSelect)="MerchantPayoutDetailHandler()"
+      >
+        <app-new-payout-details
+          [selectedTab]="selectedTab"
+          [merchantDto]="merchantDto"
+          [merchantId]="merchantId"
+          [gettingMerchantDetail]="gettingMerchantDetail"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+        >
+        </app-new-payout-details>
+      </mdb-tab>
+
+      <mdb-tab
+        title="{{ 'MerchantSetting.Finance Components' | transloco }}"
+        *ngIf="userRoleType === 1"
+        (select)="selectedTab = 'finance'"
+      >
+        <app-finance-settings
+          [merchantDto]="merchantDto"
+          [selectedTab]="selectedTab"
+          [merchantId]="merchantId"
+          [gettingMerchantDetail]="gettingMerchantDetail"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+        >
+        </app-finance-settings>
+      </mdb-tab>
+      <mdb-tab
+        title="{{ 'MerchantSetting.Virtual Resturants' | transloco }}"
+        *ngIf="userRoleType === 1"
+        (select)="selectedTab = 'virtualResturants'"
+      >
+        <app-virtual-resturants
+          [merchantDto]="merchantDto"
+          [selectedTab]="selectedTab"
+          [merchantId]="merchantId"
+          [gettingMerchantDetail]="gettingMerchantDetail"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+        >
+        </app-virtual-resturants>
+      </mdb-tab>
+      <mdb-tab
+        title="{{ 'MerchantSetting.Loyalty Points' | transloco }}"
+        *ngIf="userRoleType === 1"
+        (select)="selectedTab = 'loyaltyPoints'"
+      >
+        <app-loyalty-points
+          [merchantId]="merchantId"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+        >
+        </app-loyalty-points>
+      </mdb-tab>
+      <mdb-tab
+        title="{{ 'MerchantSetting.Settings' | transloco }}"
+        *ngIf="userRoleType === 1"
+        (select)="settingsTabSelectedHandler()"
+      >
+        <!-- <ng-template mdbTabTitle
+    ><span><i class="fas fa-cogs fa-fw me-2"></i>Settings</span></ng-template> -->
+        <app-settings-tab
+          [merchantDto]="merchantDto"
+          [selectedTab]="selectedTab"
+          [merchantId]="merchantId"
+          [gettingMerchantDetail]="gettingMerchantDetail"
+          (triggerChangeParent)="this.GetMerchantDetail()"
+          (settingsTabSelected)="settingsTabSelectedHandler()"
+        >
+        </app-settings-tab>
+      </mdb-tab>
+      <mdb-tab
+        title="{{ 'MerchantSetting.Email Summary' | transloco }}"
+        *ngIf="userRoleType === 1"
+        (select)="SendgridEmailSummaryComponentSelectedHandler()"
+      >
+        <app-sendgrid-email-summary
+          [selectedTab]="selectedTab"
+          [merchantId]="merchantId"
+        >
+        </app-sendgrid-email-summary>
+      </mdb-tab>
+    </mdb-tabs>
+  </div>
+</div>

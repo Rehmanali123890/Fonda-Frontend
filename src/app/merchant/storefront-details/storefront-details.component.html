@@ -1,0 +1,207 @@
+<div class="container-fluid pb-4">
+  <div *ngIf="showmainloader" class="loader-main">
+    <span
+      class="spinner-border spinner-border-lg"
+      role="status"
+      aria-hidden="true"
+    >
+    </span>
+  </div>
+</div>
+<div class="container-fluid margn-top-mobile-view" *ngIf="!showmainloader">
+  <div class="main">
+    <div class="details-main">
+      <div class="head-left">
+        <h4>Storefront Transactions</h4>
+        <p>
+          Transaction Period: {{ startDate | date : "MM/dd/yyyy" }} -
+          {{ endDate | date : "MM/dd/yyyy" }}
+        </p>
+      </div>
+      <div class="head-right">
+        <img
+          class="doordash-logo"
+          src="../../../assets/images/storefront-logo.png"
+          alt=""
+        />
+      </div>
+    </div>
+    <div class="csv-btn-div">
+      <!-- Export Button with Bootstrap Classes -->
+      <button class="btn button-theme dropdown-toggle" type="button" id="exportButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="../../../assets/icons/export.svg" alt="" /> Export
+        <span
+          *ngIf="exporting"
+          class="spinner-border spinner-border-sm ms-2"
+          style="width: 1rem; height: 1rem;"
+          role="status"
+          aria-hidden="true"
+        >
+      </span>
+      </button>
+      
+      <!-- Dropdown Menu with Bootstrap Classes -->
+      <ul class="dropdown-menu" aria-labelledby="exportButton">
+        <li class="py-2"><a class="dropdown-item" (click)="downloadOriginalFile('excel')"><img  src="../../../assets/icons/export.svg" alt="" style="filter: invert(100%) brightness(0%); height: 20px;" />&nbsp;&nbsp;Excel</a></li>
+        <li class="py-2"><a class="dropdown-item" (click)="downloadOriginalFile('csv')"><img  src="../../../assets/icons/export.svg" alt="" style="filter: invert(100%) brightness(0%);height: 20px;" />&nbsp;&nbsp;CSV</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="total-div">
+    <div class="values-div">
+      <p class="status-label">Total</p>
+      <p class="status-unpaid" *ngIf="status == 0">Un-Paid</p>
+      <p class="status-paid" *ngIf="status == 3">Paid</p>
+      <p class="status-transfered" *ngIf="status == 1">Transfered</p>
+    </div>
+    <div class="prices-div">
+      <h5>
+        <span class="price"
+          >${{ financepayoutcalculationObj.total | number : "1.2-2" }}</span
+        >
+        <span class="up-per ml-2" *ngIf="lasttransaction >= 0"
+          >+{{ lasttransaction | number : "1.2-2" }}
+          <span *ngIf="financepayoutcalculationObj.duration != 'Empty'"
+            >% vs previous {{ duration }}</span
+          ></span
+        >
+        <span class="down-per ml-2" *ngIf="lasttransaction < 0"
+          >{{ lasttransaction | number : "1.2-2" }}
+          <span *ngIf="financepayoutcalculationObj.duration != 'Empty'"
+            >% vs previous {{ duration }}</span
+          ></span
+        >
+      </h5>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table">
+      <thead class="">
+        <tr>
+          <th class="table-head">Earnings</th>
+          <th class="table-head">Deductions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="table-td">
+            <div class="main-data-total">
+              <strong
+                >${{
+                  financepayoutcalculationObj.total_earning | number : "1.2-2"
+                }}</strong
+              >
+            </div>
+            <div class="main-data">
+              <div>No. of orders:</div>
+              <div>{{ financepayoutcalculationObj.total_orders }}</div>
+            </div>
+            <div class="main-data">
+              <div>Subtotal:</div>
+              <div>
+                ${{ financepayoutcalculationObj.subTotal | number : "1.2-2" }}
+              </div>
+            </div>
+
+            <div class="main-data">
+              <div>Tax:</div>
+              <div>
+                ${{ financepayoutcalculationObj.tax | number : "1.2-2" }}
+              </div>
+            </div>
+            <div class="main-data">
+              <div>Tips:</div>
+              <div>
+                ${{ financepayoutcalculationObj.staffTips | number : "1.2-2" }}
+              </div>
+            </div>
+          </td>
+          <td class="table-td">
+            <div class="main-data-total">
+              <strong
+                >${{
+                  financepayoutcalculationObj.total_deduction | number : "1.2-2"
+                }}</strong
+              >
+            </div>
+            <div class="main-data">
+              <div>Commission:</div>
+              <div>
+                ${{ financepayoutcalculationObj.commission | number : "1.2-2" }}
+              </div>
+            </div>
+            <div class="main-data">
+              <div>Processing Fees:</div>
+              <div>
+                ${{
+                  financepayoutcalculationObj.processingfee | number : "1.2-2"
+                }}
+              </div>
+            </div>
+            <div class="main-data">
+              <div>Error charges:</div>
+              <div>
+                ${{
+                  financepayoutcalculationObj.error_charges | number : "1.2-2"
+                }}
+              </div>
+            </div>
+            <div class="main-data">
+              <div>Adjustment:</div>
+              <div>
+                ${{ financepayoutcalculationObj.adjustment | number : "1.2-2" }}
+              </div>
+            </div>
+            <div class="main-data">
+              <div>Refund:</div>
+              <div>
+                ${{
+                  financepayoutcalculationObj.refund_amount | number : "1.2-2"
+                }}
+              </div>
+            </div>
+            <div class="main-data">
+              <div>Promo Discounts:</div>
+              <div>
+                ${{
+                  financepayoutcalculationObj.promodiscount | number : "1.2-2"
+                }}
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="transaction-main">
+    <h4>Transactions</h4>
+
+    <div
+      class="table-responsive"
+      [ngClass]="{
+        'plateform-table-body': financepayoutcalculationObj
+      }"
+    >
+    <div *ngIf="parsingData" class="text-center">
+      <span
+        class="spinner-border spinner-border-lg"
+        role="status"
+        aria-hidden="true"
+      ></span>
+    </div>
+    <table class="table table-bordered table-hover transaction-table">
+      <thead class="sticky-head">
+        <tr>
+          <th *ngFor="let header of headers">{{ header }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of dataRows">
+          <td *ngFor="let cell of row">{{ formatCell(cell) }}</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+  <a (click)="historyBack()" class="btn button-theme">Back</a>
+</div>

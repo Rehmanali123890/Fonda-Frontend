@@ -1,0 +1,18 @@
+.layout {
+  display: flex;
+  gap: 14em;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+/* media quesry */
+
+@media (max-width: 1024px) {
+  .layout {
+    display: flex;
+    gap: 0em;
+    flex-direction: column;
+  }
+}

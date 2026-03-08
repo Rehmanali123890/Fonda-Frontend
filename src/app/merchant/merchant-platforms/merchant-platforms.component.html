@@ -1,0 +1,387 @@
+<div class="container-fluid">
+  <!-- Button trigger modal -->
+  <!-- <div>
+  <h2>Connect Platforms</h2>
+</div>
+<hr /> -->
+  <div class="" *ngIf="virtualMerchantId == null">
+    <div class="btn-group" style="width: 100%">
+      <button [class.active]="activeTab === 1" class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+        (click)="activeTab = 1">
+        Platforms
+      </button>
+      <button [class.active]="activeTab === 2" class="btn orange-outline-bt btn-orange-tab btn-md m-0"
+        (click)="activeTab = 2">
+        POS
+      </button>
+    </div>
+  </div>
+  <div *ngIf="activeTab == 1">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mt-4">
+          <h5 class="card-header">Flipdish</h5>
+          <div class="card-body">
+            <div *ngIf="isFlipDishConnected">
+              Connected store name: {{ getStoreinfo(2)[0] }}<br />
+              Connected store Address: {{ getStoreinfo(2)[1] }}
+            </div>
+            <span *ngIf="isProcessing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <div class="row">
+              <div class="col-md-3" *ngIf="!isProcessing">
+                <button *ngIf="isFlipDishConnected" type="button" class="btn button-theme platforms-btn">
+                  Connected with Flipdish
+                </button>
+
+                <button type="button" *ngIf="!isFlipDishConnected" class="connect-btn btn platforms-btn button-theme"
+                  (click)="flipdishModal.show()">
+                  Connect with Flipdish
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button *ngIf="isFlipDishConnected" (click)="disconnectPlatform(2)" type="button"
+                  class="disco-btn btn button-theme platforms-btn">
+                  Disconnect Flipdish
+                </button>
+              </div>
+              <div class="col-md-3">
+                <button *ngIf="isFlipDishConnected" [disabled]="syncingFlipDish" (click)="triggerManualSync(2)"
+                  type="button" class="disco-btn btn button-theme platforms-btn">
+                  Upload Fonda menu to Flipdish
+                </button>
+              </div>
+              <div class="col-md-3 auto-sync-div">
+                <!-- this logic needs to be changed if there are more than one platforms-->
+
+                <div *ngIf="isFlipDishConnected" class="checkbox-div">
+                  <div class="form-checkbox-div">
+                    <div class="form-check">
+                      <input class="form-check-input" value="1" [(ngModel)]="flipDishAutoSync" type="radio"
+                        name="flipDishAutoSync" id="flipDishAutoSyncid" />
+                      <label class="form-check-label" for="flipDishAutoSyncid">
+                        Auto Sync on
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="0" [(ngModel)]="flipDishAutoSync" type="radio"
+                        name="flipDishAutoSync" id="flipDishAutoSync2" />
+                      <label class="form-check-label" for="flipDishAutoSync2">
+                        Auto Sync Off
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <button type="button" (click)="saveAutoSyncSettings(2)" class="btn button-theme save-btn">
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br />
+
+    <app-ubereats (triggerChangeParent)="this.GetConnectedPlatforms()" [merchantId]="merchantId"
+      [ConnectedPlatforms]="ConnectedPlatforms" [isProcessing]="isProcessing">
+    </app-ubereats>
+
+    <br />
+    <!-- <app-doordash (triggerChangeParent)="this.GetConnectedPlatforms()" [merchantId]="merchantId"
+      [ConnectedPlatforms]="ConnectedPlatforms" [isProcessing]="isProcessing">
+    </app-doordash>
+
+    <br /> -->
+
+    <app-passwords (triggerChangeParent)="this.GetConnectedPlatforms()" [merchantId]="merchantId"
+      [ConnectedPlatforms]="ConnectedPlatforms" [isProcessing]="isProcessing"></app-passwords>
+    <br />
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card mt-4">
+          <h5 class="card-header">Stream</h5>
+          <div class="card-body">
+
+            <span *ngIf="isProcessing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            <div class="row">
+              <div class="col-md-3" *ngIf="!isProcessing">
+                <label class="toggle mt-3">
+                  <input [(ngModel)]="isstreamEnable" (ngModelChange)="onToggleChange()" class="toggle-checkbox"
+                    type="checkbox" />
+                  <div class="toggle-switch"></div>
+                </label>
+                <p style="font-size: 14px; color: #716A6A" class="">
+                  ( Enable or Disable Stream )</p>
+              </div>
+
+              <!-- <div class="col-md-8" *ngIf="!isstreamEnable">
+                <p>
+                You are not currently connected to Stream. Please connect through the Stream dashboard.
+                </p>
+              </div> -->
+
+              <div class="col-md-4">
+                <button *ngIf="isstreamEnable" (click)="openPopupformenuupload()" type="button"
+                  class="disco-btn btn button-theme platforms-btn" [disabled]="!isstreamConnected">
+                  Upload Fonda menu to Stream
+                </button>
+              </div>
+              <div class="col-md-5 auto-sync-div">
+                <!-- this logic needs to be changed if there are more than one platforms -->
+
+                <div *ngIf="isstreamEnable" class="checkbox-div">
+                  <div class="form-checkbox-div">
+                    <div class="form-check">
+                      <input class="form-check-input" value="1" [(ngModel)]="streamAutoSync" type="radio"
+                        name="streamAutoSync" id="streamAutoSyncid" />
+                      <label class="form-check-label" for="streamAutoSyncid">
+                        Auto Sync on
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <input class="form-check-input" value="0" [(ngModel)]="streamAutoSync" type="radio"
+                        name="streamAutoSync" id="streamAutoSync2" />
+                      <label class="form-check-label" for="streamAutoSync2">
+                        Auto Sync Off
+                      </label>
+                    </div>
+                  </div>
+                  <div>
+                    <button type="button" (click)="saveAutoSyncSettings(8)" class="btn button-theme save-btn"
+                      [disabled]="!isstreamConnected">
+                      Save
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <div class="row" *ngIf="isstreamEnable">
+              <div class="col-md-3">
+                Doordash Stream Connectivity:
+                <label class="toggle">
+                  <input class="toggle-checkbox " type="checkbox" [(ngModel)]="doordashstream"
+                    (change)="merchantStreamStatusToogle(doordashstream , 'doordashstream')" />
+                  <div class="toggle-switch ms-3"></div>
+                </label>
+              </div>
+              <div class="col-md-3">
+                Grubhub Stream Connectivity:
+                <label class="toggle">
+                  <input class="toggle-checkbox " type="checkbox" [(ngModel)]="grubhubstream"
+                    (change)="merchantStreamStatusToogle(grubhubstream , 'grubhubstream')" />
+                  <div class="toggle-switch ms-3"></div>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br />
+  </div>
+  <div *ngIf="activeTab == 2">
+    <app-clover (triggerChangeParent)="this.GetConnectedPlatforms()" [merchantId]="merchantId"
+      [ConnectedPlatforms]="ConnectedPlatforms" [isProcessing]="isProcessing"></app-clover>
+
+    <app-square (triggerChangeParent)="this.GetConnectedPlatforms()" [merchantId]="merchantId"
+      [ConnectedPlatforms]="ConnectedPlatforms" [isProcessing]="isProcessing"></app-square>
+  </div>
+
+  <!-- Modal1 flipdish-->
+  <div class="modal fade" mdbModal #flipdishModal="mdbModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    [config]="{ ignoreBackdropClick: true }" (open)="resetFlipDishModal()">
+    <div class="modal-dialog">
+      <div class="modal-content" name="flipdishForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            To connect with flipdish, you need to provide the following
+            information.
+          </h5>
+          <img src="../../../assets/icons/close.svg" style="height: 30px; cursor: pointer" alt=""
+            (click)="flipdishModal.hide()" />
+          <!-- <button
+            type="button"
+            class="btn-close btn-close-mobile"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button> -->
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Account ID</label>
+            <input type="text" class="field" [(ngModel)]="flipDishDetailsObj.accountId"
+              placeholder="Enter the account ID" />
+          </div>
+          <div class="form-group">
+            <label>Store ID</label>
+            <input type="text" class="field" [(ngModel)]="flipDishDetailsObj.storeId" placeholder="Enter store ID" />
+          </div>
+          <div class="form-group">
+            <label>Client ID</label>
+            <input type="text" class="field" [(ngModel)]="flipDishDetailsObj.clientId"
+              placeholder="Enter client ID assigned to you" />
+          </div>
+
+          <div class="form-group">
+            <label>Secret Key</label>
+            <input type="text" class="field" [(ngModel)]="flipDishDetailsObj.secretKey"
+              placeholder="Enter client secret" />
+          </div>
+          <div class="form-group">
+            <label>Access token</label>
+            <input type="text" class="field" [(ngModel)]="flipDishDetailsObj.accessToken"
+              placeholder="Enter your access token" />
+          </div>
+          <!-- <p>{{ currentMerchantId }}</p> -->
+        </div>
+        <div class="modal-footer">
+          <button style="background-color: #ff000080; color: #fff" type="button" class="btn" data-bs-dismiss="modal"
+            (click)="flipdishModal.hide()">
+            Close
+          </button>
+          <button type="submit" [disabled]="
+              isProcessing ||
+              !flipDishDetailsObj.storeId ||
+              !flipDishDetailsObj.clientId ||
+              !flipDishDetailsObj.accessToken ||
+              !flipDishDetailsObj.accountId ||
+              !flipDishDetailsObj.secretKey
+            " class="btn orange-bt text-white" (click)="ConnectPlatform(flipdishModal)">
+            <span *ngIf="isProcessing" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal1 stream-->
+  <div class="modal fade" mdbModal #streamModal="mdbModal" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    [config]="{ ignoreBackdropClick: true }">
+    <div class="modal-dialog">
+      <div class="modal-content" name="streamForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ getMsgTranslation(isstreamEnable?'Confirm Stream Activation': 'Stream Deactivation Confirmation') }}
+          </h5>
+          <img src="../../../assets/icons/close.svg" style="height: 30px; cursor: pointer" alt=""
+            (click)="closeStreamModal()" />
+        </div>
+        <div class="modal-body">
+          <p><strong>{{ getMsgTranslation(isstreamEnable?'Before proceeding, make sure:': 'Before
+              proceeding, please note:') }} </strong></p>
+          <div *ngFor="let item of popupcheckboxes; let i = index">
+            <label class="answer-label">
+              <input style="width: 13px !important;" type="checkbox" [(ngModel)]="item.checked"
+                (change)="checkAllSelected()" />
+              {{ getMsgTranslation(item.label) }}
+            </label>
+          </div>
+          <p> {{ "streamMsgs.Click" | transloco }} "<strong>{{ getMsgTranslation(isstreamEnable?'Acknowledge & Enable':
+              'Acknowledge & Deactivate') }}</strong>"
+            {{ "streamMsgs.to continue" | transloco }}</p>
+          <!-- <p>{{ currentMerchantId }}</p> -->
+        </div>
+        <div class="modal-footer">
+          <button style="background-color: #ff000080; color: #fff" type="button" class="btn" data-bs-dismiss="modal"
+            (click)="closeStreamModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button [disabled]="!isAllChecked" class="btn orange-bt text-white" (click)="connectStream()">
+            {{ getMsgTranslation(isstreamEnable?'Acknowledge & Enable': 'Acknowledge & Deactivate') }}
+            <span *ngIf="isstreamProcessing" class="spinner-border spinner-border-sm ms-2" role="status"
+              aria-hidden="true"></span>
+
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- platfrom stream doordash a nd grubhub-->
+  <div class="modal fade" mdbModal #streamplatformModal="mdbModal" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" [config]="{ ignoreBackdropClick: true }">
+    <div class="modal-dialog">
+      <div class="modal-content" name="streamplatformForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "streamMsgs.Confirm" | transloco }} {{ getMsgTranslationforstreamplatfrom()}}
+          </h5>
+          <img src="../../../assets/icons/close.svg" style="height: 30px; cursor: pointer" alt=""
+            (click)="closeStreamPlatformModal()" />
+        </div>
+        <div class="modal-body">
+          <p><strong>{{ getMsgTranslation(streamplatformstatus?'Before proceeding, make sure:': 'Before
+              proceeding, please note:') }} </strong></p>
+          <div *ngFor="let item of popupcheckboxes; let i = index">
+            <label class="answer-label">
+              <input style="width: 13px !important;" type="checkbox" [(ngModel)]="item.checked"
+                (change)="checkAllSelected()" />
+              {{ getMsgTranslation(item.label) }}
+            </label>
+          </div>
+          <p> {{ "streamMsgs.Click" | transloco }} "<strong>{{ getMsgTranslation(streamplatformstatus?'Acknowledge &
+              Enable':
+              'Acknowledge & Disable') }}</strong>"
+            {{ "streamMsgs.to continue" | transloco }}</p>
+        </div>
+        <div class="modal-footer">
+          <button style="background-color: #ff000080; color: #fff" type="button" class="btn" data-bs-dismiss="modal"
+            (click)="closeStreamPlatformModal()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button [disabled]="!isAllChecked" class="btn orange-bt text-white"
+            (click)="connectplatformStream(streamplatformstatus , streamplatformname)">
+            {{ getMsgTranslation(streamplatformstatus?'Acknowledge & Enable': 'Acknowledge & Disable') }}
+            <span *ngIf="isstreamPlatfromProcessing" class="spinner-border spinner-border-sm ms-2" role="status"
+              aria-hidden="true"></span>
+
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- upload fonda menu to stream-->
+  <div class="modal fade" mdbModal #streamuploadmenuModal="mdbModal" aria-labelledby="exampleModalLabel"
+    aria-hidden="true" [config]="{ ignoreBackdropClick: true }">
+    <div class="modal-dialog">
+      <div class="modal-content" name="streamuploadmenuForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{ "streamMsgs.Confirm" | transloco }} {{ "streamMsgs.Menu Upload" | transloco }}
+          </h5>
+          <img src="../../../assets/icons/close.svg" style="height: 30px; cursor: pointer" alt=""
+            (click)="streamuploadmenuModal.hide()" />
+        </div>
+        <div class="modal-body">
+          <p><strong> {{ "streamMsgs.Before proceeding, please ensure the following:" | transloco }} </strong></p>
+          <div *ngFor="let item of popupcheckboxes; let i = index">
+            <label class="answer-label">
+              <input style="width: 13px !important;" type="checkbox" [(ngModel)]="item.checked"
+                (change)="checkAllSelected()" />
+              {{ getMsgTranslation(item.label) }}
+            </label>
+          </div>
+          <p> {{ "streamMsgs.Click" | transloco }} "<strong>{{ "streamMsgs.Acknowledge & Upload" | transloco
+              }}</strong>"
+            {{ "streamMsgs.to proceed" | transloco }}</p>
+        </div>
+        <div class="modal-footer">
+          <button style="background-color: #ff000080; color: #fff" type="button" class="btn" data-bs-dismiss="modal"
+            (click)="streamuploadmenuModal.hide()">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+          <button [disabled]="!isAllChecked" class="btn orange-bt text-white" (click)="triggerManualSync(8)">
+            {{ "streamMsgs.Acknowledge & Upload" | transloco }}
+            <span *ngIf="isstreamuploadmenuProcessing" class="spinner-border spinner-border-sm ms-2" role="status"
+              aria-hidden="true"></span>
+
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

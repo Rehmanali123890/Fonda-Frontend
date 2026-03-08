@@ -1,0 +1,21 @@
+.hand-cursor {
+    cursor: pointer;
+}
+
+.link-like-text {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.link-like-text:hover {
+    text-decoration: none;
+}
+@media screen and (max-width:768px) {
+  .forMobile{
+    flex-direction: column !important;
+  }
+  .button-theme{
+    width: 100%;
+  }
+}

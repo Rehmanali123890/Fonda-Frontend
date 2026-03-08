@@ -1,0 +1,34 @@
+.sorting {
+  position: relative;
+}
+.sorting .top-icon::before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f176";
+  top: 12px;
+  right: 11px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+}
+.sorting .bottom-icon::before {
+  font-family: "Font Awesome 5 Brands";
+  content: "\f176";
+  right: 3px;
+  top: 12px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+}
+#password-field {
+  display: flex;
+  justify-content: space-between;
+}
+#password-field span {
+  margin-left: 7px;
+}
+
+@media screen and (max-width: 768px) {
+  .card {
+    margin-top: 1em;
+  }
+}

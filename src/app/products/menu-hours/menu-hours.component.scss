@@ -1,0 +1,32 @@
+.add-for-desktop{
+    display:block;
+}
+.add-for-mobile{
+    display: none;
+}
+
+@media screen and (max-width: 575px){
+    .add-for-desktop{
+        display:none !important;
+    }
+    .add-for-mobile{
+        display: block !important;
+        margin-left: -1.5em;
+    }
+    .for-mobile{
+        width: 80%;
+    }
+    .add-div-mobile{
+        width: 20%;
+        padding-top: 13px !important;
+    }
+    
+}
+
+@media screen and (max-width: 467px){
+    .add-div-mobile{
+        width: 20%;
+        padding-top: 32px !important;
+    }
+    
+}

@@ -1,0 +1,549 @@
+<div class="container-fluid pb-4" *ngIf="showmainloader">
+  <div class="loader-main">
+    <span class="spinner-border spinner-border-lg" role="status" aria-hidden="true">
+    </span>
+  </div>
+</div>
+<div class="container-fluid" *ngIf="!showmainloader">
+  <div class="row">
+    <div class="col-12 mt-4 sub-main">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4 class="sub-heading">Subscription Setup</h4>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Subscription status</label>
+                <select disabled [(ngModel)]="merchantDto.subscriptionStatus"
+                  style="height: 36px; width: -webkit-fill-available">
+                  <option value="1" [selected]="merchantDto.subscriptionStatus == 1">
+                    Active
+                  </option>
+                  <option value="0" [selected]="merchantDto.subscriptionStatus == 0">
+                    Inactive
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div *ngIf="merchantDto.subscriptionStatus == 1" class="col-md-4">
+              <div class="form-group">
+                <label>Subscription Start Date</label>
+                <input [disabled]="merchantDto.subscriptionStatus == 1" [(ngModel)]="merchantDto.subscriptionStartDate"
+                  type="text" class="field" placeholder="Subscription Start Date" />
+              </div>
+            </div>
+            <div *ngIf="merchantDto.subscriptionStatus == 0" class="col-md-4">
+              <div class="form-group">
+                <label>Subscription Start Date</label>
+                <!-- <mdb-date-picker [inline]="true" name="mydate" [options]="myDatePickerOptions" [placeholder]=""
+                  [(ngModel)]="merchantDto.subscriptionStartDate"></mdb-date-picker>  -->
+                <input type="date" [(ngModel)]="merchantDto.subscriptionStartDate" class="field" [placeholder]="
+                    'MerchantOnBoarding.Onboarding Date' | transloco
+                  " [min]="currentDate" />
+              </div>
+            </div>
+            <div class="col-md-4" *ngIf="merchantDto.subscriptionStatus == 1">
+              <div class="form-group">
+                <label>Next Charge Date</label>
+                <input disabled [(ngModel)]="merchantDto.nextSubscriptionChargeDate" type="text" class="field"
+                  placeholder="Next charge date" />
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Subscription Frequency</label>
+                <select [disabled]="merchantDto.subscriptionStatus == 1" [(ngModel)]="merchantDto.subscriptionFrequency"
+                  style="height: 36px; width: -webkit-fill-available">
+                  <option value="4">Weekly</option>
+                  <option value="1">Monthly</option>
+                  <option value="6">Biannual</option>
+                  <option value="3">Quarterly</option>
+                  <option value="12">Annually</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Subscription Trial Period</label>
+                <select [disabled]="merchantDto.subscriptionStatus == 1"
+                  [(ngModel)]="merchantDto.subscriptionTrialPeriod" style="height: 36px; width: -webkit-fill-available">
+                  <!-- <option>Select Trail Period</option> -->
+                  <option value="0">No Trial</option>
+                  <option value="1">One Month</option>
+                  <option value="2">Two Months</option>
+                  <option value="3">Three Months</option>
+                  <option value="6">Six Months</option>
+                  <option value="12">One Year</option>
+                  <option value="360">Lifetime Free</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div *ngIf="
+                  merchantDto.stripeTrasnferStatus == 0 ||
+                  merchantDto.stripeTrasnferStatus == 2 ||
+                  merchantDto.stripeTrasnferStatus == 3
+                ">
+                <div class="alert alert-danger" role="alert">
+                  {{
+                  StripeAccountStatusEnum[merchantDto.stripeTrasnferStatus]
+                  }}
+                </div>
+              </div>
+
+              <div class="d-flex w-100 justify-content-end">
+                <div *ngIf="merchantDto.subscriptionStatus == 1" class="sub-button">
+                  <button (click)="changeSubscriptionStatus(0)" class="btn button-theme">
+                    End subscription & disable merchant
+                    <span *ngIf="savingMerchantSubscription" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true">
+                    </span>
+                  </button>
+                </div>
+                <div *ngIf="merchantDto.subscriptionAmount">
+                  <button class="btn button-theme assess-btn" (click)="changeSubscriptionStatus(1)"
+                    *ngIf="merchantDto.subscriptionStatus == 0" [disabled]="
+                      !merchantDto.subscriptionAmount ||
+                      !merchantDto.subscriptionStartDate ||
+                      !merchantDto.subscriptionFrequency
+                    ">
+                    Save & Subscribe To Enable merchant
+                    <span *ngIf="savingMerchantSubscription" class="spinner-border spinner-border-sm" role="status"
+                      aria-hidden="true">
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showDifferentDateMessage == true">
+        <div class="alert alert-info" role="alert">
+          Subscription already exist til
+          {{ merchantDto.subscriptionStartDate }} and the next subscription date
+          will be
+          {{ merchantDto.subscriptionStartDate }}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <h4 class="sub-heading">Subscription Amount</h4>
+        </div>
+        <div class="card-body">
+          <div class="row sub-amont-div">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Subscription Amount</label>
+                <input [(ngModel)]="merchantDto.subscriptionAmount" type="number" class="field"
+                  placeholder="subscription Amount" (input)="preventNegativeInput($event, 'subscriptionAmount')" />
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="form-group">
+                <label>Stripe Connected Account Id</label>
+                <a *ngIf="merchantDto.stripeAccountId" [href]="stripeaccounturl" target="_blank"
+                  style="text-decoration: underline;">
+                  <i class="fas fa-arrow-circle-right fa-lg ms-2"></i> </a><br />
+                <input [readonly]="merchantDto.subscriptionStatus == 1" [(ngModel)]="merchantDto.stripeAccountId"
+                  type="text" class="field" placeholder="Stripe is not connected yet" />
+              </div>
+            </div>
+            <div class="col-12">
+              <div class="d-flex w-100 justify-content-end">
+                <button [disabled]="savingMerchant || !merchantDto.subscriptionAmount"
+                  class="btn button-theme m-0 ml-2 px-4 save-setting-btn" (click)="processSaveMerchantData()">
+                  Save Settings
+                  <span *ngIf="savingMerchant" class="spinner-border spinner-border-sm" role="status"
+                    aria-hidden="true">
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-5 sub-history-div">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h4 class="sub-heading">Subscription History</h4>
+        </div>
+        <div *ngIf="subcriptionRecordsList.length === 0">
+          <div class="alert alert-info" role="alert">
+            No subscription records available.
+          </div>
+        </div>
+        <!-- Table for desktop view -->
+
+        <div *ngIf="subcriptionRecordsList.length > 0" class="table-responsive desktop-view">
+          <table class="table table-bordered table-hover" id="price-table">
+            <thead class="bg-theme white-text sorting">
+              <tr>
+                <th>Date</th>
+                <!-- <th>Create Date Time</th> -->
+                <th>Status</th>
+                <th>Amount</th>
+                <th>Trial (yes / no)</th>
+                <th>Frequency</th>
+                <th>Adjusted Payout Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of subcriptionRecordsList">
+                <td>{{ item.date | date : "MM-dd-yyyy" }}</td>
+                <td class="min-width-td">
+                  {{ SubscriptionStatusEnum[item.status] }}
+
+                  <div *ngIf="item.status == 0">{{ item.split_remarks }}</div>
+                  <div *ngIf="item.status == 2">
+                    <div>By: {{ item.waiveoff_username }}</div>
+                    <div>At: {{ item.waiveoff_datetime }}</div>
+                    <div>Remarks: {{ item.waiveoff_remarks }}</div>
+                  </div>
+                  <div *ngIf="item.status == 3">
+                    <div>By: {{ item.mark_paid_username }}</div>
+                    <div>At: {{ item.mark_paid_datetime }}</div>
+                    <div>Remarks: {{ item.mark_paid_remarks }}</div>
+                  </div>
+                  <div *ngIf="item.status == 4">
+                    <div>Reason: {{ item.waiveoff_remarks }}</div>
+                  </div>
+                  <div *ngIf="item.status == 5">
+                    <div>{{ item.split_remarks }}</div>
+                  </div>
+                </td>
+                <td>${{ item.amount }}</td>
+                <td>{{ item.istrail == 1 ? "Yes" : "No" }}</td>
+                <td>{{ SubscriptionFrequencyEnum[item.frequency] }}</td>
+                <td>
+                  <a *ngIf="item.status == 1" routerLink="/home/merchants/transfer-details/{{
+                      item.payoutId
+                    }}">
+                    <button class="btn button-theme">View Details</button>
+                  </a>
+
+                  <div *ngIf="item.status == 0" class="d-flex align-items-center">
+                    <div>Subscription amount is not adjusted yet</div>
+                    <div class="d-flex ml-2" style="width: max-content">
+                      <button (click)="
+                          showWaiveOffModal(waiveOffReasonModal, item.id)
+                        " class="btn button-theme">
+                        Waive Off
+                      </button>
+                      <button (click)="
+                          showMarkPaidModal(markPaidReasonModal, item.id)
+                        " class="btn button-theme">
+                        Mark as paid
+                      </button>
+                      <button (click)="
+                          splitTotalAmount = 0;
+                          addbtn = true;
+                          SubscriptionSplitList = [];
+                          showSplitModal(split, item)
+                        " class="btn button-theme" [hidden]="item.split_status == 1 || item.amount == 0">
+                        Split
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--Table for Mobile view -->
+        <div class="mobile-view">
+          <div class="table-responsive">
+            <table class="table" *ngIf="expandtable.length > 0">
+              <thead>
+                <tr class="mobile-table-bg">
+                  <th scope="col"></th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Amount</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let item of expandtable">
+                <tr class="" (click)="onChangeExpandtable(item.idx)">
+                  <td>
+                    <!-- Add Icon -->
+                    <div *ngIf="!item.expandtable">
+                      <i class="fas fa-caret-down"></i>
+                    </div>
+                    <!-- Minus Icon -->
+                    <div *ngIf="item.expandtable">
+                      <i class="fas fa-sort-up"></i>
+                    </div>
+                  </td>
+                  <td>
+                    {{
+                    SubscriptionStatusEnum[
+                    subcriptionRecordsList[item.idx].status
+                    ]
+                    }}
+                    <div *ngIf="subcriptionRecordsList[item.idx].status == 2">
+                      <div>
+                        By:
+                        {{ subcriptionRecordsList[item.idx].waiveoff_username }}
+                      </div>
+                      <div>
+                        At:
+                        {{ subcriptionRecordsList[item.idx].waiveoff_datetime }}
+                      </div>
+                      <div>
+                        Remarks:
+                        {{ subcriptionRecordsList[item.idx].waiveoff_remarks }}
+                      </div>
+                    </div>
+                    <div *ngIf="subcriptionRecordsList[item.idx].status == 3">
+                      <div>
+                        By:
+                        {{
+                        subcriptionRecordsList[item.idx].mark_paid_username
+                        }}
+                      </div>
+                      <div>
+                        At:
+                        {{
+                        subcriptionRecordsList[item.idx].mark_paid_datetime
+                        }}
+                      </div>
+                      <div>
+                        Remarks:
+                        {{ subcriptionRecordsList[item.idx].mark_paid_remarks }}
+                      </div>
+                    </div>
+                  </td>
+                  <td>$ {{ subcriptionRecordsList[item.idx].amount }}</td>
+                </tr>
+
+                <!-- Expandable Area -->
+                <tr class="hide-table-padding" *ngIf="item.expandtable" style="background-color: #eee">
+                  <td></td>
+                  <td colspan="3">
+                    <div>
+                      <div class="d-flex justify-content-between mt-3">
+                        <div style="
+                            font-weight: 600;
+                            margin-left: -1.8em;
+                            font-size: 15px;
+                          ">
+                          Date
+                        </div>
+                        <div style="font-size: 15px">
+                          {{
+                          subcriptionRecordsList[item.idx].date
+                          | date : "MM-dd-yyyy"
+                          }}
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-between mt-3">
+                        <div style="
+                            font-weight: 600;
+                            margin-left: -1.8em;
+                            font-size: 15px;
+                          ">
+                          Trial (yes / no)
+                        </div>
+                        <div style="font-size: 15px">
+                          {{
+                          subcriptionRecordsList[item.idx].istrail == 1
+                          ? "Yes"
+                          : "No"
+                          }}
+                        </div>
+                      </div>
+                      <div class="d-flex justify-content-between mt-3">
+                        <div style="
+                            font-weight: 600;
+                            margin-left: -1.8em;
+                            font-size: 15px;
+                          ">
+                          Frequency
+                        </div>
+                        <div class="">
+                          {{
+                          SubscriptionFrequencyEnum[
+                          subcriptionRecordsList[item.idx].frequency
+                          ]
+                          }}
+                        </div>
+                      </div>
+                      <div class="mt-3">
+                        <div style="font-size: 15px">
+                          <a *ngIf="subcriptionRecordsList[item.idx].status == 1" routerLink="/home/merchants/transfer-details/{{
+                              subcriptionRecordsList[item.idx].payoutId
+                            }}">
+                            <button class="btn button-theme details-btn-mobile">
+                              View Details
+                            </button>
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div mdbModal #waiveOffReasonModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade"
+    tabindex="-1" role="dialog" aria-labelledby="waiveOffReasonModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="waiveOffReasonModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">
+            Are you sure you want to waive off the subscription charges?
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Enter reason for waiving off.</label>
+                <input type="text" [(ngModel)]="explaination" class="field" placeholder="reason " />
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light btn-sm"
+              aria-label="Close" (click)="waiveOffReasonModal.hide()" mdbWavesEffect>
+              Close
+            </button>
+            <button [disabled]="savingWaiveOff || !explaination" type="button" mdbBtn color="primary"
+              class="relative btn-sm waves-light" (click)="processWaiveOff(waiveOffReasonModal)" mdbWavesEffect>
+              <span *ngIf="savingWaiveOff" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+              Waive Off
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mdbModal #markPaidReasonModal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade"
+    tabindex="-1" role="dialog" aria-labelledby="markPaidReasonModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="markPaidReasonModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">
+            Are you sure you want to mark the subscription charges as paid?
+          </h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Enter reason for marking it paid.</label>
+                <input type="text" [(ngModel)]="explaination" class="field" placeholder="reason " />
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light btn-sm"
+              aria-label="Close" (click)="markPaidReasonModal.hide()" mdbWavesEffect>
+              Close
+            </button>
+            <button [disabled]="savingWaiveOff || !explaination" type="button" mdbBtn color="primary"
+              class="relative btn-sm waves-light" (click)="processMarkPaid(markPaidReasonModal)" mdbWavesEffect>
+              <span *ngIf="savingWaiveOff" class="spinner-border spinner-border-sm" role="status"
+                aria-hidden="true"></span>
+              Mark as paid
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div mdbModal #split="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+    role="dialog" aria-labelledby="split" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content modal_width">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="split.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel">
+            Split The Subscription Amount
+          </h4>
+        </div>
+        <div class="modal-body">
+          <h5>Total Subscription Amount: ${{ totalsubscriptionamount }}</h5>
+          <div class="margin-left">
+            <button [disabled]="!addbtn" class="btn btn-primary" (click)="addInput()"
+              [hidden]="splitTotalAmount >= totalsubscriptionamount">
+              Add
+            </button>
+          </div>
+          <table class="table" style="border: black">
+            <thead>
+              <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody style="background-color: white">
+              <tr *ngFor="let input of SubscriptionSplitList; let i = index">
+                <td>
+                  <!-- <mdb-date-picker [inline]="true" name="mydate" [options]="myDatePickerOptionsSplit" [placeholder]=""
+                    [(ngModel)]="input.splitDate" [disabled]="input.disable"></mdb-date-picker> -->
+                  <input type="date" [(ngModel)]="input.splitDate" class="field" [placeholder]="
+                      'MerchantOnBoarding.Onboarding Date' | transloco
+                    " />
+                </td>
+                <td>
+                  $<input class="field-subscription" type="number" [(ngModel)]="input.splitAmount"
+                    [disabled]="input.disable" />
+                </td>
+                <td>
+                  <button class="minus-btn" (click)="removeInput(input)">
+                    <span class="fa fa-minus-circle text-danger fa-2x"></span>
+                  </button>
+                  <button class="minus-btn" (click)="addsingleInput(input)" [hidden]="
+                      input.splitDate == '' ||
+                      input.splitAmount <= 0 ||
+                      input.splitAmount == null ||
+                      input.disable
+                    ">
+                    <span class="fa fa-check-circle text-success fa-2x"></span>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h5>Splited Total Amount : ${{ splitTotalAmount }}</h5>
+          <span style="color: red" *ngIf="splitTotalAmount > totalsubscriptionamount">
+            ( splited total amount is grater than the subscription total amount
+            )</span>
+          <div class="margin-left">
+            <button class="btn btn-danger" (click)="saveInputs(); split.hide()"
+              [disabled]="splitTotalAmount != totalsubscriptionamount">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

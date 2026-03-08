@@ -1,0 +1,156 @@
+<div class="container-fluid pb-4">
+  <div *ngIf="showloader" class="loader-main">
+    <span
+      class="spinner-border spinner-border-lg"
+      role="status"
+      aria-hidden="true"
+    >
+    </span>
+  </div>
+  <div id="part1" class="form-group" *ngIf="showConnectGoogleBtn">
+    <div class="panel panel-primary">
+      <div class="main-screen">
+        <div class="google-heading">
+          <h3>{{ "Sidenav.Google My Business" | transloco }}</h3>
+        </div>
+        <div class="btn-group btn-group-lg" role="group">
+          <label>
+            <div
+              class="btn button-theme mx-0 my-0"
+              (click)="doAuthorizationGoogle()"
+            >
+              {{ "GMB.Connect Google Account" | transloco }}
+              <span
+                *ngIf="connectingGMB"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </div>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div
+      class="card shadow p-3 mb-5 bg-white rounded mt-5"
+      *ngIf="connectGMBErrorCrad"
+    >
+      <div class="card-body">
+        {{
+          "GMB.Your Google Account is not associated with any GMB profile Login withother account. OR create your GMB
+        account." | transloco
+        }}
+      </div>
+    </div>
+  </div>
+  <span *ngIf="gettingLocationList" class="spinner-position"></span>
+  <div>
+    <!-- when just connect to ggogle -->
+    <div class="row locations-main" *ngIf="onlyConnectGoogle">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "GMB.Select Location" | transloco }}</label>
+          <ng-select
+            placeholder="Select Location"
+            [(ngModel)]="selectedlocation"
+          >
+            <ng-option [value]="item" *ngFor="let item of locationsList">
+              {{ item.title }}
+            </ng-option>
+          </ng-select>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <label class="invisible d-block">connect Button</label>
+        <button
+          type="button"
+          class="btn button-theme mx-0 my-0"
+          (click)="linkLocation()"
+          [disabled]="selectedlocation.title == ''"
+        >
+          {{ "GMB.connect" | transloco }}
+        </button>
+      </div>
+      <div class="col-md-4">
+        <label class="invisible d-block">Disconnect Button</label>
+        <button
+          type="button"
+          class="btn button-theme mx-0 my-0"
+          (click)="UnlinkLocation()"
+        >
+          {{ "GMB.Disconnect" | transloco }}
+        </button>
+      </div>
+    </div>
+    <div class="row locations-main" *ngIf="showingtabs">
+      <div class="col-md-4">
+        <div class="form-group">
+          <label>{{ "GMB.Selected Location" | transloco }}</label>
+          <ng-select
+            placeholder="Select Location"
+            [(ngModel)]="loc_obj.title"
+            [disabled]="showingtabs"
+          >
+          </ng-select>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <label class="invisible d-block">Disconnect Button</label>
+        <button
+          type="button"
+          class="btn button-theme mx-0 my-0"
+          (click)="UnlinkLocation()"
+        >
+          {{ "GMB.Disconnect" | transloco }}
+        </button>
+      </div>
+    </div>
+    <span *ngIf="linkingLocation" class="spinner-position"></span>
+    <div class="mt-4" *ngIf="showingtabs">
+      <mdb-tabs>
+        <!--Tabs-->
+        <mdb-tab title="{{ 'GMB.Edit Profile' | transloco }}" class="nav-item">
+          <app-edit-profile
+            [loc_obj]="loc_obj"
+            [merchantId]="merchantId"
+            (callgetLocation)="getLocation()"
+          ></app-edit-profile>
+        </mdb-tab>
+        <mdb-tab
+          title="{{ 'GMB.Media' | transloco }}"
+          *ngIf="loc_obj.status == 3"
+        >
+          <app-media
+            [media_obj]="media_obj"
+            [merchantId]="merchantId"
+            [locationId]="loc_obj.locationId"
+            [accountId]="loc_obj.accountId"
+          ></app-media>
+        </mdb-tab>
+        <mdb-tab title="{{ 'GMB.Menu' | transloco }}">
+          <app-gmb-menus
+            [menu_obj]="menu_obj"
+            [merchantId]="merchantId"
+            [locationId]="loc_obj.locationId"
+            [accountId]="loc_obj.accountId"
+            [menuHours]="loc_obj.menuHours"
+            (callgetLocation)="getLocation()"
+          ></app-gmb-menus>
+        </mdb-tab>
+        <mdb-tab
+          title="{{ 'GMB.Food Ordering' | transloco }}"
+          *ngIf="loc_obj.status == 3"
+        >
+          <app-food-ordering
+            [provider_obj]="provider_obj"
+            [merchantId]="merchantId"
+            [locationId]="loc_obj.locationId"
+            [accountId]="loc_obj.accountId"
+          ></app-food-ordering>
+        </mdb-tab>
+      </mdb-tabs>
+    </div>
+  </div>
+</div>

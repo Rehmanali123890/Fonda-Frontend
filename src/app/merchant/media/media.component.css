@@ -1,0 +1,150 @@
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #a1c7ec3d;
+  border: 2px dashed #000;
+  padding: 2em 0em;
+  border-radius: 14px;
+}
+
+input[type="file"] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.upload-img {
+  height: 65px;
+}
+
+.upload-file {
+  margin-top: 0.3em;
+  font-weight: bold;
+}
+
+.image-row {
+  display: flex;
+  align-items: center;
+  margin-top: 1em;
+  margin-bottom: 2em;
+}
+
+.image-container {
+  position: relative;
+  margin-top: 1em;
+}
+
+.gallery-img {
+  height: 150px;
+  width: 300px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.icons-div {
+  position: absolute;
+  top: -27px;
+  right: 0px;
+  cursor: pointer;
+}
+
+.icons-div-cover {
+  position: absolute;
+  top: -27px;
+  right: -10px;
+  cursor: pointer;
+}
+
+.icon {
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.icon-cover {
+  cursor: pointer;
+  font-size: 20px;
+  margin-right: 5px;
+}
+
+.add-row {
+  margin-left: auto;
+}
+
+.remove-row {
+  margin-left: auto;
+}
+
+.cross-icon {
+  height: 26px;
+}
+
+.plus-con {
+  height: 40px;
+}
+
+.add-image {
+  height: 45px;
+  cursor: pointer;
+}
+
+.gallery-photo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.uploded-img-div {
+  margin-top: 1.5em;
+}
+
+.upload-image {
+  width: 100% !important;
+  height: 300px !important;
+  border-radius: 14px;
+  object-fit: fill;
+}
+
+.add-gellary-img {
+  overflow: hidden;
+  position: relative;
+}
+
+.gellary-img-main {
+  margin-bottom: 2em;
+}
+
+.for-scroll {
+  max-height: 700px;
+  overflow-y: auto;
+}
+
+.for-scroll::-webkit-scrollbar {
+  width: 5px;
+  border-radius: 5px;
+}
+
+.for-scroll::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+}
+
+.for-scroll::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  border-radius: 5px;
+}
+
+@media screen and (max-width: 575px) {
+  .image-row {
+    flex-direction: column;
+    gap: 26px;
+  }
+  h4 {
+    font-size: 1.3em;
+  }
+}

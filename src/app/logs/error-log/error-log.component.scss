@@ -1,0 +1,43 @@
+.table {
+  width: 100%;
+}
+
+.form-div {
+  width: 100%;
+}
+.field_form_group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.search-filters {
+  background-color: #fff;
+  padding: 10px 20px;
+}
+
+.btn {
+  margin-bottom: 0em;
+}
+.form-control,
+.form-select {
+  height: 55px;
+  border: 2px solid #97999f !important;
+}
+@media screen and (max-width: 1024px) {
+  .field_form_group {
+    flex-wrap: wrap;
+  }
+  .form-div {
+    width: 40%;
+  }
+}
+@media screen and (max-width: 460px) {
+  .form-div {
+    width: 100%;
+  }
+  .field_form_group {
+    gap: 5px;
+  }
+}

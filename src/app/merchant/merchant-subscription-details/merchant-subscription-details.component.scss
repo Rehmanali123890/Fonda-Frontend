@@ -1,0 +1,166 @@
+#view-icon {
+  margin-left: 0.8rem;
+  font-size: 20px;
+  color: #4285f4;
+  cursor: pointer;
+}
+
+.field-subscription {
+  border-radius: 0.125rem;
+  // border: 1px solid rgb(128 128 128 / 70%);
+  padding: 8px 12px;
+  width: 95%;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  min-height: 36px !important;
+  height: 36px;
+}
+
+.field-subscription:focus {
+  border-color: #00305a;
+}
+
+.loader-main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+.spinner-border-sm {
+  width: 1.5em !important;
+  color: #fff !important;
+  height: 1.5em !important;
+}
+.button-theme {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 7px;
+}
+
+table > tbody {
+  background-color: #fff;
+}
+
+.assess-btn {
+  background-color: #00305a !important;
+}
+
+.mobile-view {
+  display: none;
+}
+
+.desktop-view {
+  display: block;
+}
+
+.min-width-td {
+  max-width: 300px;
+  text-wrap: wrap;
+}
+
+.margin-left {
+  margin-left: 662px;
+  margin-top: 20px;
+}
+
+.minus-icon {
+  font-size: 11px;
+  padding: 0px 2px;
+  width: 26px;
+  margin-top: 42px;
+  margin-left: 70px;
+}
+
+.modal_width {
+  width: 800px;
+}
+
+.modal-input {
+  margin-top: 13px;
+}
+
+.minus-btn {
+  background-color: white;
+  border: none;
+}
+
+// media query
+@media screen and (max-width: 575px) {
+  .mobile-view {
+    display: block;
+  }
+
+  .desktop-view {
+    display: none;
+  }
+
+  .sub-main {
+    margin-top: 0em !important;
+  }
+
+  .sub-heading {
+    font-size: 1.3em;
+  }
+
+  .sub-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+
+  .sub-button button {
+    width: 100%;
+    font-size: 11px;
+    box-shadow: none;
+  }
+
+  .save-setting-btn {
+    font-size: 11px;
+    box-shadow: none;
+    width: 100%;
+  }
+
+  .sub-amont-div {
+    margin-top: 0.7em !important;
+  }
+
+  .sub-history-div {
+    margin-top: 1em !important;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  table tr {
+    border-style: solid;
+    border-width: unset !important;
+    border-color: #eeeeee !important;
+  }
+
+  table tr td {
+    border: 2px solid #eeeeee;
+  }
+
+  table thead th {
+    border: 2px solid #eeeeee;
+  }
+
+  .mobile-table-bg {
+    background-color: #00305a;
+    color: #fff;
+  }
+
+  table tbody {
+    background-color: #fff;
+    font-size: 15px;
+  }
+
+  .details-btn-mobile {
+    font-size: 11px;
+    box-shadow: none;
+    width: 77%;
+  }
+}

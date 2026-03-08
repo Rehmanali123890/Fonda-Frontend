@@ -1,0 +1,77 @@
+.save-btn-desktop {
+  display: block !important;
+  border-radius: 22px;
+}
+.save-btn-mobile {
+  display: none !important;
+}
+
+.save-btn-mobile.disabled {
+  pointer-events: none; /* Disable clicking on the anchor tag */
+  opacity: 0.5; /* Add visual indication that the link is disabled */
+  cursor: not-allowed; /* Display 'not-allowed' cursor for disabled state */
+}
+@media screen and (min-width: 900px) {
+  .time-select-week .field{
+    min-width: 200px;
+    min-height: 40px !important;
+  }
+}
+@media screen and (max-width: 575px) {
+  .save-btn-mobile {
+    display: block !important;
+  }
+  .save-btn-desktop {
+    display: none !important;
+  }
+  .main-for-mobile {
+    gap: 5px;
+    margin-bottom: 0.5rem !important;
+  }
+  .week-days-mobile {
+    padding: 0px;
+  }
+  .for-mobile-30 {
+    flex-basis: 30%;
+    padding: 0px;
+  }
+
+  .for-mobile-0 {
+    flex-basis: 0%;
+    flex-shrink: 1;
+    padding: 0px;
+  }
+  .field {
+    padding: 8px 0px !important;
+  }
+  .hours-heading-mobile {
+    margin-left: -0.7em;
+    font-size: 1.2em;
+  }
+  .hours-main-div {
+    margin-top: -8px;
+  }
+  .weekdays > h5 {
+    font-size: 1.2em;
+  }
+}
+@media screen and (max-width: 392px) {
+  .plus-icon {
+    font-size: 11px;
+    padding: 0px 2px;
+    width: 26px;
+  }
+  .field {
+    padding: 8px 0px !important;
+    font-size: 14px;
+  }
+}
+@media screen and (max-width: 360px) {
+  .plus-icon {
+    width: 22px;
+  }
+  .for-mobile-30 {
+    flex-basis: 28%;
+    padding: 0px;
+  }
+}

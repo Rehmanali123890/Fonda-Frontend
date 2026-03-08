@@ -1,0 +1,104 @@
+<div class="card">
+  <div class="card-header">
+    <h4 class="status-heading">{{ "GMB.Edit Your Services Provider" | transloco }}</h4>
+    <img src="../../../assets/icons/plus.svg" class="plus-icon float-end" alt="" (click)="addRow()"
+      style="height: 35px" />
+  </div>
+
+  <div class="card-body">
+    <div *ngFor="let row of order_providers; let i = index" class="row mobile-margin">
+      <div class="col-md-6" [class.input-mobile-width]="row.iseditable == true">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="URL" [disabled]="row.hasOwnProperty('iseditable')"
+            [(ngModel)]="row.url" #urlInput="ngModel" name="url" required pattern="https?://.+" />
+          <div *ngIf="urlInput.invalid && (urlInput.dirty || urlInput.touched)">
+            <div *ngIf="urlInput.errors.pattern">
+              <p style="color: #ff3547">
+                {{ "GMB.Please enter a valid URL with https://" | transloco }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-1" [class.icon-mobile-width]="row.iseditable == true">
+        <img *ngIf="row.iseditable == true" src="../../../assets/icons/minus.svg" class="plus-icon" alt=""
+          (click)="removeRow(row, i)" />
+        <div class="d-flex align-items-center gap-2">
+          <button type="btn" class="btn button-theme m-0" (click)="createlinkfunc(row.url)"
+            *ngIf="!row.hasOwnProperty('iseditable')" [disabled]="urlInput.invalid || row.url == ''">
+            {{ "reuseableWords.Create" | transloco }}
+            <span *ngIf="creatingLink" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+            </span>
+          </button>
+          <button style="background-color: #ff000080" type="btn" class="btn button-theme"
+            (click)="removeuncreatedRow(i)" *ngIf="!row.hasOwnProperty('iseditable')">
+            {{ "reuseableWords.Cancel" | transloco }}
+          </button>
+        </div>
+      </div>
+
+      <div class="col-md-4" *ngIf="row.iseditable == true">
+        <div class="checkbox-div">
+          <div class="check">
+            <input type="checkbox" [checked]="row.hasOwnProperty('FOOD_TAKEOUT')" (change)="
+                handleCheckboxChange(
+                  row,
+                  'FOOD_TAKEOUT',
+                  i,
+                  $event.target.checked
+                )
+              " />
+            <label class="form-label">{{ "Orders.Pickup" | transloco }}</label>
+          </div>
+          <div class="check">
+            <input type="checkbox" [checked]="row.hasOwnProperty('FOOD_DELIVERY')" (change)="
+                handleCheckboxChange(
+                  row,
+                  'FOOD_DELIVERY',
+                  i,
+                  $event.target.checked
+                )
+              " />
+            <label class="form-label">{{ "Orders.Delivery" | transloco }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="update-button">
+  <button class="btn button-theme" (click)="confirmModal()">
+    {{ "reuseableWords.Update" | transloco }}
+    <span *ngIf="updating" class="spinner-border spinner-border-sm" role="status" aria-hidden="true">
+    </span>
+  </button>
+</div>
+
+<!-- confermation modal -->
+
+<div mdbModal #confirmationmodal="mdbModal" [config]="{ ignoreBackdropClick: true }" class="modal fade" tabindex="-1"
+  role="dialog" aria-labelledby="myaddPlatformModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button type="button" class="close pull-right text-white" aria-label="Close" (click)="confirmationmodal.hide()">
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-heading">{{ "GMB.Sure you want to accept?" | transloco }}</h4>
+      </div>
+      <div class="modal-body px-3">
+        <p>{{ "GMB.This action will override the data in your GMB Profile." | transloco }}</p>
+      </div>
+      <div class="modal-footer px-3">
+        <button type="button" mdbBtn style="background-color: #ff000080; color: #fff" class="waves-light"
+          aria-label="Close" (click)="closeConfirmModal()" mdbWavesEffect>
+          {{ "reuseableWords.Close" | transloco }}
+        </button>
+        <button type="button" class="btn orange-bt text-white"
+          (click)="updating = true; closeConfirmModal(); orderplacelink()">
+          {{ "GMB.Yes Confirm" | transloco }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

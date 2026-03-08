@@ -1,0 +1,978 @@
+<div class="container-fluid">
+  <div class="card">
+    <div class="card-header">
+      <div class="main">
+        <h4 class="merchant-heading">
+          {{ "merchantslist.merchantheading" | transloco }}
+        </h4>
+        <div class="d-flex align-items-center merchants-btn-group">
+          <a
+            *ngIf="userRoleType == 1"
+            href="https://dev-onboarding.mifonda.io/ "
+            class="addMerchant-desktop"
+          >
+            <button class="btn" style="background-color: #00305a; color: #fff">
+              {{ "merchantslist.addmerchantbtn" | transloco }}
+            </button>
+          </a>
+          <a
+            *ngIf="userRoleType == 1"
+            href="https://dev-onboarding.mifonda.io/ "
+            class="addMerchant-mobile"
+          >
+            <img src="../../../assets/icons/add.png" />
+          </a>
+          <button
+            class="btn orange-bt text-white addMerchant-desktop"
+            appDebounceClick
+            (debounceClick)="test.toggle()"
+            [debounceTime]="350"
+          >
+            {{ "merchantslist.filter" | transloco }}
+          </button>
+          <img
+            src="../../../assets/icons/filter.png"
+            class="addMerchant-mobile"
+            [debounceTime]="350"
+            appDebounceClick
+            (debounceClick)="test.toggle()"
+          />
+          <!-- <button class="btn orange-bt text-white addMerchant-desktop" appDebounceClick
+            (debounceClick)="parser.toggle()" [debounceTime]="350">
+            Parser Settings
+          </button> -->
+        </div>
+      </div>
+    </div>
+    <div class="" mdbCollapse #test="bs-collapse">
+      <div class="card p-3 mb-3">
+        <div class="d-flex mb-3 justify-content-between align-items-center">
+          <h4 class="mb-0">{{ "merchantslist.filter" | transloco }}</h4>
+          <span
+            class="cursor-pointer"
+            appDebounceClick
+            (debounceClick)="test.toggle()"
+            [debounceTime]="350"
+            >&times;</span
+          >
+        </div>
+        <div class="row">
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>{{
+                "merchantslist.merchantslistfilters.MerchantName" | transloco
+              }}</label>
+              <input
+                type="text"
+                appOnDebounce
+                [debounceTime]="1000"
+                (onDebounce)="GetMerchantsList()"
+                [(ngModel)]="merchantName"
+                class="field"
+                [placeholder]="
+                  'merchantslist.merchantslistfilters.MerchantName' | transloco
+                "
+              />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>{{ "reuseableWords.Status" | transloco }}</label>
+              <select
+                type="text"
+                [(ngModel)]="filterMerchantStatus"
+                (change)="GetMerchantsList()"
+                class="field"
+                placeholder="Merchant"
+              >
+                <option [value]="''">
+                  {{ "reuseableWords.all" | transloco }}
+                </option>
+                <option
+                  [value]="item.value"
+                  *ngFor="let item of merchantStatusEnumList"
+                >
+                  {{ item.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>{{
+                "merchantslist.merchantslisttable.AcceptingOrders" | transloco
+              }}</label>
+              <select
+                type="text"
+                [(ngModel)]="marketStatus"
+                (change)="GetMerchantsList()"
+                class="field"
+                placeholder="Merchant"
+              >
+                <option value="1" [selected]="marketStatus == true">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="marketStatus == false">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>{{
+                "merchantslist.merchantslistfilters.OnboardingCompleted"
+                  | transloco
+              }}</label>
+              <select
+                type="text"
+                [(ngModel)]="onBoardingCompleted"
+                (change)="GetMerchantsList()"
+                class="field"
+                placeholder="Merchant"
+              >
+                <option value="1" [selected]="onBoardingCompleted === 1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+                <option value="0" [selected]="onBoardingCompleted === 0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>{{
+                "merchantslist.merchantslistfilters.EsperStatus" | transloco
+              }}</label>
+              <select
+                type="text"
+                [(ngModel)]="esperDeviceFilter"
+                (change)="changeEsperFilter()"
+                class="field"
+                placeholder="Merchant"
+              >
+                <option value="1" [selected]="esperDeviceFilter === 1">
+                  {{ "reuseableWords.online" | transloco }}
+                </option>
+                <option value="0" [selected]="esperDeviceFilter === 0">
+                  {{ "reuseableWords.offline" | transloco }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>{{ "reuseableWords.Email" | transloco }}</label>
+              <input
+                type="text"
+                appOnDebounce
+                [debounceTime]="1000"
+                (onDebounce)="GetMerchantsList()"
+                [(ngModel)]="merchantEmail"
+                class="field"
+                [placeholder]="'reuseableWords.Email' | transloco"
+              />
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label for="printCopies">{{
+                "merchantslist.merchantslistfilters.UseOpeningHoursFilter"
+                  | transloco
+              }}</label>
+              <select
+                #isConsolidateChecked
+                (change)="consolidateCheckbox()"
+                class="form-select"
+                id="order-date-form"
+                aria-label="Default select example"
+              >
+                <option [value]="0">
+                  {{ "reuseableWords.no" | transloco }}
+                </option>
+                <option [value]="1">
+                  {{ "reuseableWords.yes" | transloco }}
+                </option>
+              </select>
+              <div></div>
+            </div>
+          </div>
+          <div class="col-md-3" *ngIf="hoursFilter">
+            <div class="form-group">
+              <label>Opening Hours Filter</label>
+              <select
+                type="text"
+                [(ngModel)]="openingHoursFilter"
+                (change)="onChangeOpeningHoursFilter($event)"
+                class="field"
+                placeholder="Opening Hours Filer"
+              >
+                <option value="äll">All Day</option>
+                <option value="morning">Morning (9 To 12)</option>
+                <option value="afternoon">Afternoon (1 To 5)</option>
+                <option value="eveningOnwards">Evening Onwards</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>GMB Connectivity Status</label>
+              <select
+                type="text"
+                [(ngModel)]="GMBConnFilter"
+                (change)="onChangeGMBConnFilter($event)"
+                class="field"
+                placeholder="GMB Connectivity Status"
+              >
+                <option value="connected">Connected</option>
+                <option value="unconnected">Non-Connected</option>
+              </select>
+            </div>
+          </div>
+
+
+
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>GMB Verification Status</label>
+              <select
+                type="text"
+                [(ngModel)]="GMBVerifyFilter"
+                (change)="onChangeGMBVerifyFilter($event)"
+                class="field"
+                placeholder="GMB Verification Status"
+              >
+                <option value="verified">Verified</option>
+                <option value="unverified">UnVerified</option>
+              </select>
+            </div>
+          </div>
+          <!-- <div class="col-md-3">
+            <div class="form-group">
+              <label>Doordash Stream Connectivity</label>
+              <select type="number" [(ngModel)]="DDstreamConnFilter" (change)="onChangeDDstreamConnFilter($event)"
+                class="field" placeholder="Doordash Stream Connectivity">
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="form-group">
+              <label>Grubhub Stream Connectivity</label>
+              <select type="number" [(ngModel)]="GHstreamConnFilter" (change)="onChangeGHstreamConnFilter($event)"
+                class="field" placeholder="Grubhub Stream Connectivity">
+                <option value="1">Active</option>
+                <option value="0">Inactive</option>
+              </select>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </div>
+    <div class="" mdbCollapse #parser="bs-collapse">
+      <div class="card p-3 mb-3">
+        <div class="d-flex mb-3 justify-content-between align-items-center">
+          <h4 class="mb-0">Parser Settings</h4>
+          <span
+            class="cursor-pointer"
+            appDebounceClick
+            (debounceClick)="parser.toggle()"
+            [debounceTime]="350"
+            >&times;</span
+          >
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Parser 1</label>
+              <select
+                type="text"
+                [(ngModel)]="parserSetting.parser1"
+                class="field"
+                placeholder="GMB Verification Status"
+              >
+                <option value="0">Pause</option>
+                <option value="1">Resume</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="form-group">
+              <label>Parser 2</label>
+              <select
+                type="text"
+                [(ngModel)]="parserSetting.parser2"
+                class="field"
+                placeholder="GMB Verification Status"
+              >
+                <option value="0">Pause</option>
+                <option value="1">Resume</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-3 mt-1">
+            <button
+              class="btn orange-bt text-white addMerchant-desktop mt-4"
+              (click)="saveParserSetting()"
+            >
+              Save Setting
+              <span
+                *ngIf="UpdatingSarserSetting"
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              >
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="gettingMerchants"
+      class="d-flex justify-content-center text-center"
+    >
+      <mat-progress-bar
+        class="progress primary-color-dark mb-0"
+        mode="indeterminate"
+      ></mat-progress-bar>
+    </div>
+    <!-- Table for desktop view -->
+    <div
+      class="table-responsive desktop-view"
+      infinite-scroll
+      [infiniteScrollDistance]="2"
+      [infiniteScrollThrottle]="150"
+      infinite-scroll-disabled="busyLoadingData"
+      (scrolled)="onScroll()"
+    >
+      <table class="table table-bordered table-hover">
+        <thead class="bg-theme white-text sorting">
+          <tr>
+            <th class="sorting">
+              {{ "reuseableWords.Merchant" | transloco }}
+              <!-- <span class="fa fa-facebook"> </span>
+              <span class="fa top-icon"></span>
+              <span class="fa bottom-icon"></span> -->
+            </th>
+            <th>{{ "reuseableWords.Email" | transloco }}</th>
+            <th>{{ "reuseableWords.Phone" | transloco }}</th>
+
+            <th>{{ "reuseableWords.Status" | transloco }}</th>
+            <th>
+              {{
+                "merchantslist.merchantslisttable.TodayOpeningHours" | transloco
+              }}
+            </th>
+            <th>
+              {{
+                "merchantslist.merchantslisttable.AcceptingOrders" | transloco
+              }}
+            </th>
+            <!-- <th>
+              Doordash Stream Connectivity
+            </th>
+            <th>
+              Grubhub Stream Connectivity
+            </th> -->
+            <th>
+              {{
+                "merchantslist.merchantslisttable.ConnectedDevice" | transloco
+              }}
+            </th>
+            <th>GMB Verification</th>
+            <th>GMB Connectivity</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of MerchantsList">
+            <td class="merchant_name">
+              <span
+                class="text-primary"
+                style="cursor: pointer"
+                *ngIf="userRoleType == 2 || userRoleType == 4"
+              >
+                {{ item.merchantName }}
+              </span>
+              <span
+                class="text-primary"
+                style="cursor: pointer"
+                *ngIf="userRoleType == 1 || userRoleType == 3"
+                (click)="navigateToMerchantSetting(item)"
+              >
+                {{ item.merchantName }}
+              </span>
+              <span
+                (click)="navigateMerchatUsers(item)"
+                class="fa top-icon fa-pencil-alt"
+              >
+              </span>
+              <ng-container *ngIf="item.businessNumber">
+                <img
+                  src="https://img.icons8.com/ios-glyphs/24/20b2aa/sms.png"
+                  class="sms-icon"
+                  style="cursor: pointer; margin-left: 0.4em"
+                  (click)="
+                    sendSmsModal.show();
+                    smsMerchantName = item.merchantName;
+                    smsNumber = item.businessNumber
+                  "
+                />
+              </ng-container>
+            </td>
+            <td>{{ item.email }}</td>
+            <td>{{ item.phone }}</td>
+
+            <td>{{ merchantStatusEnum[item.merchantStatus] }}</td>
+            <td>
+              <div *ngFor="let openingHours of item.openinghours" class="">
+                {{ openingHours.openTime }}
+                till
+                {{ openingHours.closeTime }}
+              </div>
+            </td>
+            <td>
+              <label class="toggle">
+                <input
+                  [(ngModel)]="item.marketStatus"
+                  [disabled]="item.merchantStatus == 0"
+                  (change)="merchantStatusToogle(item.id, item.marketStatus)"
+                  class="toggle-checkbox"
+                  type="checkbox"
+                />
+                <div class="toggle-switch"></div>
+              </label>
+            </td>
+            <!-- <td>
+              <label class="toggle">
+                <input [(ngModel)]="item.doordashstream"
+                  (change)="merchantStreamStatusToogle(item.id, item.doordashstream , 'doordashstream')"
+                  class="toggle-checkbox" type="checkbox" />
+                <div class="toggle-switch"></div>
+              </label>
+            </td>
+            <td>
+              <label class="toggle">
+                <input [(ngModel)]="item.grubhubstream"
+                  (change)="merchantStreamStatusToogle(item.id, item.grubhubstream , 'grubhubstream')"
+                  class="toggle-checkbox" type="checkbox" />
+                <div class="toggle-switch"></div>
+              </label>
+            </td> -->
+            <td>
+              <ng-container *ngIf="item.esperDetailObj != undefined">
+                <ng-container *ngIf="item.esperDetailObj.status == 1">
+                  <svg
+                    style="height: 35px"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 172 172"
+                  >
+                    <g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    >
+                      <path d="M0,172v-172h172v172z" fill="none"></path>
+                      <g fill="#299454">
+                        <path
+                          d="M47.75911,25.46126c-20.06667,12.7065 -33.42578,35.03257 -33.42578,60.53874c0,25.50617 13.35911,47.83224 33.42578,60.53874l7.65658,-12.10775c-16.05333,-10.16233 -26.74902,-28.02749 -26.74902,-48.43099c0,-20.4035 10.69569,-38.26866 26.74902,-48.43099zM124.24089,25.46126l-7.65658,12.10775c16.05333,10.16233 26.74902,28.02749 26.74902,48.43099c0,20.4035 -10.69569,38.26866 -26.74902,48.43099l7.65658,12.10775c20.06667,-12.7065 33.42578,-35.03257 33.42578,-60.53874c0,-25.50617 -13.35911,-47.83224 -33.42578,-60.53874zM63.05827,49.67676c-12.04,7.61817 -20.05827,21.02241 -20.05827,36.32324c0,15.30083 8.01827,28.69791 20.05827,36.32324l7.67057,-12.13574c-8.02667,-5.08833 -13.39551,-13.98217 -13.39551,-24.1875c0,-10.20533 5.36884,-19.09234 13.39551,-24.1735zM108.94173,49.67676l-7.67058,12.13574c8.02667,5.08833 13.39551,13.98217 13.39551,24.1875c0,10.20533 -5.36884,19.09234 -13.39551,24.1735l7.67058,12.14974c12.04,-7.61817 20.05827,-21.02241 20.05827,-36.32324c0,-15.30083 -8.01827,-28.69791 -20.05827,-36.32324zM86,71.66667c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z"
+                        ></path>
+                      </g>
+                    </g>
+                  </svg>
+                </ng-container>
+                <ng-container *ngIf="item.esperDetailObj.status == 60">
+                  <svg
+                    style="height: 35px"
+                    version="1.1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    viewBox="0 0 172 172"
+                  >
+                    <g
+                      fill="none"
+                      fill-rule="nonzero"
+                      stroke="none"
+                      stroke-width="1"
+                      stroke-linecap="butt"
+                      stroke-linejoin="miter"
+                      stroke-miterlimit="10"
+                      stroke-dasharray=""
+                      stroke-dashoffset="0"
+                      font-family="none"
+                      font-weight="none"
+                      font-size="none"
+                      text-anchor="none"
+                      style="mix-blend-mode: normal"
+                    >
+                      <path d="M0,172v-172h172v172z" fill="none"></path>
+                      <g fill="#d5200e">
+                        <path
+                          d="M26.56706,16.43294l-10.13411,10.13411l14.10938,14.10938c-10.10104,12.34118 -16.20898,28.04961 -16.20898,45.21159c0,22.661 10.60163,42.87391 27.08496,56.01758l8.91634,-11.19792c-13.18667,-10.5135 -21.66797,-26.68799 -21.66797,-44.81966c0,-13.20048 4.5309,-25.32686 12.06576,-35.02148l10.24609,10.24609c-4.98746,7.01204 -7.97852,15.53151 -7.97852,24.77539c0,13.60233 6.36098,25.73841 16.25098,33.62174l8.98633,-11.2959c-6.58617,-5.26033 -10.90397,-13.26001 -10.90397,-22.32584c0,-5.27313 1.58396,-10.09733 4.10124,-14.31934l13.87142,13.87142c-0.00648,0.15307 -0.05599,0.29324 -0.05599,0.44792c0,5.934 4.816,10.75 10.75,10.75c0.15468,0 0.29482,-0.04951 0.44792,-0.05599l58.98503,58.98503l10.13411,-10.13411zM130.72168,29.98242l-8.94433,11.18392c13.115,10.5135 21.55599,26.64018 21.55599,44.72168c0,8.557 -1.97834,16.62589 -5.361,23.92155l10.61003,10.62402c5.70467,-10.26267 9.08431,-21.99674 9.08431,-34.54558c0,-22.60367 -10.54766,-42.76193 -26.94499,-55.9056zM112.83301,52.35026l-9.01433,11.2679c6.56467,5.26033 10.84798,13.22552 10.84798,22.26986c0,0.1935 -0.03482,0.38039 -0.04199,0.57389l12.31771,12.31771c1.29717,-4.07783 2.05761,-8.39093 2.05761,-12.8916c0,-13.55933 -6.32716,-25.64726 -16.16699,-33.53776z"
+                        ></path>
+                      </g>
+                    </g>
+                  </svg>
+                </ng-container>
+              </ng-container>
+            </td>
+            <td>
+              {{ item.googleverified == 1 ? "Pending verify" : "" }}
+              {{ item.googleverified == 2 ? "Suspended" : "" }}
+              {{ item.googleverified == 4 ? "duplicate" : "" }}
+              {{ item.googleverified == 3 ? "Verified" : "" }}
+            </td>
+            <td>
+              {{ item.googleconnectivity == 1 ? "connected" : "" }}
+              {{ item.googleconnectivity == 0 ? "not connected" : "" }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div
+        *ngIf="!MerchantsList?.length"
+        class="alert alert-info w-100"
+        role="alert"
+      >
+        {{ "reuseableWords.No record found" | transloco }}
+      </div>
+    </div>
+    <!--Table for Mobile view -->
+    <div class="mobile-view">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr class="mobile-table-bg">
+              <th scope="col"></th>
+              <th scope="col">Merchant</th>
+              <th scope="col">Accepting Orders</th>
+              <th scope="col">Connected Device</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of expandtable">
+            <tr class="" (click)="onChangeExpandtable(item.idx)">
+              <td>
+                <!-- Add Icon -->
+                <div *ngIf="!item.expandtable">
+                  <i class="fas fa-caret-down"></i>
+                </div>
+                <!-- Minus Icon -->
+                <div *ngIf="item.expandtable">
+                  <i class="fas fa-sort-up"></i>
+                </div>
+              </td>
+              <td>
+                <span
+                  class="text-primary"
+                  style="cursor: pointer"
+                  *ngIf="userRoleType == 2 || userRoleType == 4"
+                >
+                  {{ MerchantsList[item.idx].merchantName }}
+                </span>
+                <span
+                  class="text-primary"
+                  style="cursor: pointer"
+                  *ngIf="userRoleType == 1 || userRoleType == 3"
+                  (click)="navigateToMerchantSetting(MerchantsList[item.idx])"
+                >
+                  {{ MerchantsList[item.idx].merchantName }}
+                </span>
+                <span
+                  (click)="navigateMerchatUsers(MerchantsList[item.idx])"
+                  class="fa top-icon fa-pencil-alt"
+                >
+                </span>
+                <ng-container *ngIf="MerchantsList[item.idx].businessNumber">
+                  <img
+                    src="https://img.icons8.com/ios-glyphs/24/20b2aa/sms.png"
+                    class="sms-icon"
+                    style="cursor: pointer; margin-left: 0.4em"
+                    (click)="
+                      sendSmsModal.show();
+                      smsMerchantName = MerchantsList[item.idx].merchantName;
+                      smsNumber = MerchantsList[item.idx].businessNumber
+                    "
+                  />
+                </ng-container>
+              </td>
+              <td>
+                <label class="toggle">
+                  <input
+                    [(ngModel)]="MerchantsList[item.idx].marketStatus"
+                    [disabled]="MerchantsList[item.idx].merchantStatus == 0"
+                    (change)="
+                      merchantStatusToogle(
+                        MerchantsList[item.idx].id,
+                        MerchantsList[item.idx].marketStatus
+                      )
+                    "
+                    class="toggle-checkbox"
+                    type="checkbox"
+                  />
+                  <div class="toggle-switch"></div>
+                </label>
+              </td>
+              <td>
+                <ng-container
+                  *ngIf="MerchantsList[item.idx].esperDetailObj != undefined"
+                >
+                  <ng-container
+                    *ngIf="MerchantsList[item.idx].esperDetailObj.status == 1"
+                  >
+                    <svg
+                      style="height: 35px"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      viewBox="0 0 172 172"
+                    >
+                      <g
+                        fill="none"
+                        fill-rule="nonzero"
+                        stroke="none"
+                        stroke-width="1"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="10"
+                        stroke-dasharray=""
+                        stroke-dashoffset="0"
+                        font-family="none"
+                        font-weight="none"
+                        font-size="none"
+                        text-anchor="none"
+                        style="mix-blend-mode: normal"
+                      >
+                        <path d="M0,172v-172h172v172z" fill="none"></path>
+                        <g fill="#299454">
+                          <path
+                            d="M47.75911,25.46126c-20.06667,12.7065 -33.42578,35.03257 -33.42578,60.53874c0,25.50617 13.35911,47.83224 33.42578,60.53874l7.65658,-12.10775c-16.05333,-10.16233 -26.74902,-28.02749 -26.74902,-48.43099c0,-20.4035 10.69569,-38.26866 26.74902,-48.43099zM124.24089,25.46126l-7.65658,12.10775c16.05333,10.16233 26.74902,28.02749 26.74902,48.43099c0,20.4035 -10.69569,38.26866 -26.74902,48.43099l7.65658,12.10775c20.06667,-12.7065 33.42578,-35.03257 33.42578,-60.53874c0,-25.50617 -13.35911,-47.83224 -33.42578,-60.53874zM63.05827,49.67676c-12.04,7.61817 -20.05827,21.02241 -20.05827,36.32324c0,15.30083 8.01827,28.69791 20.05827,36.32324l7.67057,-12.13574c-8.02667,-5.08833 -13.39551,-13.98217 -13.39551,-24.1875c0,-10.20533 5.36884,-19.09234 13.39551,-24.1735zM108.94173,49.67676l-7.67058,12.13574c8.02667,5.08833 13.39551,13.98217 13.39551,24.1875c0,10.20533 -5.36884,19.09234 -13.39551,24.1735l7.67058,12.14974c12.04,-7.61817 20.05827,-21.02241 20.05827,-36.32324c0,-15.30083 -8.01827,-28.69791 -20.05827,-36.32324zM86,71.66667c-7.91608,0 -14.33333,6.41725 -14.33333,14.33333c0,7.91608 6.41725,14.33333 14.33333,14.33333c7.91608,0 14.33333,-6.41725 14.33333,-14.33333c0,-7.91608 -6.41725,-14.33333 -14.33333,-14.33333z"
+                          ></path>
+                        </g>
+                      </g>
+                    </svg>
+                  </ng-container>
+                  <ng-container
+                    *ngIf="MerchantsList[item.idx].esperDetailObj.status == 60"
+                  >
+                    <svg
+                      style="height: 35px"
+                      version="1.1"
+                      xmlns="http://www.w3.org/2000/svg"
+                      xmlns:xlink="http://www.w3.org/1999/xlink"
+                      viewBox="0 0 172 172"
+                    >
+                      <g
+                        fill="none"
+                        fill-rule="nonzero"
+                        stroke="none"
+                        stroke-width="1"
+                        stroke-linecap="butt"
+                        stroke-linejoin="miter"
+                        stroke-miterlimit="10"
+                        stroke-dasharray=""
+                        stroke-dashoffset="0"
+                        font-family="none"
+                        font-weight="none"
+                        font-size="none"
+                        text-anchor="none"
+                        style="mix-blend-mode: normal"
+                      >
+                        <path d="M0,172v-172h172v172z" fill="none"></path>
+                        <g fill="#d5200e">
+                          <path
+                            d="M26.56706,16.43294l-10.13411,10.13411l14.10938,14.10938c-10.10104,12.34118 -16.20898,28.04961 -16.20898,45.21159c0,22.661 10.60163,42.87391 27.08496,56.01758l8.91634,-11.19792c-13.18667,-10.5135 -21.66797,-26.68799 -21.66797,-44.81966c0,-13.20048 4.5309,-25.32686 12.06576,-35.02148l10.24609,10.24609c-4.98746,7.01204 -7.97852,15.53151 -7.97852,24.77539c0,13.60233 6.36098,25.73841 16.25098,33.62174l8.98633,-11.2959c-6.58617,-5.26033 -10.90397,-13.26001 -10.90397,-22.32584c0,-5.27313 1.58396,-10.09733 4.10124,-14.31934l13.87142,13.87142c-0.00648,0.15307 -0.05599,0.29324 -0.05599,0.44792c0,5.934 4.816,10.75 10.75,10.75c0.15468,0 0.29482,-0.04951 0.44792,-0.05599l58.98503,58.98503l10.13411,-10.13411zM130.72168,29.98242l-8.94433,11.18392c13.115,10.5135 21.55599,26.64018 21.55599,44.72168c0,8.557 -1.97834,16.62589 -5.361,23.92155l10.61003,10.62402c5.70467,-10.26267 9.08431,-21.99674 9.08431,-34.54558c0,-22.60367 -10.54766,-42.76193 -26.94499,-55.9056zM112.83301,52.35026l-9.01433,11.2679c6.56467,5.26033 10.84798,13.22552 10.84798,22.26986c0,0.1935 -0.03482,0.38039 -0.04199,0.57389l12.31771,12.31771c1.29717,-4.07783 2.05761,-8.39093 2.05761,-12.8916c0,-13.55933 -6.32716,-25.64726 -16.16699,-33.53776z"
+                          ></path>
+                        </g>
+                      </g>
+                    </svg>
+                  </ng-container>
+                </ng-container>
+              </td>
+            </tr>
+
+            <!-- Expandable Area -->
+            <tr
+              class="hide-table-padding"
+              *ngIf="item.expandtable"
+              style="background-color: #eee"
+            >
+              <td></td>
+              <td colspan="3">
+                <div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Email
+                    </div>
+                    <div style="font-size: 15px">
+                      {{ MerchantsList[item.idx].email }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Phone
+                    </div>
+                    <div style="font-size: 15px">
+                      {{ MerchantsList[item.idx].phone }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Status
+                    </div>
+                    <div class="">
+                      {{
+                        merchantStatusEnum[
+                          MerchantsList[item.idx].merchantStatus
+                        ]
+                      }}
+                    </div>
+                  </div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <div
+                      style="
+                        font-weight: 600;
+                        margin-left: -1.8em;
+                        font-size: 15px;
+                      "
+                    >
+                      Today’s Opening Hours
+                    </div>
+                    <div style="font-size: 15px">
+                      <div
+                        *ngFor="
+                          let openingHours of MerchantsList[item.idx]
+                            .openinghours
+                        "
+                        class=""
+                      >
+                        {{ openingHours.openTime }}
+                        till
+                        {{ openingHours.closeTime }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  mdbModal
+  #basicModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  (close)="resetObj()"
+  role="dialog"
+  aria-labelledby="myBasicModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="basicModal.hide()"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white" id="myModalLabel">
+          Add Merchant
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="form-group">
+              <label>Merchant Name</label>
+              <input
+                type="text"
+                [(ngModel)]="merchantDto.merchantName"
+                class="field"
+                placeholder="Merchant Name"
+              />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>First Name</label>
+              <input
+                type="text"
+                [(ngModel)]="merchantDto.firstName"
+                class="field"
+                placeholder="First Name"
+              />
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="form-group">
+              <label>Last Name</label>
+              <input
+                type="text"
+                [(ngModel)]="merchantDto.lastName"
+                class="field"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="text"
+            [(ngModel)]="merchantDto.email"
+            class="field"
+            placeholder="Email"
+          />
+        </div>
+        <div class="form-group">
+          <label>Address</label>
+          <input
+            type="text"
+            [(ngModel)]="merchantDto.address"
+            class="field"
+            placeholder="Address"
+          />
+        </div>
+        <div class="form-group">
+          <label>Phone</label>
+          <input
+            type="text"
+            [(ngModel)]="merchantDto.phone"
+            class="field"
+            placeholder="Phone"
+          />
+        </div>
+      </div>
+      <div class="modal-footer px-3">
+        <button
+          type="button"
+          mdbBtn
+          style="background-color: #ff000080; color: #fff"
+          class="waves-light"
+          aria-label="Close"
+          (click)="basicModal.hide()"
+          mdbWavesEffect
+        >
+          Close
+        </button>
+        <button
+          type="button"
+          [disabled]="savingMerchant"
+          class="btn orange-bt text-white"
+          (click)="SaveMerchantData(basicModal)"
+        >
+          <span
+            *ngIf="savingMerchant"
+            class="spinner-border spinner-border-sm"
+            role="status"
+            aria-hidden="true"
+          ></span>
+          Submit
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  mdbModal
+  #sendSmsModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div
+    class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
+    role="document"
+  >
+    <div class="modal-content">
+      <div class="modal-header bg-theme">
+        <button
+          type="button"
+          class="close pull-right text-white"
+          aria-label="Close"
+          (click)="sendSmsModal.hide(); smsText = ''"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
+        <h4 class="modal-title w-100 text-white">
+          {{ "merchantslist.Send SMS to " | transloco }}{{ smsMerchantName }}
+        </h4>
+      </div>
+      <div class="modal-body px-3">
+        <div>
+          <button
+            class="btn button-theme"
+            (click)="changeSMSTemplate(smsMerchantName)"
+          >
+            {{ "merchantslist.Tablet Offline" | transloco }}
+          </button>
+        </div>
+        <div class="">
+          <div class="modal-body">
+            {{ "merchantslist.SMS Text" | transloco }}
+            <textarea
+              style="width: 100%"
+              [(ngModel)]="smsText"
+              rows="3"
+            ></textarea>
+          </div>
+          <div class="modal-footer">
+            <button
+              class="btn button-theme"
+              [disabled]="smsText == ''"
+              (click)="sendSmsModal.hide(); SendSms(); smsText = ''"
+            >
+              {{ "merchantslist.Send SMS" | transloco }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

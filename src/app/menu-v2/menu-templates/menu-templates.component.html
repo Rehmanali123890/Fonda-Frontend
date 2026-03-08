@@ -1,0 +1,172 @@
+<div class="main_content_div">
+  <h4 class="head">
+    <span>Menu Templates</span>
+    <button class="outline-button" (click)="openModal()">
+      Add Menu Template
+    </button>
+  </h4>
+  <div class="table-responsive mt-4">
+    <table class="table">
+      <thead>
+        <tr class="table-head">
+          <th scope="col">Action</th>
+          <th scope="col">Active</th>
+          <th scope="col">Menu Name</th>
+          <th scope="col">Platform</th>
+          <th scope="col">Cuisine</th>
+          <th scope="col">Categories</th>
+          <th scope="col">Items</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Its only show when we dont have any menu -->
+        <!-- <tr style="border-bottom: 1px solid #ccc">
+          <p class="p-3">Your restaurant doesn't have a menu.</p>
+          <button
+            class="outline-button main-add-button mt-3 mb-3 ml-3"
+            data-toggle="modal"
+            data-target="#exampleModal"
+          >
+           Add Menu Template
+          </button>
+        </tr> -->
+        <tr>
+          <td>
+            <img
+              src="../../../assets/icons/three-dots.svg"
+              class="three-dots"
+              alt=""
+            />
+          </td>
+          <td>
+            <input type="checkbox" />
+          </td>
+          <td>
+            <a routerLink="/home/menus/menu-template-details"
+              >Breakfast - Small Template</a
+            >
+          </td>
+          <td>GrubHub,DoorDash ...</td>
+          <td>Mexican</td>
+          <td>5</td>
+          <td>25</td>
+        </tr>
+
+        <tr>
+          <td>
+            <img
+              src="../../../assets/icons/three-dots.svg"
+              class="three-dots"
+              alt=""
+            />
+          </td>
+          <td>
+            <input type="checkbox" />
+          </td>
+          <td>
+            <a routerLink="/home/menus/menu-template-details"
+              >Breakfast - Small Template</a
+            >
+          </td>
+          <td>GrubHub,DoorDash ...</td>
+          <td>Mexican</td>
+          <td>5</td>
+          <td>25</td>
+        </tr>
+        <tr>
+          <td>
+            <img
+              src="../../../assets/icons/three-dots.svg"
+              class="three-dots"
+              alt=""
+            />
+          </td>
+          <td>
+            <input type="checkbox" />
+          </td>
+          <td>
+            <a routerLink="/home/menus/menu-template-details"
+              >Breakfast - Small Template</a
+            >
+          </td>
+          <td>GrubHub,DoorDash ...</td>
+          <td>Mexican</td>
+          <td>5</td>
+          <td>25</td>
+        </tr>
+        <tr>
+          <td>
+            <img
+              src="../../../assets/icons/three-dots.svg"
+              class="three-dots"
+              alt=""
+            />
+          </td>
+          <td>
+            <input type="checkbox" />
+          </td>
+          <td>
+            <a routerLink="/home/menus/menu-details"
+              >Breakfast - Small Template</a
+            >
+          </td>
+          <td>GrubHub,DoorDash ...</td>
+          <td>Mexican</td>
+          <td>5</td>
+          <td>25</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- add menu model -->
+<div
+  mdbModal
+  #createMenuModal="mdbModal"
+  [config]="{ ignoreBackdropClick: true }"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myaddPlatformModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Menu Template</h5>
+          <button type="button" class="close" (click)="closeModal()">
+            <img
+              src="../../../assets/icons/black-cross.svg"
+              class="cross-icon"
+              alt=""
+            />
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            If you use this menu template, every category, item and modifier
+            will be added to your restaurant. We strongly recommend reviewing
+            and editing this template before adding the entire menu to your
+            restaurant
+          </p>
+          <p class="font-weight-bold">
+            Are you sure are you want to use this menu template, and add every
+            category, item and modifier to your restaurant?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="outline-button main-add-button"
+            (click)="closeModal()"
+          >
+            Cancel
+          </button>
+          <button class="button main-add-button">Yes, Add Menu Template</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

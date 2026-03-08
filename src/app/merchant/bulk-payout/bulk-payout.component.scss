@@ -1,0 +1,30 @@
+.row{
+  align-items: baseline;
+  // background-color: #fff;
+  // padding: .5rem;
+}
+.table{
+  width: max-content;
+}
+.transfer-btn{
+
+ background-color: #00305a !important;
+}
+.mobile-view{
+  display: none;
+}
+.desktop-view{
+  display: block;
+}
+@media screen and (max-width:786px) {
+
+  .mobile-view{
+    display: block;
+  }
+  .desktop-view{
+    display: none;
+  }
+  .table{
+    width: 100%;
+  }
+}

@@ -1,0 +1,267 @@
+.sorting {
+  position: relative;
+}
+.tableBody tr {
+  border-bottom: 1px solid #ccc !important;
+}
+.tableBody tr td {
+  padding: 0.5em 0em !important;
+}
+
+.sorting .top-icon::before {
+  font: normal normal normal 14px/1 FontAwesome;
+  content: "\f176";
+  top: 12px;
+  right: 11px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.sorting .bottom-icon::before {
+  font: normal normal normal 14px/1 FontAwesome;
+  content: "\f176";
+  right: 3px;
+  top: 12px;
+  position: absolute;
+  opacity: 0.6;
+  cursor: pointer;
+}
+
+.modal-dialog-1000 {
+  max-width: 1200px !important;
+  // z-index: 4 !important;
+}
+
+.search_filters_btn {
+  background-color: #00305a;
+  color: #fff;
+}
+
+.search_filters_form {
+  background-color: #fff;
+  padding: 15px;
+}
+
+.field_form_group {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.form-group {
+  width: 100%;
+}
+
+.outer-card {
+  border: 2px dashed #ccc9c9;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 1em;
+  margin-right: 0.4em;
+}
+
+.box-detail-order {
+  background-color: #fff;
+  padding: 1rem 0em;
+  border: none;
+  border-radius: 0px;
+  margin-bottom: 0px;
+  cursor: unset;
+}
+
+.ordertype-div {
+  padding: 0.6em 0.4em;
+}
+
+.ordertype-heading {
+  font-weight: 600;
+  font-size: 19px;
+}
+
+.order-info {
+  padding: 0em 0.4em;
+}
+
+.platform {
+  padding: 0em 0.4em;
+  font-weight: unset;
+}
+
+.order-card-mobile {
+  display: none !important;
+}
+
+.order-card-desktop {
+  display: block !important;
+}
+
+.order-detail-mobile {
+  display: none !important;
+}
+
+.order-detail-desktop {
+  display: block !important;
+}
+
+.alert-desktop-view {
+  display: block !important;
+}
+
+.tabs-mobile-view {
+  display: none !important;
+}
+
+.tabs-desktop-view {
+  display: block !important;
+}
+
+.search-desktop-view {
+  display: block !important;
+}
+
+.search-mobile-view {
+  display: none !important;
+}
+
+.create-desktop-view {
+  display: block !important;
+}
+
+.create-mobile-view {
+  display: none !important;
+}
+
+.status-model-for-mobile {
+  display: none !important;
+}
+
+@media screen and (max-width: 575px) {
+  .modal-footer button {
+    margin-left: 0em;
+    margin-right: 0em;
+  }
+  .status-model-for-mobile {
+    display: block !important;
+  }
+
+  .ng-select .ng-select-container {
+    border-radius: 0px;
+    border: none !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .badge-primary {
+    color: #fff;
+    background-color: #00305a;
+  }
+
+  h5 {
+    font-size: 1rem;
+  }
+
+  .order-heading {
+    font-size: 28px;
+  }
+
+  .search_filters_form {
+    margin-top: 0px !important;
+  }
+
+  .btn-orange-tab {
+    // padding: 0.1rem 1.36rem !important;
+    border-radius: 30px !important;
+    margin: 0em 0.2em !important;
+    border: 1px solid #e9e6e6 !important;
+  }
+
+  .order-card-mobile {
+    display: block !important;
+  }
+
+  .order-card-desktop {
+    display: none !important;
+  }
+
+  .order-detail-mobile {
+    display: block !important;
+  }
+
+  .order-detail-desktop {
+    display: none !important;
+  }
+
+  .alert-desktop-view {
+    display: none !important;
+  }
+
+  .tabs-mobile-view {
+    display: block !important;
+  }
+
+  .tabs-desktop-view {
+    display: none !important;
+  }
+
+  .search-desktop-view {
+    display: none !important;
+  }
+
+  .search-mobile-view {
+    display: block !important;
+  }
+
+  .create-desktop-view {
+    display: none !important;
+  }
+
+  .create-mobile-view {
+    display: block !important;
+  }
+
+  .modal-dialog-full-width {
+    width: 100% !important;
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+  }
+
+  .modal-content-full-width {
+    height: auto !important;
+    min-height: 100% !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+  }
+
+  .modal-header-full-width {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .modal-footer-full-width {
+    border-top: 1px solid #9ea2a2 !important;
+  }
+
+  .modal:nth-of-type(even) {
+    z-index: 1049 !important;
+  }
+
+  .modal-backdrop.show:nth-of-type(even) {
+    z-index: 1051 !important;
+  }
+}
+
+@media screen and (max-width: 780px) {
+  .field_form_group {
+    gap: 20px;
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .field_form_group {
+    flex-wrap: wrap;
+    gap: 0px;
+  }
+}

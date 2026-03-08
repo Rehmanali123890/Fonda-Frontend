@@ -1,0 +1,70 @@
+.header-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.image-icon {
+  height: 100%;
+  width: 27px;
+  cursor: pointer;
+}
+.desktop-view {
+  display: block;
+}
+.mobile-view {
+  display: none;
+}
+
+@media screen and (max-width: 575px) {
+  .desktop-view {
+    display: none;
+  }
+  .mobile-view {
+    display: block;
+  }
+
+  .text h3 {
+    font-size: 1.3em;
+  }
+  .button-theme {
+    font-size: 11px;
+  }
+  .button_div {
+    display: block;
+    margin-right: auto;
+    width: 100% !important;
+  }
+  .button_div button {
+    box-shadow: none;
+  }
+  .modal-heading {
+    font-size: 1.2em;
+  }
+  .modal-footer button {
+    font-size: 11px;
+  }
+  table {
+    width: 100%;
+  }
+
+  table tr {
+    border-style: solid;
+    border-width: unset !important;
+    border-color: #eeeeee !important;
+  }
+  table tr td {
+    border: 2px solid #eeeeee;
+  }
+  table thead th {
+    border: 2px solid #eeeeee;
+  }
+  .mobile-table-bg {
+    background-color: #00305a;
+    color: #fff;
+  }
+  table tbody {
+    background-color: #fff;
+    font-size: 15px;
+  }
+}

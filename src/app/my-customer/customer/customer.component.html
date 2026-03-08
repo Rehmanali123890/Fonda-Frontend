@@ -1,0 +1,118 @@
+<div class="container-fluid">
+
+    <div class="card">
+        <div class="card-header">
+            <div class="main-div">
+                <div class="header-div">
+                    <div class="text">
+                        <h4>All Customers</h4>
+                    </div>
+                    <div class="controls">
+                        <input type="text" [(ngModel)]="searchItemtoAssignoptionRef" class="search-field" placeholder="Search Customers" />
+                        <button class="btn button-theme" type="button" (click)="basicModal.show()">
+                            Add Customer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="gettingCustomers" class="d-flex justify-content-center text-center">
+            <mat-progress-bar class="progress primary-color-dark mb-0" mode="indeterminate"></mat-progress-bar>
+        </div>
+        <div class="table-container">
+            <table style="min-width: -webkit-fill-available !important" [ngClass]="{'table-class': !gettingCustomers && CustomersList.length > 0}" class="table table-bordered table-hover" id="price-table">
+                <thead class="bg-theme white-text sorting">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Platform</th>
+                        <th>Order Ratings</th>
+                        <th>Service Ratings</th>
+                        <th>Comments</th>
+                        <th>UTM Source</th>
+                        <th>Created Date</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of CustomersList | filterByprop: 'firstName' : searchItemtoAssignoptionRef">
+                        <td>{{item.firstName}} {{item.lastName}}</td>
+                        <td>{{item.email}}</td>
+                        <td>{{item.phone}}</td>
+                        <td>{{item.address}}</td>
+                        <td>{{item.order_ratings}}</td>
+                        <td>{{item.service_ratings}}</td>
+                        <td>{{item.comments}}</td>
+                        <td>{{item.utm_source}}</td>
+                        <td>{{ convertToPacificTime(item.createdDatetime) }}</td>
+                        <td>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div *ngIf="userRoleType === 1 || userRoleType === 3">
+                                    <span (click)="openEditCustomerModal(basicModal, item)" class="fa top-icon fa-pencil-alt ml-2" style="color: lightseagreen;cursor: pointer;"></span>
+                                    <!-- <span (click)="ConfirmDelete(item)" class="fa top-icon fa-trash ml-2" style="color: lightseagreen;cursor: pointer;"></span> -->
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>
+
+<div mdbModal #basicModal="mdbModal" [config]="{ignoreBackdropClick: true}" class="modal fade" (close)="resetObj()" tabindex="-1" role="dialog" aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-theme">
+                <button type="button" class="close pull-right text-white" aria-label="Close" (click)="basicModal.hide()">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <h4 *ngIf="!addEditCustomerDto.id" class="modal-title w-100 text-white" id="myModalLabel">Add Customer</h4>
+                <h4 *ngIf="addEditCustomerDto.id" class="modal-title w-100 text-white" id="myModalLabel">Edit Customer</h4>
+            </div>
+            <div class="modal-body px-3">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input type="text" [(ngModel)]="addEditCustomerDto.firstName" class="form-control" placeholder="First Name">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input type="text" [(ngModel)]="addEditCustomerDto.lastName" class="form-control" placeholder="Last Name">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="text" [(ngModel)]="addEditCustomerDto.email" class="form-control" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label>Platform</label>
+                    <input type="text" [(ngModel)]="addEditCustomerDto.address" class="form-control" placeholder="Platform">
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" [(ngModel)]="addEditCustomerDto.phone" class="form-control" placeholder="Phone">
+                </div>
+            </div>
+            <div class="modal-footer px-3">
+                <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close" (click)="basicModal.hide()" mdbWavesEffect>
+                    Close
+                </button>
+                <button *ngIf="!addEditCustomerDto.id" type="button" [disabled]="savingCustomer || !addEditCustomerDto.firstName" class="btn orange-bt text-white" (click)="SaveCustomerData(basicModal)">
+                    <span *ngIf="savingCustomer" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Add
+                </button>
+                <button *ngIf="addEditCustomerDto.id" type="button" [disabled]="savingCustomer || !addEditCustomerDto.firstName" class="btn orange-bt text-white" (click)="UpdateCustomerData(basicModal)">
+                    <span *ngIf="savingCustomer" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Update
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,114 @@
+#finance-form-div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0px;
+  flex-wrap: wrap;
+}
+.form-inline {
+  gap: 10px;
+}
+label {
+  display: block;
+  width: 100%;
+}
+[type="checkbox"]:not(:checked) {
+  opacity: none !important;
+}
+.form-group .consolidate {
+  border: 1px solid #4285f4;
+  display: flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+.button-theme {
+  width: 100%;
+}
+
+.tagChipContent > p {
+  font-size: 15px;
+}
+
+.tagChipUL {
+  display: flex;
+  flex-wrap: wrap;
+  border-radius: 3px;
+  border: 1px solid #000;
+}
+
+.tagChipLI {
+  color: #333;
+  margin: 4px 3px;
+  list-style: none;
+  border-radius: 30px;
+  background: #f2f2f2;
+  padding: 4px 10px;
+  border: 1px solid #e3e1e1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tagChipI {
+  height: 20px;
+  width: 20px;
+  color: #808080;
+  margin-left: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  justify-content: center;
+}
+
+.tagChipUL > input {
+  flex: 1;
+  padding: 5px;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.tagChipDetails {
+  justify-content: space-between;
+}
+
+.tagChipDetails > button {
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 9px 15px;
+  border-radius: 5px;
+  background: #5372f0;
+  transition: background 0.3s ease;
+}
+
+.input-style {
+  font-size: 16px !important;
+  width: 100% !important;
+  padding: 0 20px !important;
+  background: #fff !important;
+  color: #43474e !important;
+  border: 2px solid #97999f !important;
+  border-radius: 4px !important;
+  box-sizing: border-box !important;
+  height: 55px !important;
+}
+
+@media screen and (max-width: 768px) {
+  .button-theme {
+    width: 100%;
+  }
+}
+
+.row {
+  align-items: baseline;
+}
+table > tbody {
+  background-color: #fff;
+}
+#price-table {
+  width: max-content;
+}
